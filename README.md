@@ -2,7 +2,7 @@
 SSUMC 7기 Android 스터디 A조
 
 ## 💻 Member
-| 조윤식 | 정태영 | 정재훈 | 제현민 | 이서희 | 
+| 조윤식 | 정태영 | 제현민 | 이서희 | 정재훈 | 
 | :---------:|:----------:|:----------:|:----------:|:----------:|
 | 토토로 | 테오 | 이케 | 이안 | 후니 |
 | [CHOYUNSIG](https://github.com/CHOYUNSIG) | [realltaeng](https://github.com/realltaeng) | [Je-0204](https://github.com/Je-0204) | [eeeeeaaan](https://github.com/eeeeeaaan) | [deephoon](https://github.com/deephoon) |
