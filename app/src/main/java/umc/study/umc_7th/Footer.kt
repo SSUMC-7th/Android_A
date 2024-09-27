@@ -29,7 +29,7 @@ enum class SocialContact(
     TWITTER(url = "", iconId = R.drawable.ic_main_twitter),
 }
 
-val companyName = "(주)드림어스컴퍼니"
+const val companyName = "(주)드림어스컴퍼니"
 
 @Composable
 fun Footer() {
