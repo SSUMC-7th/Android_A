@@ -7,14 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -47,15 +44,8 @@ fun MyApp() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            Column() {
-                BottomAppBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    MiniPlayer()
-                }
+            Column {
+                MiniPlayer()
                 BottomNavigationBar(onDestinationClicked = { /*TODO*/ },)
             }
         }

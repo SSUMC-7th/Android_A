@@ -1,9 +1,7 @@
 package umc.study.umc_7th
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,16 +25,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MiniPlayer (modifier: Modifier = Modifier) {
-    BottomAppBar(
+    NavigationBar(
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp),
-        contentPadding = PaddingValues(0.dp)
+            .height(70.dp),
+        containerColor = Color.LightGray
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.LightGray),
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -58,7 +55,7 @@ fun MiniPlayer (modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(start = 20.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(150.dp))
+            Spacer(modifier = Modifier.weight(1f))
             // 재생 버튼
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
