@@ -27,10 +27,13 @@
       <SelectionState runConfigName="PreviewFooter">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="MyAppPreview">
+      <SelectionState runConfigName="PreviewMiniPlayer">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="PreviewMiniPlayer">
+      <SelectionState runConfigName="SongActivity">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewAlbum">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

@@ -1,7 +1,9 @@
 package umc.study.umc_7th
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,15 +26,36 @@ import androidx.compose.ui.unit.dp
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import java.time.LocalDate
 
+var songTitle : String? = null
+var songAuthor : String? = null
+
 class MainActivity : ComponentActivity() {
+
+    // Toast 메시지를 띄워주는 함수
+    fun Context.showToast(message: String?, duration: Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(this@MainActivity, message, duration).show()
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             Umc_7thTheme {
                 MyApp()
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        songTitle = intent.getStringExtra("songTitle")
+        songAuthor = intent.getStringExtra("songAuthor")
+        if (songTitle != null && songAuthor != null) {
+            showToast(songTitle)
+            showToast(songAuthor)
         }
     }
 }
@@ -45,7 +68,7 @@ fun MyApp() {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer()
+                MiniPlayer(songTitle, songAuthor)
                 BottomNavigationBar(onDestinationClicked = { /*TODO*/ },)
             }
         }

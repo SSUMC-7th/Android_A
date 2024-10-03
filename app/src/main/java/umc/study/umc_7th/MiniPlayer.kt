@@ -1,5 +1,6 @@
 package umc.study.umc_7th
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,13 +19,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MiniPlayer (modifier: Modifier = Modifier) {
+fun MiniPlayer (songTitle: String?, songAuthor: String?, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
+    val title: String = if (songTitle != null) {
+        songTitle
+    } else {
+        "제목"
+    }
+    val singer: String = if (songAuthor != null) {
+        songAuthor
+    } else {
+        "가수"
+    }
+
     NavigationBar(
         modifier = modifier
             .fillMaxWidth()
@@ -41,14 +56,14 @@ fun MiniPlayer (modifier: Modifier = Modifier) {
             {
                 // 곡 제목
                 Text(
-                    text = "제목",
+                    text = title,
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(start = 20.dp, top = 3.dp)
                 )
                 // 아티스트
                 Text(
-                    text = "가수",
+                    text = singer,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
@@ -80,7 +95,11 @@ fun MiniPlayer (modifier: Modifier = Modifier) {
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                IconButton(onClick = { /* 곡 정보 로직 */ }) {
+                IconButton(onClick = {
+                      val intent = Intent(context, SongActivity::class.java)
+                      context.startActivity(intent)
+                }
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.btn_miniplayer_go_list),
                         contentDescription = "Info"
@@ -94,5 +113,5 @@ fun MiniPlayer (modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewMiniPlayer() {
-    MiniPlayer()
+    MiniPlayer("라일락", "아이유(IU)")
 }
