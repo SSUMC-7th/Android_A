@@ -77,6 +77,7 @@ fun BottomNavigationBar(
                         ImageBitmap.imageResource(id = destination.notCurrentDestinationIcon),
                     contentDescription =null,
                     modifier = Modifier.size(24.dp).clickable {onClick(destination) })
+
                 Text(text = destination.mean,
                     color = if(destination ==currentDestination)
                 Color.Blue

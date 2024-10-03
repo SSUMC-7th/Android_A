@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.LocalDate
 
 
 enum class BaseLocationCategory(
@@ -56,13 +57,13 @@ enum class BaseLocationCategory(
 @Composable
 fun LocationMusicContentView(
     title : String,
-    contentList : List<Content>,
+    contentList : List<Album>,
     baseLocationCategory: BaseLocationCategory,
     viewTitleClick : () -> Unit,
-    contentClick : (Content) -> Unit,
+    contentClick : (Album) -> Unit,
     categoryClick : (BaseLocationCategory) -> Unit,
 ){
-    horizontalScrollContentView(
+    horizontalScrollAlbumContentView(
         contentList = contentList,
         titleBar = {
             Row (
@@ -109,15 +110,15 @@ fun LocationMusicContentView(
             Box(
                 contentAlignment = Alignment.BottomEnd,
             ){
-                content.image?.let {
-                    Image(bitmap = it,
+
+                    Image(bitmap = content.albumImage,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(128.dp)
                             .clip(RoundedCornerShape(8.dp))
                     )
-                }
+
                 Icon(
                     painter = painterResource(id = R.drawable.btn_miniplayer_play),
                     contentDescription = null,
@@ -222,6 +223,65 @@ fun VideoCollectionView(
         contentClick= contentClick
     )
 }
+@RequiresApi(Build.VERSION_CODES.P)
+@Composable
+private fun horizontalScrollAlbumContentView(
+    contentList: List<Album>,
+    titleBar : @Composable () -> Unit,
+    thumbnail : @Composable (Album) -> Unit,
+    contentClick: (Album) -> Unit
+) {
+    val density = LocalDensity.current
+    var contentWidth by remember { mutableStateOf(0.dp) }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier.padding(vertical = 18.dp)
+    ) {
+        titleBar()
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ){
+            item { Spacer(modifier = Modifier.width(0.dp))}
+            items(count = contentList.size){ index ->
+                val content = contentList[index]
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.clickable { contentClick(content) }
+                ) {
+                    Box(
+                        modifier = Modifier.onGloballyPositioned {
+                            with(density) { contentWidth = it.size.width.toDp() }
+                        }
+                    ){
+                        thumbnail(content)
+                    }
+                    Column (verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.width(contentWidth)
+                    ) {
+                        Text(
+                            text = content.albumTitle,
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = content.author,
+                            style = TextStyle(
+                                color = TextStyle.Default.color.copy(alpha = 0.5f)
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+            item { Spacer(modifier = Modifier.width(0.dp))}
+        }
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -290,16 +350,18 @@ fun PreviewLocationMusicContentView(){
     LocationMusicContentView(
         title = "오늘 발매 음악",
         contentList = List(15){
-            Content(
-                title = "LILAC",
-                author = "IU",
-                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                length = 200
+            Album(
+                albumTitle = "IU 5th Album 'LILAC'",
+                date = LocalDate.parse("2023-03-27"),
+                author = "IU(아이유)",
+                albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+                titleTrackList = listOf("LILAC", "Flu")
             )
         },
         baseLocationCategory = BaseLocationCategory.GLOABAL ,
         viewTitleClick = { },
-        contentClick ={},
+        contentClick ={}, // 여기에 프래그먼트 전환기능 추가해야됨
         categoryClick = {}
     )
 }
