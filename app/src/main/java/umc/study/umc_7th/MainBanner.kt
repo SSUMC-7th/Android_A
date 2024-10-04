@@ -7,12 +7,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -21,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -67,14 +72,16 @@ fun MainBanner(
                     onSubscriptionButtonClicked to R.drawable.btn_main_ticket,
                     onSettingButtonClicked to R.drawable.btn_main_setting,
                 ).forEach { (onClick, icon) ->
-                    Icon(
-                        painter = painterResource(id = icon),
-                        contentDescription = null,
-                        tint = textColor,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable { onClick() }
-                    )
+                    IconButton(
+                        onClick = onClick,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = icon),
+                            contentDescription = null,
+                            tint = textColor,
+                        )
+                    }
                 }
             }
             // 제목
@@ -115,26 +122,38 @@ fun MainBanner(
                 )
             }
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.height(100.dp)
             ) {
                 items(count = contentList.size) { index ->
                     val content = contentList[index]
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.clickable { /* TODO: 기능 구현 */ }
+                    Button(
+                        colors = ButtonColors(
+                            containerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            contentColor = textColor,
+                            disabledContentColor = textColor,
+                        ),
+                        onClick = { /* TODO: 기능 구현 */ },
+                        shape = RoundedCornerShape(8.dp),
+                        contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
-                        Image(
-                            bitmap = content.image,
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp)
-                        )
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = content.title, color = textColor)
-                            Text(text = content.author, color = textColor)
+                            Image(
+                                bitmap = content.image,
+                                contentDescription = null,
+                                modifier = Modifier.size(40.dp)
+                            )
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Text(text = content.title, color = textColor)
+                                Text(text = content.author, color = textColor)
+                            }
                         }
                     }
                 }

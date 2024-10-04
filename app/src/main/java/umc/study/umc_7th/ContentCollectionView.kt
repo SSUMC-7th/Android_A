@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -68,23 +72,34 @@ fun GlobeCategorizedMusicCollectionView(
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.clickable { onViewTitleClicked() },
+                Button(
+                    colors = ButtonColors(
+                        containerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        contentColor = Color.Unspecified,
+                        disabledContentColor = Color.Unspecified,
+                    ),
+                    onClick = onViewTitleClicked,
+                    shape = RoundedCornerShape(4.dp),
+                    contentPadding = PaddingValues(4.dp)
                 ) {
-                    Text(
-                        text = title,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(
+                            text = title,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
                         )
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.btn_arrow_more),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
+                        Icon(
+                            painter = painterResource(id = R.drawable.btn_arrow_more),
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -138,7 +153,7 @@ fun PodcastCollectionView(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
                 Text(
                     text = title,
@@ -176,7 +191,7 @@ fun VideoCollectionView(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
                 Text(
                     text = title,
@@ -234,46 +249,55 @@ private fun ContentCollectionView(
     ) {
         titleBar()
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            item { Spacer(modifier = Modifier.width(0.dp)) }
+            item { Spacer(modifier = Modifier.width(4.dp)) }
             items(count = contentList.size) { index ->
                 val content = contentList[index]
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.clickable { onContentClicked(content) }
+                Button(
+                    colors = ButtonColors(
+                        containerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        contentColor = Color.Unspecified,
+                        disabledContentColor = Color.Unspecified,
+                    ),
+                    onClick = { onContentClicked(content) },
+                    shape = RoundedCornerShape(4.dp),
+                    contentPadding = PaddingValues(4.dp)
                 ) {
-                    Box(
-                        modifier = Modifier.onGloballyPositioned {
-                            with(density) { contentWidth = it.size.width.toDp() }
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Box(
+                            modifier = Modifier.onGloballyPositioned {
+                                with(density) { contentWidth = it.size.width.toDp() }
+                            }
+                        ) {
+                            thumbnail(content)
                         }
-                    ) {
-                        thumbnail(content)
-                    }
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier.width(contentWidth)
-                    ) {
-                        Text(
-                            text = content.title,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            text = content.author,
-                            style = TextStyle(
-                                color = TextStyle.Default.color.copy(alpha = 0.5f)
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.width(contentWidth)
+                        ) {
+                            Text(
+                                text = content.title,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Text(
+                                text = content.author,
+                                style = TextStyle(
+                                    color = TextStyle.Default.color.copy(alpha = 0.5f)
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
                 }
             }
-            item { Spacer(modifier = Modifier.width(0.dp)) }
+            item { Spacer(modifier = Modifier.width(4.dp)) }
         }
     }
 }

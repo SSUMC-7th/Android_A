@@ -1,12 +1,17 @@
 package umc.study.umc_7th
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -35,9 +40,9 @@ const val companyName = "(주)드림어스컴퍼니"
 fun Footer() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier
-            .padding(8.dp)
+            .padding(4.dp)
             .fillMaxWidth(),
     ) {
         Row(
@@ -49,29 +54,41 @@ fun Footer() {
             SocialContact.entries.forEach { socialContact ->
                 IconButton(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(48.dp),
                 ) {
                     Icon(
                         painter = painterResource(id = socialContact.iconId),
                         contentDescription = null,
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
         }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable { /*TODO*/ }
+        Button(
+            colors = ButtonColors(
+                containerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                contentColor = Color.Unspecified,
+                disabledContentColor = Color.Unspecified,
+            ),
+            shape = RoundedCornerShape(4.dp),
+            contentPadding = PaddingValues(4.dp),
+            onClick = { /*TODO*/ }
         ) {
-            Text(
-                text = AnnotatedString("$companyName 사업자 정보"),
-                color = Color.Black.copy(alpha = 0.5f),
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.btn_arrow_more),
-                contentDescription = null,
-                tint = Color.Black.copy(alpha = 0.5f),
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = AnnotatedString("$companyName 사업자 정보"),
+                    color = Color.Black.copy(alpha = 0.5f),
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.btn_arrow_more),
+                    contentDescription = null,
+                    tint = Color.Black.copy(alpha = 0.5f),
+                )
+            }
         }
     }
 }
