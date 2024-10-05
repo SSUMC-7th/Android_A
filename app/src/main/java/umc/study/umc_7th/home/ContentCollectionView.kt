@@ -1,8 +1,7 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -44,6 +42,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.R
+import umc.study.umc_7th.getTestContentList
 
 enum class GlobeCategory(
     val expression: String,
@@ -121,7 +122,7 @@ fun GlobeCategorizedMusicCollectionView(
                 contentAlignment = Alignment.BottomEnd,
             ) {
                 Image(
-                    bitmap = content.image,
+                    bitmap = content.imageBitmap,
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
@@ -166,7 +167,7 @@ fun PodcastCollectionView(
         },
         thumbnail = { content ->
             Image(
-                bitmap = content.image,
+                bitmap = content.imageBitmap,
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
                 modifier = Modifier
@@ -205,7 +206,7 @@ fun VideoCollectionView(
         thumbnail = { content ->
             Box(contentAlignment = Alignment.BottomEnd) {
                 Image(
-                    bitmap = content.image,
+                    bitmap = content.imageBitmap,
                     contentScale = ContentScale.FillHeight,
                     contentDescription = null,
                     modifier = Modifier
@@ -277,22 +278,32 @@ private fun ContentCollectionView(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             modifier = Modifier.width(contentWidth)
                         ) {
-                            Text(
-                                text = content.title,
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                ),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            Text(
-                                text = content.author,
-                                style = TextStyle(
-                                    color = TextStyle.Default.color.copy(alpha = 0.5f)
-                                ),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.height(24.dp)
+                            ) {
+                                Text(
+                                    text = content.title,
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.height(24.dp)
+                            ) {
+                                Text(
+                                    text = content.author,
+                                    style = TextStyle(
+                                        color = TextStyle.Default.color.copy(alpha = 0.5f)
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
                         }
                     }
                 }
@@ -307,14 +318,7 @@ private fun ContentCollectionView(
 fun PreviewGlobeCategorizedMusicCollectionView() {
     GlobeCategorizedMusicCollectionView(
         title = "오늘 발매 음악",
-        contentList = List(15) {
-            Content(
-                title = "LILAC",
-                author = "IU",
-                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                length = 200,
-            )
-        },
+        contentList = getTestContentList(),
         globeCategory = GlobeCategory.GLOBAL,
         onViewTitleClicked = {},
         onContentClicked = {},
@@ -331,7 +335,7 @@ fun PreviewPodcastCollectionView() {
             Content(
                 title = "김시선의 귀책사유 FLO X 윌라",
                 author = "김시선",
-                image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
+                imageId = R.drawable.img_potcast_exp,
                 length = 200,
             )
         },
@@ -348,7 +352,7 @@ fun PreviewVideoCollectionView() {
             Content(
                 title = "제목",
                 author = "지은이",
-                image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
+                imageId = R.drawable.img_video_exp,
                 length = 200,
             )
         },

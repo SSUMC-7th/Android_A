@@ -23,8 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -219,7 +217,7 @@ fun PreviewBottomNavigationBar() {
         currentContent = Content(
             title = "사랑하긴 했었나요 스쳐가는 인연이었나요 짧지않은 우리 함께했던 시간들이 자꾸 내 마음을 가둬두네",
             author = "잔나비",
-            image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
+            imageId = R.drawable.img_album_exp,
             length = 200,
         ),
         isPlaying = true,
