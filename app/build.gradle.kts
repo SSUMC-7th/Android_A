@@ -41,6 +41,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        dataBinding = true
         compose = true
     }
     composeOptions {

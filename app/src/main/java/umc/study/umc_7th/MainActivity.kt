@@ -1,47 +1,39 @@
 package umc.study.umc_7th
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import umc.study.umc_7th.ui.theme.Umc_7thTheme
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.imageResource
+import androidx.fragment.app.FragmentActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Umc_7thTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+        setContentView(R.layout.activity_main)
+
+        val homeFragment = HomeFragment()
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragmentContainerView_main, homeFragment)
+            .commit()
+
+        val composeViewMain = findViewById<ComposeView>(R.id.composeView_main)
+        composeViewMain.setContent {
+            BottomNavigationBar(
+                currentDestination = NavigationDestination.HOME,
+                currentContent = Content(
+                    title = "Butter",
+                    author = "BTS",
+                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
+                    length = 200,
+                ),
+                isPlaying = false,
+                onDestinationClicked = { /*TODO*/ },
+                onContentClicked = { /*TODO*/ },
+                onPlayButtonClicked = { /*TODO*/ },
+                onNextButtonClicked = { /*TODO*/ },
+                onPreviousButtonClicked = { /*TODO*/ }) {
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Umc_7thTheme {
-        Greeting("Android")
     }
 }
