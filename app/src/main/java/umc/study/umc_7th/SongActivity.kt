@@ -45,41 +45,62 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class SongActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = (application as MyApplication).songViewModel
         setContent {
+
             val songTitle = intent.getStringExtra("songtitle")
             val singer = intent.getStringExtra("author")
             Umc_7thTheme {
-                SongPlayerScreen(
-                    content =Content(
-                        songTitle.toString(), singer.toString(),
-                        ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                        200
-                    ) ,
-                    playerSettingButtonClick = { /*TODO*/ },
-                    eqButtonClick = { /*TODO*/ },
-                    songActivityToMainActivity = {
-                        val intent = Intent(this@SongActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    },
-                    likeClick = { /*TODO*/ },
-                    unLikeButtonClick = { /*TODO*/ },
-                    replayButtonClick = { /*TODO*/ },
-                    songPlayButtonClick = { /*TODO*/ },
-                    beforeSongPlayClick = { /*TODO*/ },
-                    nextSongPlayClick = { /*TODO*/ },
-                    shuffleClick = { /*TODO*/ },
-                    instagramShareClick = { /*TODO*/ },
-                    similarSongButtonClick = { /*TODO*/ },
-                    musicQueueClick = { /*TODO*/ }) {
+                Scaffold { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)){
+                        SongPlayerScreen(
+                            viewModel= viewModel,
+                            content =Content(
+                                songTitle.toString(), singer.toString(),
+                                ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                                200
+                            ) ,
+                            playerSettingButtonClick = { /*TODO*/ },
+                            eqButtonClick = { /*TODO*/ },
+                            songActivityToMainActivity = {
+                                val intent = Intent(this@SongActivity, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            },
+                            likeClick = { /*TODO*/ },
+                            unLikeButtonClick = { /*TODO*/ },
+                            replayButtonClick = { /*TODO*/ },
+                            songPlayButtonClick = { /*TODO*/ },
+                            beforeSongPlayClick = { /*TODO*/ },
+                            nextSongPlayClick = { /*TODO*/ },
+                            shuffleClick = { /*TODO*/ },
+                            instagramShareClick = { /*TODO*/ },
+                            similarSongButtonClick = { /*TODO*/ },
+                            musicQueueClick = { /*TODO*/ }) {
+
+                        }
+                    }
 
                 }
+
+
             }
 
         }
@@ -89,6 +110,7 @@ class SongActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun SongPlayerScreen(
+    viewModel: SongViewModel,
     content : Content,
     playerSettingButtonClick: () -> Unit,
     eqButtonClick: () -> Unit,
@@ -105,8 +127,9 @@ fun SongPlayerScreen(
     musicQueueClick : () -> Unit,
     toSingerinfoClick: ()-> Unit,
 
-){
+    ){
     Column (modifier = Modifier
+        .verticalScroll(rememberScrollState())
         .fillMaxHeight()
         .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -192,7 +215,9 @@ fun SongPlayerScreen(
             }
         }
         LinearProgressIndicator(progress = 0f,
-            modifier = Modifier.fillMaxWidth().height(3.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp)
         )
         Row(
 
@@ -208,20 +233,57 @@ fun SongPlayerScreen(
                 .padding(top = 60.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ){
-            listOf(
-                replayButtonClick to R.drawable.nugu_btn_repeat_inactive,
-                beforeSongPlayClick to R.drawable.nugu_btn_skip_previous_32,
-                songPlayButtonClick to R.drawable.nugu_btn_play_32,
-                nextSongPlayClick to R.drawable.nugu_btn_skip_next_32,
-                shuffleClick to R.drawable.nugu_btn_random_inactive
-                ).forEach { (onClick, icon) ->
-                Icon(painter = painterResource(id = icon) ,
-                    contentDescription =null,
-                    modifier = Modifier
-                        .size(65.dp)
-                        .padding(10.dp)
-                        .clickable { onClick() })
-            }
+            val replay by viewModel.replay.observeAsState(false)
+            val played by viewModel.played.observeAsState(true)
+            val shuffle by viewModel.shuffle.observeAsState(false)
+            Icon(
+                painter = painterResource(id = R.drawable.nugu_btn_repeat_inactive),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(65.dp)
+                    .padding(10.dp)
+                    .clickable { viewModel.toggleReplay() }
+                    , tint = if (replay) Color.Blue else Color.Black
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.nugu_btn_skip_previous_32),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(65.dp)
+                    .padding(10.dp)
+                    .clickable { beforeSongPlayClick() }
+            )
+
+            Icon(
+                painter = painterResource(id = if(played) R.drawable.nugu_btn_play_32
+                else R.drawable.nugu_btn_pause_32),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(65.dp)
+                    .padding(10.dp)
+                    .clickable { viewModel.togglePlayed() }
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.nugu_btn_skip_next_32),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(65.dp)
+                    .padding(10.dp)
+                    .clickable { nextSongPlayClick() }
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.nugu_btn_random_inactive),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(65.dp)
+                    .padding(10.dp)
+                    .clickable { viewModel.toggleShuffle() },
+                tint = if (shuffle) Color.Blue else Color.Black
+            )
+
         }
         Row (modifier = Modifier
             .fillMaxWidth()
@@ -249,6 +311,7 @@ fun SongPlayerScreen(
 @Composable
 fun PreviewSongPlayerScreen(){
     SongPlayerScreen(
+        viewModel = viewModel(),
         content = Content(
             "LILAC", "IU",
             ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
@@ -259,7 +322,7 @@ fun PreviewSongPlayerScreen(){
         songActivityToMainActivity = {},
         likeClick = { /*TODO*/ },
         unLikeButtonClick = { /*TODO*/ },
-        replayButtonClick = { /*TODO*/ },
+        replayButtonClick = {  },
         songPlayButtonClick = { /*TODO*/ },
         beforeSongPlayClick = { /*TODO*/ },
         nextSongPlayClick = { /*TODO*/ },

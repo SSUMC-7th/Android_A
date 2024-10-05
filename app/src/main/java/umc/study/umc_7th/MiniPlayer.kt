@@ -2,6 +2,7 @@ package umc.study.umc_7th
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,8 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -23,10 +27,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun MiniPlayer(
+    viewModel: SongViewModel,
     content: Content,
     beforeSongPlayButtonClick: () -> Unit,
     playSongButtonClick: () -> Unit,
@@ -34,11 +40,13 @@ fun MiniPlayer(
     musicQueueClick: () -> Unit,
     toSongActivity: (Content) -> Unit,
 ){
+
+
     Box(modifier = Modifier.clickable {toSongActivity(content) }
     )
     {
         Row(
-            modifier = Modifier
+            modifier = Modifier.background(color = Color.White)
                 .fillMaxWidth()
                 .padding(horizontal = 15.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(120.dp),
@@ -63,19 +71,28 @@ fun MiniPlayer(
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                listOf(
-                    beforeSongPlayButtonClick to R.drawable.btn_miniplayer_previous,
-                    playSongButtonClick to R.drawable.btn_miniplayer_play,
-                    nextSongPlayButtonClick to R.drawable.btn_miniplayer_next,
-                    musicQueueClick to R.drawable.btn_miniplayer_go_list
-                ).forEach { (onClick, icon) ->
-                    Icon(painter = painterResource(id = icon),
-                        contentDescription =null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clickable { onClick() })
-                }
+            ){  val played by viewModel.played.observeAsState(true)
+                Icon(painter = painterResource(id = R.drawable.btn_miniplayer_previous),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable { beforeSongPlayButtonClick() })
+                Icon(painter = painterResource(id = if(played) R.drawable.btn_miniplayer_play
+                else R.drawable.btn_miniplay_pause),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable { viewModel.togglePlayed() })
+                Icon(painter = painterResource(id = R.drawable.btn_miniplayer_next),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable { nextSongPlayButtonClick() })
+                Icon(painter = painterResource(id = R.drawable.btn_miniplayer_go_list),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable { musicQueueClick() })
             }
         }
     }
@@ -87,6 +104,7 @@ fun MiniPlayer(
 @Composable
 fun PreviewMiniPlayer(){
     MiniPlayer(
+        viewModel = viewModel(),
         content = Content(
             title = "LILAC",
             author = "IU",
