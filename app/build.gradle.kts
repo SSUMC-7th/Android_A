@@ -61,7 +61,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3) // 이미 추가됨
+    implementation("androidx.compose.material3:material3:1.0.0") // 추가된 부분
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,35 +74,35 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation (libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx) // 추가된 부분
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // Paging 라이브러리 추가
+    implementation("androidx.paging:paging-runtime:3.1.1")
 
     // Hilt Dependency Injection
     implementation("com.google.dagger:hilt-android:2.49")
     kapt("com.google.dagger:hilt-compiler:2.49")
 
-    //gson
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    // Gson
     implementation("com.google.code.gson:gson:2.10.1")
 
-    //Retrofit
+    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 
-    // https://github.com/square/okhttp
+    // OkHttp
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
-
-    // https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
 
-    //lifecycle
+    // Lifecycle
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
-    //viewModel
+    // ViewModel
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
@@ -109,14 +110,14 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.14.2")
     kapt("com.github.bumptech.glide:ksp:4.14.2")
 
-    //CardView
+    // CardView
     implementation("androidx.cardview:cardview:1.0.0")
 
     // Coroutines Dependency
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    //Safe args
+    // Safe Args
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
 
