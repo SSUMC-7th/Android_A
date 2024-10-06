@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
+import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.VideoContent
@@ -59,10 +60,10 @@ enum class GlobeCategory(
 @Composable
 fun GlobeCategorizedMusicCollectionView(
     title: String,
-    contentList: List<Content>,
+    contentList: List<MusicContent>,
     globeCategory: GlobeCategory,
     onViewTitleClicked: () -> Unit,
-    onContentClicked: (Content) -> Unit,
+    onContentClicked: (MusicContent) -> Unit,
     onCategoryClicked: (GlobeCategory) -> Unit,
 ) {
     ContentCollectionView(
@@ -237,11 +238,11 @@ fun VideoCollectionView(
 }
 
 @Composable
-private fun ContentCollectionView(
-    contentList: List<Content>,
+private fun <T: Content> ContentCollectionView(
+    contentList: List<T>,
     titleBar: @Composable () -> Unit, // 제목 바에 그려질 컴포저블
-    thumbnail: @Composable (Content) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
-    onContentClicked: (Content) -> Unit
+    thumbnail: @Composable (T) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
+    onContentClicked: (T) -> Unit
 ) {
     val density = LocalDensity.current
     var contentWidth by remember { mutableStateOf(0.dp) }

@@ -15,18 +15,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import umc.study.umc_7th.Album
 import umc.study.umc_7th.BottomNavigationBar
-import umc.study.umc_7th.Content
 import umc.study.umc_7th.NavigationDestination
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestContentList
-import java.time.LocalDate
+import umc.study.umc_7th.getTestMusicContentList
 
 class AlbumFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -35,9 +32,15 @@ class AlbumFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val album = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            arguments?.getSerializable("album", Album::class.java)!!
+        else
+            arguments?.getSerializable("album")!! as Album
+
         return inflater.inflate(R.layout.fragment_album, container, false).apply {
             findViewById<ComposeView>(R.id.composeView_album).setContent {
                 AlbumScreen(
+                    album = album,
                     onBackButtonClicked = {
                         activity?.supportFragmentManager?.beginTransaction()
                             ?.remove(this@AlbumFragment)
@@ -53,6 +56,7 @@ class AlbumFragment : Fragment() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun AlbumScreen(
+    album: Album,
     onBackButtonClicked: () -> Unit,
 ) {
     // 이 화면은 목업입니다.
@@ -67,12 +71,12 @@ private fun AlbumScreen(
             onDetailsButtonClicked = {}
         )
         AlbumFrame(
-            title = "IU 5th Album \"LILAC\"",
-            author = "아이유(IU)",
-            cover = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-            releasedDate = LocalDate.parse("2021-03-25"),
-            type = "정규",
-            genre = "댄스 팝",
+            title = album.title,
+            author = album.author,
+            cover = album.imageBitmap,
+            releasedDate = album.releasedDate,
+            type = album.type,
+            genre = album.genre,
         )
         TabLayout(
             tabs = listOf(
@@ -80,10 +84,10 @@ private fun AlbumScreen(
                     label = "수록곡",
                     page = {
                         IncludedContentsPage(
-                            contentList = getTestContentList().mapIndexed { index, content ->
-                                ContentWithTitleLabel(
-                                    content = content,
-                                    isTitle = index == 0,
+                            contentList = album.contentList.map {
+                                ContentWithLabel(
+                                    content = it.first,
+                                    label = it.second,
                                 )
                             },
                             isMixed = false,
@@ -125,18 +129,14 @@ fun PreviewAlbumScreen() {
                 onPlayButtonClicked = {},
                 onContentClicked = {},
                 currentDestination = NavigationDestination.HOME,
-                currentContent = Content(
-                    title = "Butter",
-                    author = "BTS",
-                    imageId = R.drawable.img_album_exp,
-                    length = 200,
-                ),
+                currentContent = getTestMusicContentList((1..4).random()).random(),
                 isPlaying = false,
             )
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             AlbumScreen(
+                album = getTestMusicContentList((1..4).random()).random().album,
                 onBackButtonClicked = {}
             )
         }

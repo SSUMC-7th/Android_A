@@ -24,6 +24,7 @@ data class Album(
     val type: String,
     val genre: String,
     val releasedDate: LocalDate,
+    val contentList: MutableList<Pair<MusicContent, String?>>,
 ): Serializable {
     val imageBitmap: ImageBitmap @Composable get() = ImageLoader.getImageBitmap(id = imageId)
 }
@@ -77,6 +78,7 @@ fun getTestMusicContentList(
         type = "정규",
         genre = "댄스 팝",
         releasedDate = LocalDate.parse("2021-03-25"),
+        contentList = mutableListOf()
     ).run {
         listOf(
             "라일락",
@@ -89,14 +91,16 @@ fun getTestMusicContentList(
             "아이와 나의 바다",
             "어푸 (Ah puh)",
             "에필로그",
-        ).map {
-            MusicContent(
-                title = it,
+        ).mapIndexed { index, title ->
+            val content = MusicContent(
+                title = title,
                 author = "아이유(IU)",
                 imageId = R.drawable.img_album_exp2,
                 length = 210,
-                album = this@run,
+                album = this,
             )
+            this.contentList.add(content to if (index == 0 || index == 2) "TITLE" else null)
+            content
         }
     }
 
@@ -107,17 +111,20 @@ fun getTestMusicContentList(
         type = "싱글",
         genre = "댄스 팝",
         releasedDate = LocalDate.parse("2021-05-21"),
+        contentList = mutableListOf()
     ).run {
         listOf(
             "Butter",
         ).map {
-            MusicContent(
+            val content = MusicContent(
                 title = it,
                 author = "BTS",
                 imageId = R.drawable.img_album_exp,
                 length = 210,
-                album = this@run,
+                album = this,
             )
+            this.contentList.add(content to "SINGLE")
+            content
         }
     }
 
@@ -128,17 +135,20 @@ fun getTestMusicContentList(
         type = "싱글",
         genre = "댄스 팝",
         releasedDate = LocalDate.parse("2021-05-17"),
+        contentList = mutableListOf()
     ).run {
         listOf(
             "Next Level",
         ).map {
-            MusicContent(
+            val content = MusicContent(
                 title = it,
                 author = "aespa",
                 imageId = R.drawable.img_album_exp3,
                 length = 210,
-                album = this@run,
+                album = this,
             )
+            this.contentList.add(content to "SINGLE")
+            content
         }
     }
 
@@ -149,6 +159,7 @@ fun getTestMusicContentList(
         type = "미니",
         genre = "댄스 팝",
         releasedDate = LocalDate.parse("2019-04-12"),
+        contentList = mutableListOf()
     ).run {
         listOf(
             "Intro : Persona",
@@ -158,14 +169,16 @@ fun getTestMusicContentList(
             "HOME",
             "Jamais Vu",
             "Dionysus",
-        ).map {
-            MusicContent(
-                title = it,
+        ).mapIndexed { index, title ->
+            val content = MusicContent(
+                title = title,
                 author = "BTS",
                 imageId = R.drawable.img_album_exp4,
                 length = 210,
-                album = this@run,
+                album = this,
             )
+            this.contentList.add(content to if (index == 1) "TITLE" else null)
+            content
         }
     }
 

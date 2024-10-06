@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -41,12 +42,13 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainBanner(
+fun <T: Content> MainBanner(
     title: String,
     date: LocalDate,
-    contentList: List<Content>,
+    contentList: List<T>,
     textColor: Color,
     backgroundImage: ImageBitmap,
+    onContentClicked: (T) -> Unit,
     onVoiceSearchButtonClicked: () -> Unit,
     onSubscriptionButtonClicked: () -> Unit,
     onSettingButtonClicked: () -> Unit,
@@ -135,7 +137,7 @@ fun MainBanner(
                             contentColor = textColor,
                             disabledContentColor = textColor,
                         ),
-                        onClick = { /* TODO: 기능 구현 */ },
+                        onClick = { onContentClicked(content) },
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
@@ -147,7 +149,9 @@ fun MainBanner(
                             Image(
                                 bitmap = content.imageBitmap,
                                 contentDescription = null,
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(2.dp))
                             )
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -173,6 +177,7 @@ fun PreviewBanner() {
         contentList = getTestMusicContentList((1..4).random()),
         textColor = Color.White,
         backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
+        onContentClicked = {},
         onVoiceSearchButtonClicked = {},
         onSubscriptionButtonClicked = {},
         onSettingButtonClicked = {},

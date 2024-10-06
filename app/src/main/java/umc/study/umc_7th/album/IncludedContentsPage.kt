@@ -40,14 +40,14 @@ import umc.study.umc_7th.Content
 import umc.study.umc_7th.R
 import umc.study.umc_7th.getTestMusicContentList
 
-data class ContentWithTitleLabel(
+data class ContentWithLabel(
     val content: Content,
-    val isTitle: Boolean,
+    val label: String?,
 )
 
 @Composable
 fun IncludedContentsPage(
-    contentList: List<ContentWithTitleLabel>,
+    contentList: List<ContentWithLabel>,
     isMixed: Boolean,
     onPlayContentClicked: (Content) -> Unit,
     onContentDetailsClicked: (Content) -> Unit,
@@ -167,7 +167,7 @@ fun IncludedContentsPage(
             items(
                 count = contentList.size,
             ) { index ->
-                val (content, isTitle) = contentList[index]
+                val (content, label) = contentList[index]
                 Box(
                     modifier = Modifier
                         .background(
@@ -209,22 +209,24 @@ fun IncludedContentsPage(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.height(24.dp)
                                 ) {
-                                    if (isTitle) Box(
-                                        modifier = Modifier
-                                            .background(
-                                                color = Color.Blue,
-                                                shape = RoundedCornerShape(percent = 50)
+                                    label?.let {
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    color = Color.Blue,
+                                                    shape = RoundedCornerShape(percent = 50)
+                                                )
+                                                .padding(horizontal = 4.dp, vertical = 1.dp)
+                                        ) {
+                                            Text(
+                                                text = label,
+                                                style = TextStyle(
+                                                    fontSize = 8.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = Color.White
+                                                ),
                                             )
-                                            .padding(horizontal = 4.dp, vertical = 1.dp)
-                                    ) {
-                                        Text(
-                                            text = "TITLE",
-                                            style = TextStyle(
-                                                fontSize = 8.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = Color.White
-                                            ),
-                                        )
+                                        }
                                     }
                                     Text(
                                         text = content.title,
@@ -282,10 +284,10 @@ fun IncludedContentsPage(
 @Composable
 fun PreviewIncludedContentsPage() {
     IncludedContentsPage(
-        contentList = getTestMusicContentList((1..4).random()).mapIndexed { index, content ->
-            ContentWithTitleLabel(
-                content = content,
-                isTitle = index == 0,
+        contentList = getTestMusicContentList((1..4).random()).random().album.contentList.map {
+            ContentWithLabel(
+                content = it.first,
+                label = it.second,
             )
         },
         isMixed = false,
