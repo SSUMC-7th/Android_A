@@ -1,7 +1,6 @@
 package umc.study.umc_7th.album
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
