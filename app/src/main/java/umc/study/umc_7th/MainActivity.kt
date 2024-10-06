@@ -1,6 +1,7 @@
 package umc.study.umc_7th
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -23,6 +24,11 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import java.time.LocalDate
 
@@ -63,7 +69,22 @@ class MainActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyApp() {
+    // 네비게이션 컨트롤러 생성
+    val navController = rememberNavController()
 
+    // NavHost로 네비게이션 경로 설정
+    NavHost(navController = navController, startDestination = "home") {
+        // 홈 화면
+        composable("home") { HomeScreen(navController) }
+
+        // 세부 화면
+        composable("Album") { AlbumScreen() }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun HomeScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -106,7 +127,7 @@ fun MyApp() {
                     },
                     globeCategory = GlobeCategory.GLOBAL,
                     onViewTitleClicked = { /*TODO*/ },
-                    onContentClicked = { /*TODO*/ },
+                    onContentClicked = { navController.navigate("Album") },
                     onCategoryClicked = { /*TODO*/ },
                 )
                 PromotionImageBanner(image = ImageBitmap.imageResource(id = R.drawable.img_home_viewpager_exp),
@@ -139,10 +160,15 @@ fun MyApp() {
                     onClicked = {})
                 Spacer(modifier = Modifier.height(20.dp))
                 Footer()
-                }
             }
         }
     }
+}
+
+@Composable
+fun AlbumScreen() {
+    AlbumFragment()
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
