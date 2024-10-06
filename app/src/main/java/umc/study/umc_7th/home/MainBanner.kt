@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.R
+import umc.study.umc_7th.getTestMusicContentList
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -169,14 +170,7 @@ fun PreviewBanner() {
     MainBanner(
         title = "포근하게 덮어주는 꿈의 목소리",
         date = LocalDate.parse("2019-11-11"),
-        contentList = List(15) {
-            Content(
-                title = "Butter",
-                author = "BTS",
-                imageId = R.drawable.img_album_exp,
-                length = 200,
-            )
-        },
+        contentList = getTestMusicContentList((1..4).random()),
         textColor = Color.White,
         backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
         onVoiceSearchButtonClicked = {},

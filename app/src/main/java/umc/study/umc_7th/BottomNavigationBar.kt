@@ -1,5 +1,7 @@
 package umc.study.umc_7th
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -209,17 +211,13 @@ fun BottomNavigationBar(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewBottomNavigationBar() {
     BottomNavigationBar(
         currentDestination = NavigationDestination.HOME,
-        currentContent = Content(
-            title = "사랑하긴 했었나요 스쳐가는 인연이었나요 짧지않은 우리 함께했던 시간들이 자꾸 내 마음을 가둬두네",
-            author = "잔나비",
-            imageId = R.drawable.img_album_exp,
-            length = 200,
-        ),
+        currentContent = getTestMusicContentList((1..4).random()).random(),
         isPlaying = true,
         onDestinationClicked = {},
         onPlayButtonClicked = {},

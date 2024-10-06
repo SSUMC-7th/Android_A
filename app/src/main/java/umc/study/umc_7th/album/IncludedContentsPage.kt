@@ -1,5 +1,7 @@
 package umc.study.umc_7th.album
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestContentList
+import umc.study.umc_7th.getTestMusicContentList
 
 data class ContentWithTitleLabel(
     val content: Content,
@@ -275,11 +277,12 @@ fun IncludedContentsPage(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewIncludedContentsPage() {
     IncludedContentsPage(
-        contentList = getTestContentList().mapIndexed { index, content ->
+        contentList = getTestMusicContentList((1..4).random()).mapIndexed { index, content ->
             ContentWithTitleLabel(
                 content = content,
                 isTitle = index == 0,

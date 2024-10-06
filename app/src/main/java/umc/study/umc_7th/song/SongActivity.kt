@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import umc.study.umc_7th.Content
-import umc.study.umc_7th.getTestContentList
+import umc.study.umc_7th.getTestMusicContentList
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 
 class SongActivity: ComponentActivity() {
@@ -105,13 +106,14 @@ private fun SongScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewSongScreen() {
     Scaffold { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             SongScreen(
-                content = getTestContentList().random(),
+                content = getTestMusicContentList((1..4).random()).random(),
                 onMinimizeButtonClicked = {}
             )
         }

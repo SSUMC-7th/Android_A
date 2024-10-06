@@ -1,5 +1,7 @@
 package umc.study.umc_7th.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +43,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
+import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestContentList
+import umc.study.umc_7th.VideoContent
+import umc.study.umc_7th.getTestMusicContentList
 
 enum class GlobeCategory(
     val expression: String,
@@ -311,12 +315,13 @@ private fun ContentCollectionView(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewGlobeCategorizedMusicCollectionView() {
     GlobeCategorizedMusicCollectionView(
         title = "오늘 발매 음악",
-        contentList = getTestContentList(),
+        contentList = getTestMusicContentList((1..4).random()),
         globeCategory = GlobeCategory.GLOBAL,
         onViewTitleClicked = {},
         onContentClicked = {},
@@ -330,7 +335,7 @@ fun PreviewPodcastCollectionView() {
     PodcastCollectionView(
         title = "매일 들어도 좋은 팟캐스트",
         contentList = List(15) {
-            Content(
+            PodcastContent(
                 title = "김시선의 귀책사유 FLO X 윌라",
                 author = "김시선",
                 imageId = R.drawable.img_potcast_exp,
@@ -347,7 +352,7 @@ fun PreviewVideoCollectionView() {
     VideoCollectionView(
         title = "비디오 콜렉션",
         contentList = List(15) {
-            Content(
+            VideoContent(
                 title = "제목",
                 author = "지은이",
                 imageId = R.drawable.img_video_exp,

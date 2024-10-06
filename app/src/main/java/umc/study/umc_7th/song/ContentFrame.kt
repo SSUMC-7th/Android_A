@@ -1,5 +1,7 @@
 package umc.study.umc_7th.song
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestContentList
+import umc.study.umc_7th.getTestMusicContentList
 
 @Composable
 fun ContentFrame(
@@ -84,10 +86,11 @@ fun ContentFrame(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewContentFrame() {
-    val content = getTestContentList().random()
+    val content = getTestMusicContentList((1..4).random()).random()
 
     ContentFrame(
         title = content.title,
