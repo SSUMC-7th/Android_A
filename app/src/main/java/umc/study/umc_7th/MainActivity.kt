@@ -10,11 +10,18 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+//import androidx.compose.foundation.pager.HorizontalPager
+
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import androidx.navigation.compose.*
@@ -28,7 +35,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import java.time.LocalDate
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.yield
 
 
 class MainActivity : ComponentActivity() {
@@ -47,7 +62,7 @@ class MainActivity : ComponentActivity() {
                                 content = Content(
                                 title = "butter",
                                 author = "bts",
-                                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                                image = R.drawable.img_album_exp2,
                                 length = 200
                             ),toSongActivity = { content ->
                                 val intent = Intent(this@MainActivity, SongActivity::class.java).apply{
@@ -101,33 +116,47 @@ class MainActivity : ComponentActivity() {
 
 
 @RequiresApi(Build.VERSION_CODES.P)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun homeFragment(navController: NavController){
     Column (
         modifier = Modifier.verticalScroll(rememberScrollState())
     ){
-        MainBanner(
-            title1 = "포근하게 덮어주는 꿈의",
-            title2 = "목소리",
-            date = LocalDate.parse("2019-11-11"),
-            contentList = listOf(
-                Content(
-                    title = "Butter",
-                    author = "BTS",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
-                    length = 200,
-                ),Content(
-                    title = "LILAC",
-                    author = "아이유(IU)",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                    length = 200,
-                )
-                ),
-            backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1) ,
-            textColor =Color.White ,
-            MikeButtonClick = { /*TODO*/ },
-            TicketButtonClick = { /*TODO*/ },
-            SettingButtonClick = { /*TODO*/ }) {}
+        val pagerState = rememberPagerState()
+        LaunchedEffect(pagerState) {
+            while (isActive){
+                yield()
+                delay(3000L)
+                val nextPage = (pagerState.currentPage + 1) % (bannerDataList.size)
+                pagerState.animateScrollToPage(nextPage)
+            }
+        }
+        HorizontalPager(
+            bannerDataList.size,
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth()){
+            page ->
+            val banner = bannerDataList[page]
+            MainBanner(
+                title1 = banner.title1,
+                date = banner.date,
+                contentList = banner.contentList,
+                backgroundImage = ImageBitmap.imageResource(id = banner.backgroundImage),
+                textColor = Color(banner.textColor),
+                MikeButtonClick = { /*TODO*/ },
+                TicketButtonClick = { /*TODO*/ },
+                SettingButtonClick = { /*TODO*/ }) {
+
+            }
+        }
+        HorizontalPagerIndicator(
+            pagerState = pagerState,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(16.dp),
+            activeColor = Color.Blue,
+            inactiveColor = Color.Gray)
+
 
         LocationMusicContentView(
             title = "오늘 발매 음악",
@@ -153,7 +182,7 @@ fun homeFragment(navController: NavController){
                 Content(
                     title = "김시선의 귀책사유 FLO X 윌라",
                     author= "김시선",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
+                    image = R.drawable.img_potcast_exp,
                     length = 200,
                 )
             },
@@ -165,7 +194,7 @@ fun homeFragment(navController: NavController){
                 Content(
                     title = "제목",
                     author = "지은이",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
+                    image = R.drawable.img_video_exp,
                     length = 200,
                 )
             } ,

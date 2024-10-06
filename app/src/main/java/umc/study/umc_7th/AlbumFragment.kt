@@ -20,32 +20,37 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Switch
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabPosition
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineBreak
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+
+import kotlinx.coroutines.launch
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -153,7 +158,9 @@ fun AlbumFragmentNavigationBar(){
         mutableStateOf(SongFragmentSimpleNavigation.trackList)
     }
     Row(
-        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -170,85 +177,174 @@ fun AlbumFragmentNavigationBar(){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun AlbumTabRow(){
+    val pages= listOf("수록곡", "상세정보", "영상")
+    val pagerState= rememberPagerState { pages.size }
+    val coroutineScope = rememberCoroutineScope()
+    TabRow(selectedTabIndex = pagerState.currentPage,
+        containerColor = Color.White,
+        modifier =Modifier.fillMaxWidth(),
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier
+                    .padding(horizontal = tabPositions[pagerState.currentPage].width / 4)
+                    .fillMaxWidth()
+                    .height(4.dp),
+                color = Color.Blue
+            )
+        }
+        ) {
+        pages.forEachIndexed{ index, title ->
+            Tab(
+                selected = pagerState.currentPage==index,
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                },
+                content = {
+                    Text(text = title,
+                        color = if(pagerState.currentPage ==index) Color.Blue
+                    else Color.Gray,
+                    modifier = Modifier.padding(10.dp))
+                }
+            )
+
+        }
+
+    }
+    HorizontalPager(state = pagerState,
+    modifier = Modifier.fillMaxWidth()
+    ) { page ->
+        when (page){
+            0 -> AlbumMusic(
+                album = Album(
+                    albumTitle = "IU 5th Album 'LILAC'",
+                    date = LocalDate.parse("2023-03-27"),
+                    author = "IU(아이유)",
+                    albumImage = ImageBitmap.imageResource(id =R.drawable.img_album_exp2 ) ,
+                    trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+                    titleTrackList = listOf("LILAC", "Flu")
+                ),
+                playButtonClick = { /*TODO*/ },
+                playAllButtonClick = { /*TODO*/ },
+                selectAllButtonClick = { /*TODO*/ }) {}
+            1-> AlbumInfo()
+            2-> AlbumVideo()
+        }
+
+    }
+}
+
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun AlbumFragment2(
+fun AlbumMusic(
     album : Album,
     playButtonClick : () -> Unit,
     playAllButtonClick : () -> Unit,
     selectAllButtonClick : () -> Unit,
     moreInfoButtonClick :() -> Unit
-){
+) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxHeight()
     ) {
-        item{
-            Column (verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(10.dp)){
-                Row (
+        item {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Row(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
-                ){
+                ) {
                     Text(text = "내 취향 MIX", fontSize = 15.sp)
 
                     var checked by remember { mutableStateOf(false) }
-                    Icon(painter = painterResource(id = if (checked == false) R.drawable.btn_toggle_off
-                    else R.drawable.btn_toggle_on), contentDescription = null,
+                    Icon(painter = painterResource(
+                        id = if (checked == false) R.drawable.btn_toggle_off
+                        else R.drawable.btn_toggle_on
+                    ), contentDescription = null,
                         modifier = Modifier
                             .clickable { checked = !checked }
                             .size(20.dp))
                 }
-                Box(modifier = Modifier.fillMaxWidth() ){
+                Box(modifier = Modifier.fillMaxWidth()) {
                     var selected by remember { mutableStateOf(false) }
-                    Row (
+                    Row(
                         modifier = Modifier
                             .clickable { selectAllButtonClick() }
                             .align(Alignment.CenterStart)
 
-                    ){
-                        Icon(painter = painterResource(id = if (selected == false) R.drawable.btn_playlist_select_off
-                        else R.drawable.btn_playlist_select_on),
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (selected == false) R.drawable.btn_playlist_select_off
+                                else R.drawable.btn_playlist_select_on
+                            ),
                             contentDescription = null,
                             modifier = Modifier.size(16.dp)
-                            )
-                        Text(text = "전체 선택", fontSize = 12.sp,color = if(selected==false) Color.Black else Color.Blue)
+                        )
+                        Text(
+                            text = "전체 선택",
+                            fontSize = 12.sp,
+                            color = if (selected == false) Color.Black else Color.Blue
+                        )
                     }
-                    Row (
-                        modifier = Modifier.clickable { playAllButtonClick() }.align(Alignment.CenterEnd)
-                    ){
-                        Icon(painter = painterResource(id = R.drawable.icon_browse_arrow_right),
+                    Row(
+                        modifier = Modifier
+                            .clickable { playAllButtonClick() }
+                            .align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_browse_arrow_right),
                             contentDescription = null,
-                            modifier = Modifier.size(16.dp))
-                        Text(text = "전체 듣기", color =Color.Black,
-                            fontSize = 12.sp)
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "전체 듣기", color = Color.Black,
+                            fontSize = 12.sp
+                        )
                     }
 
 
                 }
             }
 
-            }
+        }
 
-        itemsIndexed(album.trackList){ index, track ->
+        itemsIndexed(album.trackList) { index, track ->
             Row(
-                modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 verticalAlignment = Alignment.Top
-            ){
-                Text(text = "${index +1}" , Modifier.padding(horizontal = 4.dp),
+            ) {
+                Text(
+                    text = "${index + 1}", Modifier.padding(horizontal = 4.dp),
                     fontSize = 12.sp, fontWeight = FontWeight.Bold
                 )
                 Column {
                     Text(text = track)
-                    Text(text = album.author,
+                    Text(
+                        text = album.author,
                         color = Color.Black.copy(0.5f),
-                        fontSize = 12.sp)
+                        fontSize = 12.sp
+                    )
                 }
 
-                Row(modifier = Modifier.padding(4.dp).fillMaxSize(),
+                Row(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxSize(),
                     horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.Top){
+                    verticalAlignment = Alignment.Top
+                ) {
                     Icon(painter = painterResource(id = R.drawable.btn_player_play),
-                        contentDescription =null,
+                        contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
                             .clickable { playButtonClick() })
@@ -266,9 +362,16 @@ fun AlbumFragment2(
 
     }
 }
-@Composable
-fun AlbumFragment(){
 
+
+@Composable
+fun AlbumInfo(){
+    Text(text ="앨범 정보")
+}
+
+@Composable
+fun AlbumVideo(){
+    Text(text = "앨범 영상")
 }
 
 @SuppressLint("NewApi")
@@ -297,21 +400,7 @@ fun albumFragment(
             playerMoreButtonClick = { /*TODO*/ }) {
 
         }
-        AlbumFragmentNavigationBar()
-        AlbumFragment2(
-            album = Album(
-                albumTitle = albumTitle,
-                date = date,
-                author = author,
-                albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                trackList = trackList,
-                titleTrackList = titleTrackList
-            ),
-            playButtonClick = { /*TODO*/ },
-            playAllButtonClick = { /*TODO*/ },
-            selectAllButtonClick = { /*TODO*/ }) {
-
-        }
+        AlbumTabRow()
     }
 
 }

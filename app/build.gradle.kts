@@ -138,4 +138,8 @@ dependencies {
 
     //parcelize
     implementation("androidx.core:core-ktx:1.13.1")
+
+    //viewpager 구현
+    implementation("com.google.accompanist:accompanist-pager:0.30.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.30.0")
 }

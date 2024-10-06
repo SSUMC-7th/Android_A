@@ -138,13 +138,14 @@ fun PodcastCollectionView(
     contentList: List<Content>,
     contentClick: (Content) -> Unit,
 ){
-    horizontalScrollContentView(contentList = contentList ,
+    horizontalScrollContentView(
+        contentList = contentList,
         titleBar = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 16.dp)
-            ){
+            ) {
                 Text(
                     text = title,
                     style = TextStyle(
@@ -156,9 +157,10 @@ fun PodcastCollectionView(
         },
         thumbnail = { content ->
             content.image?.let {
-                Image(bitmap = it,
+                Image(
+                    bitmap = ImageBitmap.imageResource(id = content.image),
                     contentScale = ContentScale.Crop,
-                    contentDescription =null,
+                    contentDescription = null,
                     modifier = Modifier
                         .size(128.dp)
                         .clip(RoundedCornerShape(8.dp))
@@ -166,7 +168,7 @@ fun PodcastCollectionView(
             }
         },
         contentClick = contentClick,
-        )
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -195,7 +197,7 @@ fun VideoCollectionView(
         thumbnail = { content ->
             Box(contentAlignment = Alignment.BottomEnd){
                 content.image?.let {
-                    Image(bitmap = it,
+                    Image(bitmap = ImageBitmap.imageResource(id =content.image),
                         contentDescription = null,
                         contentScale = ContentScale.FillHeight,
                         modifier = Modifier
@@ -376,7 +378,7 @@ fun PreviewPodcastCollectionView(){
             Content(
                 title = "김시선의 귀책사유 FLO X 윌라",
                 author= "김시선",
-                image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
+                image = R.drawable.img_potcast_exp,
                 length = 200,
             )
         },
@@ -393,7 +395,7 @@ fun PreviewVideoCollectionView(){
             Content(
                 title = "제목",
                 author = "지은이",
-                image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
+                image = R.drawable.img_video_exp,
                 length = 200,
             )
         } ,

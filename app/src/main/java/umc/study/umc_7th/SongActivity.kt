@@ -74,7 +74,7 @@ class SongActivity : ComponentActivity() {
                             viewModel= viewModel,
                             content =Content(
                                 songTitle.toString(), singer.toString(),
-                                ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                                R.drawable.img_album_exp2,
                                 200
                             ) ,
                             playerSettingButtonClick = { /*TODO*/ },
@@ -182,7 +182,7 @@ fun SongPlayerScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         content.image?.let {
-            Image(bitmap = it,
+            Image(bitmap = ImageBitmap.imageResource(id = it),
                 contentDescription =null,
                 modifier = Modifier
                     .size(250.dp)
@@ -314,7 +314,7 @@ fun PreviewSongPlayerScreen(){
         viewModel = viewModel(),
         content = Content(
             "LILAC", "IU",
-            ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+            R.drawable.img_album_exp2,
             200
         ),
         playerSettingButtonClick = { /*TODO*/ },

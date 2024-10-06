@@ -108,7 +108,7 @@ fun PreviewMiniPlayer(){
         content = Content(
             title = "LILAC",
             author = "IU",
-            image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+            image = R.drawable.img_album_exp2,
             length = 200
         ),
         beforeSongPlayButtonClick = { /*TODO*/ },
