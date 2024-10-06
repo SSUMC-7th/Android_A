@@ -1,5 +1,6 @@
 package umc.study.umc_7th.song
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,7 +26,10 @@ class SongActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val content = intent.getSerializableExtra("content") as Content?
+        val content = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getSerializableExtra("content", Content::class.java)
+        else
+            intent.getSerializableExtra("content") as? Content
 
         setContent {
             Umc_7thTheme {
