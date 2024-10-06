@@ -29,6 +29,7 @@ import umc.study.umc_7th.getTestContentList
 import java.time.LocalDate
 
 class AlbumFragment : Fragment() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,6 +50,7 @@ class AlbumFragment : Fragment() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun AlbumScreen(
     onBackButtonClicked: () -> Unit,
