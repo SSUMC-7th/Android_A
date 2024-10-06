@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,6 +11,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import umc.study.umc_7th.R
 
 @Composable
 fun PromotionImageBanner(

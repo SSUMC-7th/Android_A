@@ -1,9 +1,8 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,9 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -35,17 +34,21 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.R
+import umc.study.umc_7th.getTestMusicContentList
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainBanner(
+fun <T: Content> MainBanner(
     title: String,
     date: LocalDate,
-    contentList: List<Content>,
+    contentList: List<T>,
     textColor: Color,
     backgroundImage: ImageBitmap,
+    onContentClicked: (T) -> Unit,
     onVoiceSearchButtonClicked: () -> Unit,
     onSubscriptionButtonClicked: () -> Unit,
     onSettingButtonClicked: () -> Unit,
@@ -134,7 +137,7 @@ fun MainBanner(
                             contentColor = textColor,
                             disabledContentColor = textColor,
                         ),
-                        onClick = { /* TODO: 기능 구현 */ },
+                        onClick = { onContentClicked(content) },
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
@@ -144,9 +147,11 @@ fun MainBanner(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Image(
-                                bitmap = content.image,
+                                bitmap = content.imageBitmap,
                                 contentDescription = null,
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(2.dp))
                             )
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -169,16 +174,10 @@ fun PreviewBanner() {
     MainBanner(
         title = "포근하게 덮어주는 꿈의 목소리",
         date = LocalDate.parse("2019-11-11"),
-        contentList = List(15) {
-            Content(
-                title = "Butter",
-                author = "BTS",
-                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
-                length = 200,
-            )
-        },
+        contentList = getTestMusicContentList((1..4).random()),
         textColor = Color.White,
         backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
+        onContentClicked = {},
         onVoiceSearchButtonClicked = {},
         onSubscriptionButtonClicked = {},
         onSettingButtonClicked = {},

@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.home
 
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +21,15 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import umc.study.umc_7th.BottomNavigationBar
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.MusicContent
+import umc.study.umc_7th.NavigationDestination
+import umc.study.umc_7th.PodcastContent
+import umc.study.umc_7th.R
+import umc.study.umc_7th.VideoContent
+import umc.study.umc_7th.album.AlbumFragment
+import umc.study.umc_7th.getTestMusicContentList
 import java.time.LocalDate
 
 class HomeFragment : Fragment() {
@@ -32,7 +41,18 @@ class HomeFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false).apply {
             findViewById<ComposeView>(R.id.composeView_home).setContent {
-                HomeScreen()
+                HomeScreen(
+                    onMusicContentClicked = { content ->
+                        val albumFragment = AlbumFragment()
+                        val bundle = Bundle()
+                        bundle.putSerializable("album", content.album)
+                        albumFragment.arguments = bundle
+                        activity?.supportFragmentManager?.beginTransaction()
+                            ?.replace(R.id.fragmentContainerView_main, albumFragment)
+                            ?.addToBackStack(null)
+                            ?.commit()
+                    }
+                )
             }
         }
     }
@@ -40,22 +60,18 @@ class HomeFragment : Fragment() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun HomeScreen() {
+private fun HomeScreen(
+    onMusicContentClicked: (MusicContent) -> Unit,
+) {
     // 이 스크린은 목업용 화면입니다.
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         MainBanner(
             title = "포근하게 덮어주는 꿈의 목소리",
             date = LocalDate.parse("2019-11-11"),
-            contentList = List(15) {
-                Content(
-                    title = "Butter",
-                    author = "BTS",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
-                    length = 200,
-                )
-            },
+            contentList = getTestMusicContentList((1..4).random()),
             textColor = Color.White,
             backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
+            onContentClicked = onMusicContentClicked,
             onVoiceSearchButtonClicked = {},
             onSubscriptionButtonClicked = {},
             onSettingButtonClicked = {},
@@ -63,17 +79,10 @@ private fun HomeScreen() {
         )
         GlobeCategorizedMusicCollectionView(
             title = "오늘 발매 음악",
-            contentList = List(15) {
-                Content(
-                    title = "LILAC",
-                    author = "IU",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                    length = 200,
-                )
-            },
+            contentList = getTestMusicContentList((1..4).random()),
             globeCategory = GlobeCategory.GLOBAL,
             onViewTitleClicked = {},
-            onContentClicked = {},
+            onContentClicked = onMusicContentClicked,
             onCategoryClicked = {},
         )
         PromotionImageBanner(
@@ -83,26 +92,26 @@ private fun HomeScreen() {
         PodcastCollectionView(
             title = "매일 들어도 좋은 팟캐스트",
             contentList = List(15) {
-                Content(
+                PodcastContent(
                     title = "김시선의 귀책사유 FLO X 윌라",
                     author = "김시선",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
+                    imageId = R.drawable.img_potcast_exp,
                     length = 200,
                 )
             },
-            onContentClicked = {},
+            onContentClicked = { /* TODO */ },
         )
         VideoCollectionView(
             title = "비디오 콜렉션",
             contentList = List(15) {
-                Content(
+                VideoContent(
                     title = "제목",
                     author = "지은이",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
+                    imageId = R.drawable.img_video_exp,
                     length = 200,
                 )
             },
-            onContentClicked = {},
+            onContentClicked = { /* TODO */ },
         )
         PromotionImageBanner(
             image = ImageBitmap.imageResource(id = R.drawable.discovery_banner_aos),
@@ -131,18 +140,15 @@ fun PreviewHomeScreen() {
                 onPlayButtonClicked = {},
                 onContentClicked = {},
                 currentDestination = NavigationDestination.HOME,
-                currentContent = Content(
-                    title = "Butter",
-                    author = "BTS",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
-                    length = 200,
-                ),
+                currentContent = getTestMusicContentList((1..4).random()).random(),
                 isPlaying = false,
             )
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            HomeScreen()
+            HomeScreen(
+                onMusicContentClicked = {}
+            )
         }
     }
 }

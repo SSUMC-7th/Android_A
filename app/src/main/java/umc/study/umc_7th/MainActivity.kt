@@ -1,12 +1,16 @@
 package umc.study.umc_7th
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.imageResource
 import androidx.fragment.app.FragmentActivity
+import umc.study.umc_7th.home.HomeFragment
+import umc.study.umc_7th.song.SongActivity
 
 class MainActivity : FragmentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,15 +25,14 @@ class MainActivity : FragmentActivity() {
         composeViewMain.setContent {
             BottomNavigationBar(
                 currentDestination = NavigationDestination.HOME,
-                currentContent = Content(
-                    title = "Butter",
-                    author = "BTS",
-                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
-                    length = 200,
-                ),
+                currentContent = getTestMusicContentList((1..4).random()).random(),
                 isPlaying = false,
                 onDestinationClicked = { /*TODO*/ },
-                onContentClicked = { /*TODO*/ },
+                onContentClicked = { content ->
+                    val intent = Intent(this, SongActivity::class.java)
+                    intent.putExtra("content", content)
+                    startActivity(intent)
+                },
                 onPlayButtonClicked = { /*TODO*/ },
                 onNextButtonClicked = { /*TODO*/ },
                 onPreviousButtonClicked = { /*TODO*/ }) {
