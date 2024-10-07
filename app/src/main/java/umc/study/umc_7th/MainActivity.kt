@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentActivity
 import umc.study.umc_7th.home.HomeFragment
+import umc.study.umc_7th.locker.LockerFragment
 import umc.study.umc_7th.song.SongActivity
 
 class MainActivity : FragmentActivity() {
@@ -27,7 +28,19 @@ class MainActivity : FragmentActivity() {
                 currentDestination = NavigationDestination.HOME,
                 currentContent = getTestMusicContentList((1..4).random()).random(),
                 isPlaying = false,
-                onDestinationClicked = { /*TODO*/ },
+                onDestinationClicked = {
+                    when (it) {
+                        NavigationDestination.HOME -> supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainerView_main, HomeFragment())
+                            .commit()
+
+                        NavigationDestination.MY -> supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainerView_main, LockerFragment())
+                            .commit()
+
+                        else -> Unit
+                    }
+                },
                 onContentClicked = { content ->
                     val intent = Intent(this, SongActivity::class.java)
                     intent.putExtra("content", content)
