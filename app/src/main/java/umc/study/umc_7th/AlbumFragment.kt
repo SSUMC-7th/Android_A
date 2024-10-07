@@ -53,7 +53,6 @@ fun AlbumFragment() {
         bottomBar = {
             Column {
                 MiniPlayer(songTitle, songAuthor)
-                BottomNavigationBar(onDestinationClicked = { /*TODO*/ },)
             }
         }
     ) { innerPadding ->

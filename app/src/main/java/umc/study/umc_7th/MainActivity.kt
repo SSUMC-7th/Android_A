@@ -18,6 +18,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -71,14 +75,30 @@ class MainActivity : ComponentActivity() {
 fun MyApp() {
     // 네비게이션 컨트롤러 생성
     val navController = rememberNavController()
+    var currentDestination by remember { mutableStateOf(NavigationDestination.HOME) }
 
-    // NavHost로 네비게이션 경로 설정
-    NavHost(navController = navController, startDestination = "home") {
-        // 홈 화면
-        composable("home") { HomeScreen(navController) }
-
-        // 세부 화면
-        composable("Album") { AlbumScreen() }
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(
+                currentDestination = currentDestination,
+                onDestinationClicked = { destination ->
+                    currentDestination = destination
+                    navController.navigate(destination.expression)
+                }
+            )
+        }
+    ) { innerPadding ->
+        NavHost(
+            navController,
+            startDestination = NavigationDestination.HOME.expression,
+            Modifier.padding(innerPadding)
+        ) {
+            composable(NavigationDestination.HOME.expression) { HomeScreen(navController) }
+            composable(NavigationDestination.LOOK.expression) {  }
+            composable(NavigationDestination.SEARCH.expression) { }
+            composable(NavigationDestination.MY.expression) { LockerScreen() }
+            composable("Album") { AlbumScreen() }
+        }
     }
 }
 
@@ -90,7 +110,6 @@ fun HomeScreen(navController: NavController) {
         bottomBar = {
             Column {
                 MiniPlayer(songTitle, songAuthor)
-                BottomNavigationBar(onDestinationClicked = { /*TODO*/ },)
             }
         }
     ) { innerPadding ->
@@ -99,8 +118,8 @@ fun HomeScreen(navController: NavController) {
         ) {
             items(count = 1) { item ->
                 Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(385.dp)
+                    .fillMaxWidth()
+                    .height(385.dp)
                 ) {
                     MainBanner(
                         title = "포근하게 덮어주는 꿈의 목소리",
@@ -173,6 +192,11 @@ fun HomeScreen(navController: NavController) {
 @Composable
 fun AlbumScreen() {
     AlbumFragment()
+}
+
+@Composable
+fun LockerScreen() {
+    LockerFragment()
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
