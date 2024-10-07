@@ -3,6 +3,7 @@ package umc.study.umc_7th
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,10 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,96 +51,125 @@ fun MainBanner(
     onSettingButtonClicked: () -> Unit,
     onPlayButtonClicked: () -> Unit,
 ) {
-    Box {
-        Image(
-            // background image
-            bitmap = backgroundImage,
-            contentDescription = null,
-            contentScale = ContentScale.Crop, // 화면에 이미지 꽉 채우는 용도
-            modifier = Modifier.matchParentSize(),
-        )
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(16.dp)
-        ) {
-            // 우측 상단의 버튼 바
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                listOf(
-                    onVoiceSearchButtonClicked to R.drawable.btn_main_mike,
-                    onSubscriptionButtonClicked to R.drawable.btn_main_ticket,
-                    onSettingButtonClicked to R.drawable.btn_main_setting,
-                ).forEach { (onClick, icon) ->
-                    Icon(
-                        painter = painterResource(id = icon),
+
+    val pagerState = rememberPagerState(pageCount = { 7 })
+    val scope = rememberCoroutineScope()
+
+    Column {
+        HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
+            Column {
+                Box {
+                    Image(
+                        // background image
+                        bitmap = backgroundImage,
                         contentDescription = null,
-                        tint = textColor,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable { onClick() }
+                        contentScale = ContentScale.Crop, // 화면에 이미지 꽉 채우는 용도
+                        modifier = Modifier.matchParentSize(),
                     )
-                }
-            }
-            // 제목
-            Text(
-                text = title,
-                style = TextStyle(
-                    color = textColor,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    lineBreak = LineBreak.Heading,
-                )
-            )
-            // 전체 재생 버튼
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(
-                    onClick = onPlayButtonClicked,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.btn_panel_play_large),
-                        contentDescription = null,
-                        tint = textColor,
-                    )
-                }
-            }
-            // 리스트 정보 축약
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(text = "총 ${contentList.size}곡", color = textColor)
-                Text(
-                    text = date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd")),
-                    color = textColor
-                )
-            }
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.height(100.dp)
-            ) {
-                items(count = contentList.size) { index ->
-                    val content = contentList[index]
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.clickable { /* 기능 구현 */ }
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.padding(16.dp)
                     ) {
-                        Image(
-                            bitmap = content.image,
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp)
-                        )
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        // 우측 상단의 버튼 바
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = content.title, color = textColor)
-                            Text(text = content.author, color = textColor)
+                            listOf(
+                                onVoiceSearchButtonClicked to R.drawable.btn_main_mike,
+                                onSubscriptionButtonClicked to R.drawable.btn_main_ticket,
+                                onSettingButtonClicked to R.drawable.btn_main_setting,
+                            ).forEach { (onClick, icon) ->
+                                Icon(
+                                    painter = painterResource(id = icon),
+                                    contentDescription = null,
+                                    tint = textColor,
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clickable { onClick() }
+                                )
+                            }
+                        }
+                        // 제목
+                        Text(
+                            text = title,
+                            style = TextStyle(
+                                color = textColor,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                lineBreak = LineBreak.Heading,
+                            )
+                        )
+                        // 전체 재생 버튼
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            IconButton(
+                                onClick = onPlayButtonClicked,
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.btn_panel_play_large),
+                                    contentDescription = null,
+                                    tint = textColor,
+                                )
+                            }
+                        }
+                        // 리스트 정보 축약
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(text = "총 ${contentList.size}곡", color = textColor)
+                            Text(
+                                text = date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd")),
+                                color = textColor
+                            )
+                        }
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.height(100.dp)
+                        ) {
+                            items(count = contentList.size) { index ->
+                                val content = contentList[index]
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    modifier = Modifier.clickable { /* 기능 구현 */ }
+                                ) {
+                                    Image(
+                                        bitmap = content.image,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    ) {
+                                        Text(text = content.title, color = textColor)
+                                        Text(text = content.author, color = textColor)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row {
+                        repeat(7) { pageIndex ->
+                            val color =
+                                if (pagerState.currentPage == pageIndex) Color.Blue else Color.Gray
+                            Box(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .padding(4.dp)
+                                    .background(color = color, shape = RoundedCornerShape(50))
+                            )
                         }
                     }
                 }

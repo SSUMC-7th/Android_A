@@ -8,9 +8,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -96,23 +98,28 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             items(count = 1) { item ->
-                MainBanner(
-                    title = "포근하게 덮어주는 꿈의 목소리",
-                    date = LocalDate.parse("2019-11-11"),
-                    contentList = List(15) {
-                        Content(
-                            title = "Butter",
-                            author = "BTS",
-                            image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
-                            length = 200,
-                        )
-                    },
-                    textColor = Color.White,
-                    backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
-                    onVoiceSearchButtonClicked = { /*TODO*/ },
-                    onSubscriptionButtonClicked = { /*TODO*/ },
-                    onSettingButtonClicked = { /*TODO*/ },
-                    onPlayButtonClicked = { /*TODO*/ })
+                Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(385.dp)
+                ) {
+                    MainBanner(
+                        title = "포근하게 덮어주는 꿈의 목소리",
+                        date = LocalDate.parse("2019-11-11"),
+                        contentList = List(15) {
+                            Content(
+                                title = "Butter",
+                                author = "BTS",
+                                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
+                                length = 200,
+                            )
+                        },
+                        textColor = Color.White,
+                        backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
+                        onVoiceSearchButtonClicked = { /*TODO*/ },
+                        onSubscriptionButtonClicked = { /*TODO*/ },
+                        onSettingButtonClicked = { /*TODO*/ }) {
+                    }
+                }
                 GlobeCategorizedMusicCollectionView(
                     title = "오늘 발매 음악",
                     contentList = List(15) {
