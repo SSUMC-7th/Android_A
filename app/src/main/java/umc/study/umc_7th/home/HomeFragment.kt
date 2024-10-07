@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.imageResource
@@ -22,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import umc.study.umc_7th.BottomNavigationBar
-import umc.study.umc_7th.Content
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.NavigationDestination
 import umc.study.umc_7th.PodcastContent
@@ -66,16 +64,26 @@ private fun HomeScreen(
     // 이 스크린은 목업용 화면입니다.
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         MainBanner(
-            title = "포근하게 덮어주는 꿈의 목소리",
             date = LocalDate.parse("2019-11-11"),
-            contentList = getTestMusicContentList((1..4).random()),
-            textColor = Color.White,
-            backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
-            onContentClicked = onMusicContentClicked,
+            propsList = listOf(
+                MainBannerProps(
+                    title = "포근하게 덮어주는 꿈의 목소리",
+                    contentList = getTestMusicContentList((1..4).random()),
+                    backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
+                    onContentClicked = onMusicContentClicked,
+                    onPlayButtonClicked = {},
+                ),
+                MainBannerProps(
+                    title = "달밤의 감성 산책",
+                    contentList = getTestMusicContentList((1..4).random()),
+                    backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_jenre_exp_1),
+                    onContentClicked = {},
+                    onPlayButtonClicked = {},
+                )
+            ),
             onVoiceSearchButtonClicked = {},
             onSubscriptionButtonClicked = {},
             onSettingButtonClicked = {},
-            onPlayButtonClicked = {},
         )
         GlobeCategorizedMusicCollectionView(
             title = "오늘 발매 음악",
