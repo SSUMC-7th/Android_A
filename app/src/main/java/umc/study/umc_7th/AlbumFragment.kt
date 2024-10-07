@@ -6,22 +6,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+
+import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,12 +23,12 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+
+
+import androidx.compose.runtime.*
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,15 +41,73 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
+//import com.google.accompanist.pager.*
 
 import kotlinx.coroutines.launch
+
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
+@RequiresApi(Build.VERSION_CODES.P)
+@Composable
+fun TabLayout() {
+    val tabs = listOf("수록곡", "상세정보", "영상")
+    val pagerState = rememberPagerState{ tabs.size }
+    val coroutineScope = rememberCoroutineScope()
 
+    Column {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                    .padding(horizontal = tabPositions[pagerState.currentPage].width / 4),
+                    color = Color.Blue,
+                    height = 4.dp,
+
+                )
+            }
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    text = { Text(text = title, fontSize = 16.sp,
+                        color = if(pagerState.currentPage ==index) Color.Blue
+                    else Color.Black)
+                        },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
+            when (page) {
+                0 -> AlbumMusic(
+                    album = Album(
+                    albumTitle = "IU 5th Album 'LILAC'",
+                    date = LocalDate.parse("2023-03-27"),
+                    author = "IU(아이유)",
+                    albumImage = ImageBitmap.imageResource(id =R.drawable.img_album_exp2 ) ,
+                    trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+                    titleTrackList = listOf("LILAC", "Flu")
+                ),
+                    playButtonClick = { /*TODO*/ },
+                    playAllButtonClick = { /*TODO*/ },
+                    selectAllButtonClick = { /*TODO*/ }){}
+                1 -> Text("상세정보 내용", modifier = Modifier.padding(16.dp))
+                2 -> Text("영상 내용", modifier = Modifier.padding(16.dp))
+            }
+        }
+    }
+}
 
 @SuppressLint("NewApi")
 @Composable
@@ -176,68 +228,69 @@ fun AlbumFragmentNavigationBar(){
         }
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.P)
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-fun AlbumTabRow(){
-    val pages= listOf("수록곡", "상세정보", "영상")
-    val pagerState= rememberPagerState { pages.size }
-    val coroutineScope = rememberCoroutineScope()
-    TabRow(selectedTabIndex = pagerState.currentPage,
-        containerColor = Color.White,
-        modifier =Modifier.fillMaxWidth(),
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                modifier = Modifier
-                    .padding(horizontal = tabPositions[pagerState.currentPage].width / 4)
-                    .fillMaxWidth()
-                    .height(4.dp),
-                color = Color.Blue
-            )
-        }
-        ) {
-        pages.forEachIndexed{ index, title ->
-            Tab(
-                selected = pagerState.currentPage==index,
-                onClick = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                },
-                content = {
-                    Text(text = title,
-                        color = if(pagerState.currentPage ==index) Color.Blue
-                    else Color.Gray,
-                    modifier = Modifier.padding(10.dp))
-                }
-            )
-
-        }
-
-    }
-    HorizontalPager(state = pagerState,
-    modifier = Modifier.fillMaxWidth()
-    ) { page ->
-        when (page){
-            0 -> AlbumMusic(
-                album = Album(
-                    albumTitle = "IU 5th Album 'LILAC'",
-                    date = LocalDate.parse("2023-03-27"),
-                    author = "IU(아이유)",
-                    albumImage = ImageBitmap.imageResource(id =R.drawable.img_album_exp2 ) ,
-                    trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
-                    titleTrackList = listOf("LILAC", "Flu")
-                ),
-                playButtonClick = { /*TODO*/ },
-                playAllButtonClick = { /*TODO*/ },
-                selectAllButtonClick = { /*TODO*/ }) {}
-            1-> AlbumInfo()
-            2-> AlbumVideo()
-        }
-
-    }
-}
+//
+//@RequiresApi(Build.VERSION_CODES.P)
+//@OptIn(ExperimentalPagerApi::class)
+//@Composable
+//fun AlbumTabRow(){
+//    val pages= listOf("수록곡", "상세정보", "영상")
+//    val pagerState= rememberPagerState { pages.size }
+//    val coroutineScope = rememberCoroutineScope()
+//    TabRow(selectedTabIndex = pagerState.currentPage,
+//        containerColor = Color.Blue,
+//        contentColor = Color.White,
+//        modifier =Modifier.fillMaxWidth(),
+//        indicator = { tabPositions ->
+//            TabRowDefaults.Indicator(
+//                modifier = Modifier
+//                    .padding(horizontal = tabPositions[pagerState.currentPage].width / 4)
+//                    .fillMaxWidth()
+//                    .height(4.dp),
+//                color = Color.White
+//            )
+//        }
+//        ) {
+//        pages.forEachIndexed{ index, title ->
+//            Tab(
+//                selected = pagerState.currentPage==index,
+//                onClick = {
+//                    coroutineScope.launch {
+//                        pagerState.animateScrollToPage(index)
+//                    }
+//                },
+//                content = {
+//                    Text(text = title,
+//                        color = if(pagerState.currentPage ==index) Color.White
+//                    else Color.Gray,
+//                    modifier = Modifier.padding(10.dp))
+//                }
+//            )
+//
+//        }
+//
+//    }
+//    HorizontalPager(state = pagerState,
+//    modifier = Modifier.fillMaxWidth()
+//    ) { page ->
+//        when (page){
+//            0 -> AlbumMusic(
+//                album = Album(
+//                    albumTitle = "IU 5th Album 'LILAC'",
+//                    date = LocalDate.parse("2023-03-27"),
+//                    author = "IU(아이유)",
+//                    albumImage = ImageBitmap.imageResource(id =R.drawable.img_album_exp2 ) ,
+//                    trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+//                    titleTrackList = listOf("LILAC", "Flu")
+//                ),
+//                playButtonClick = { /*TODO*/ },
+//                playAllButtonClick = { /*TODO*/ },
+//                selectAllButtonClick = { /*TODO*/ }) {}
+//            1-> AlbumInfo()
+//            2-> AlbumVideo()
+//        }
+//
+//    }
+//}
 
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -374,6 +427,7 @@ fun AlbumVideo(){
     Text(text = "앨범 영상")
 }
 
+
 @SuppressLint("NewApi")
 @Composable
 fun albumFragment(
@@ -400,7 +454,7 @@ fun albumFragment(
             playerMoreButtonClick = { /*TODO*/ }) {
 
         }
-        AlbumTabRow()
+        TabLayout()
     }
 
 }

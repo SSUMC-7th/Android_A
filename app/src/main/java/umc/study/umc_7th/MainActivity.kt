@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 //import androidx.compose.foundation.pager.HorizontalPager
 
@@ -45,6 +45,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
 
+import androidx.compose.foundation.layout.navigationBarsPadding
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
@@ -54,9 +56,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Umc_7thTheme {
+                val navController = rememberNavController()
                 Scaffold(
+                    modifier = Modifier.navigationBarsPadding(),
                     bottomBar = {
-                        Column (modifier = Modifier.padding(0.dp)){
+                        Column (modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(0.dp)
+                        ){
                             MainMiniplayer(
                                 viewModel = viewModel,
                                 content = Content(
@@ -72,7 +78,8 @@ class MainActivity : ComponentActivity() {
                                 startActivity(intent)
                             } )
                             BottomNavigationBar(
-                                onClick = {},
+                                navController ,
+                                onClick = {destination -> navController.navigate(destination.route)},
                             )
                         }
 
@@ -81,30 +88,33 @@ class MainActivity : ComponentActivity() {
                     Box(modifier  = Modifier
                         .padding(innerPadding)
                         ) {
+                        NavHost(navController = navController, startDestination = "homeFragment") {
 
-                    }
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "homeFragment") {
-
-                        composable("homeFragment") { homeFragment(navController) }
-                        composable(
-                            "albumFragment/{albumTitle}/{author}/{date}/{trackList}/{titleTrackList}",
-                            arguments = listOf(
-                                navArgument("albumTitle") { type = NavType.StringType },
-                                navArgument("author") { type = NavType.StringType },
-                                navArgument("date") { type = NavType.StringType },
-                                navArgument("trackList") { type = NavType.StringType },
-                                navArgument("titleTrackList") { type = NavType.StringType }
-                            )
-                        ) { backStackEntry ->
-                            val albumTitle = backStackEntry.arguments?.getString("albumTitle") ?: ""
-                            val author = backStackEntry.arguments?.getString("author") ?: ""
-                            val date = backStackEntry.arguments?.getString("date") ?: ""
-                            val trackList = backStackEntry.arguments?.getString("trackList")?.split(",") ?: listOf()
-                            val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
-                            albumFragment(navController, albumTitle, author, LocalDate.parse(date), trackList, titleTrackList)
+                            composable("homeFragment") { homeFragment(navController) }
+                            composable(
+                                "albumFragment/{albumTitle}/{author}/{date}/{trackList}/{titleTrackList}",
+                                arguments = listOf(
+                                    navArgument("albumTitle") { type = NavType.StringType },
+                                    navArgument("author") { type = NavType.StringType },
+                                    navArgument("date") { type = NavType.StringType },
+                                    navArgument("trackList") { type = NavType.StringType },
+                                    navArgument("titleTrackList") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val albumTitle = backStackEntry.arguments?.getString("albumTitle") ?: ""
+                                val author = backStackEntry.arguments?.getString("author") ?: ""
+                                val date = backStackEntry.arguments?.getString("date") ?: ""
+                                val trackList = backStackEntry.arguments?.getString("trackList")?.split(",") ?: listOf()
+                                val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
+                                albumFragment(navController, albumTitle, author, LocalDate.parse(date), trackList, titleTrackList)
+                            }
+                            composable("lockerFragment") { LockerFragment(navController) }
+                            composable("searchFragment") { searchFragment(navController) }
+                            composable("aroundFragment") { aroundFragment(navController) }
                         }
                     }
+
+
 
                 }
 

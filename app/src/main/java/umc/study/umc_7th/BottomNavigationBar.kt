@@ -36,28 +36,34 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
+import androidx.navigation.NavController
 
 enum class DestinationClass(
+    val route : String,
     val mean : String,
     val currentDestinationIcon : Int,
     val notCurrentDestinationIcon : Int,
 ){
     Home(
-        "홈", R.drawable.ic_bottom_home_select, R.drawable.ic_bottom_home_no_select
+        "homeFragment","홈", R.drawable.ic_bottom_home_select, R.drawable.ic_bottom_home_no_select
     ),
     Around(
-        "둘러보기", R.drawable.ic_bottom_look_select, R.drawable.ic_bottom_look_no_select
+        "aroundFragment","둘러보기", R.drawable.ic_bottom_look_select, R.drawable.ic_bottom_look_no_select
     ),
     Search (
-        "검색", R.drawable.ic_bottom_search_select, R.drawable.ic_bottom_search_no_select
+        "searchFragment","검색", R.drawable.ic_bottom_search_select, R.drawable.ic_bottom_search_no_select
     ),
     Storage(
-        "보관함", R.drawable.ic_bottom_my_select, R.drawable.ic_bottom_my_no_select
-    )
+        "lockerFragment","보관함", R.drawable.ic_bottom_my_select, R.drawable.ic_bottom_my_no_select
+    );
+    companion object{
+        val entries = values().toList()
+    }
 }
 
 @Composable
 fun BottomNavigationBar(
+    navController: NavController,
     onClick : (DestinationClass) -> Unit,
 ){
     var currentDestination by remember {
@@ -79,7 +85,10 @@ fun BottomNavigationBar(
                     else
                         ImageBitmap.imageResource(id = destination.notCurrentDestinationIcon),
                     contentDescription =null,
-                    modifier = Modifier.size(24.dp).clickable {onClick(destination) })
+                    modifier = Modifier.size(24.dp).clickable {
+                        currentDestination = destination
+                        onClick(destination)
+                        navController.navigate(destination.route)})
 
                 Text(text = destination.mean,
                     color = if(destination ==currentDestination)
@@ -91,11 +100,11 @@ fun BottomNavigationBar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreiviewBottomNavigationBar(){
-    BottomNavigationBar(
-        onClick = {  }
-    )
-}
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreiviewBottomNavigationBar(){
+//    BottomNavigationBar(
+//        onClick = {  }
+//    )
+//}
