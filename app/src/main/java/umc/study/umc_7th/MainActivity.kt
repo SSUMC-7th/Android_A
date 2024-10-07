@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
     fun Context.showToast(message: String?, duration: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(this@MainActivity, message, duration).show()
     }
-
+    
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,6 +189,7 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlbumScreen() {
     AlbumFragment()
