@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
     fun Context.showToast(message: String?, duration: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(this@MainActivity, message, duration).show()
     }
-
+    
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,10 +163,93 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlbumScreen() {
     AlbumFragment()
 }
+
+fun MyApp() {
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            Column {
+                MiniPlayer()
+                BottomNavigationBar(onDestinationClicked = { /*TODO*/ },)
+            }
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            items(count = 1) { item ->
+                MainBanner(
+                    title = "포근하게 덮어주는 꿈의 목소리",
+                    date = LocalDate.parse("2019-11-11"),
+                    contentList = List(15) {
+                        Content(
+                            title = "Butter",
+                            author = "BTS",
+                            image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
+                            length = 200,
+                        )
+                    },
+                    textColor = Color.White,
+                    backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
+                    onVoiceSearchButtonClicked = { /*TODO*/ },
+                    onSubscriptionButtonClicked = { /*TODO*/ },
+                    onSettingButtonClicked = { /*TODO*/ },
+                    onPlayButtonClicked = { /*TODO*/ })
+                GlobeCategorizedMusicCollectionView(
+                    title = "오늘 발매 음악",
+                    contentList = List(15) {
+                        Content(
+                            title = "LILAC",
+                            author = "IU",
+                            image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                            length = 200,
+                        )
+                    },
+                    globeCategory = GlobeCategory.GLOBAL,
+                    onViewTitleClicked = { /*TODO*/ },
+                    onContentClicked = { /*TODO*/ },
+                    onCategoryClicked = { /*TODO*/ },
+                )
+                PromotionImageBanner(image = ImageBitmap.imageResource(id = R.drawable.img_home_viewpager_exp),
+                    onClicked = {}
+                )
+                PodcastCollectionView(title = "매일 들어도 좋은 팟캐스트",
+                    contentList = List(15) {
+                        Content(
+                            title = "김시선의 귀책사유 FLO X 윌라",
+                            author = "김시선",
+                            image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
+                            length = 200,
+                        )
+                    },
+                    onContentClicked = {})
+                VideoCollectionView(title = "비디오 콜렉션",
+                    contentList = List(15) {
+                        Content(
+                            title = "제목",
+                            author = "지은이",
+                            image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
+                            length = 200,
+                        )
+                    },
+                    onContentClicked = {})
+                PromotionImageBanner(image = ImageBitmap.imageResource(id = R.drawable.discovery_banner_aos),
+                    onClicked = {})
+                Spacer(modifier = Modifier.height(30.dp))
+                PromotionImageBanner(image = ImageBitmap.imageResource(id = R.drawable.img_home_viewpager_exp2),
+                    onClicked = {})
+                Spacer(modifier = Modifier.height(20.dp))
+                Footer()
+                }
+            }
+        }
+    }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
