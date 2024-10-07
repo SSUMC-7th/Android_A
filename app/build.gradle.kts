@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation (libs.google.accompanist.pager)
     implementation (libs.accompanist.pager.indicators)
+    implementation (libs.circleindicator)
 
 
     // Hilt Dependency Injection

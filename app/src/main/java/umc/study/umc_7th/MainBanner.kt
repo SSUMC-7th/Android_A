@@ -16,14 +16,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -54,9 +56,24 @@ fun MainBanner(
 
     val pagerState = rememberPagerState(pageCount = { 7 })
     val scope = rememberCoroutineScope()
+    val autoSlideInterval = 3000L
+    val pageCount = 7
+
+    LaunchedEffect(pagerState) {
+        while (true) {
+            // Delay for the specified interval
+            kotlinx.coroutines.delay(autoSlideInterval)
+
+            // Navigate to the next page
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % pageCount)
+        }
+    }
 
     Column {
-        HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.weight(1f)
+        ) { page ->
             Column {
                 Box {
                     Image(
@@ -154,26 +171,37 @@ fun MainBanner(
                         }
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row {
-                        repeat(7) { pageIndex ->
-                            val color =
-                                if (pagerState.currentPage == pageIndex) Color.Blue else Color.Gray
-                            Box(
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .padding(4.dp)
-                                    .background(color = color, shape = RoundedCornerShape(50))
-                            )
-                        }
-                    }
-                }
+                CircleIndicator(
+                    pageCount = pageCount,
+                    selectedIndex = pagerState.currentPage,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
+        }
+    }
+}
+
+@Composable
+fun CircleIndicator(
+    pageCount: Int,
+    selectedIndex: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(pageCount) { index ->
+            Box(
+                modifier = Modifier
+                    .size(20.dp) // Size of the circle
+                    .padding(4.dp) // Padding between circles
+                    .clip(CircleShape) // Make it circular
+                    .background(
+                        color = if (index == selectedIndex) Color.Blue else Color.Gray // Change color based on selection
+                    )
+            )
         }
     }
 }
