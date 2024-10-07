@@ -122,6 +122,7 @@ fun PlayProgressControlPanel(
                 Icon(
                     painter = painterResource(id = R.drawable.nugu_btn_repeat_inactive),
                     contentDescription = null,
+                    tint = if (isRepeating) Color.Blue else Color.Black.copy(alpha = 0.5f)
                 )
             }
             Row(
@@ -166,6 +167,7 @@ fun PlayProgressControlPanel(
                 Icon(
                     painter = painterResource(id = R.drawable.nugu_btn_random_inactive),
                     contentDescription = null,
+                    tint = if (isShuffling) Color.Blue else Color.Black.copy(alpha = 0.5f)
                 )
             }
         }
