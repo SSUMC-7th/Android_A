@@ -14,6 +14,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,6 +63,8 @@ private fun AlbumScreen(
     album: Album,
     onBackButtonClicked: () -> Unit,
 ) {
+    var isMixed by remember { mutableStateOf(false) }
+
     // 이 화면은 목업입니다.
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -90,10 +96,10 @@ private fun AlbumScreen(
                                     label = it.second,
                                 )
                             },
-                            isMixed = false,
+                            isMixed = isMixed,
                             onPlayContentClicked = {},
                             onContentDetailsClicked = {},
-                            onMixButtonClicked = {},
+                            onMixButtonClicked = { isMixed = it },
                             onPlayAllButtonClicked = {},
                         )
                     },

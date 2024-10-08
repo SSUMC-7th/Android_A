@@ -4,9 +4,14 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentActivity
 import umc.study.umc_7th.home.HomeFragment
+import umc.study.umc_7th.locker.LockerFragment
 import umc.study.umc_7th.song.SongActivity
 
 class MainActivity : FragmentActivity() {
@@ -23,11 +28,32 @@ class MainActivity : FragmentActivity() {
 
         val composeViewMain = findViewById<ComposeView>(R.id.composeView_main)
         composeViewMain.setContent {
+            val currentContent = remember { getTestMusicContentList((1..4).random()).random() }
+            var currentDestination by remember { mutableStateOf(NavigationDestination.HOME) }
+
             BottomNavigationBar(
-                currentDestination = NavigationDestination.HOME,
-                currentContent = getTestMusicContentList((1..4).random()).random(),
+                currentDestination = currentDestination,
+                currentContent = currentContent,
                 isPlaying = false,
-                onDestinationClicked = { /*TODO*/ },
+                onDestinationClicked = {
+                    when (it) {
+                        NavigationDestination.HOME -> run {
+                            currentDestination = NavigationDestination.HOME
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragmentContainerView_main, HomeFragment())
+                                .commit()
+                        }
+
+                        NavigationDestination.MY -> run {
+                            currentDestination = NavigationDestination.MY
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragmentContainerView_main, LockerFragment())
+                                .commit()
+                        }
+
+                        else -> Unit
+                    }
+                },
                 onContentClicked = { content ->
                     val intent = Intent(this, SongActivity::class.java)
                     intent.putExtra("content", content)

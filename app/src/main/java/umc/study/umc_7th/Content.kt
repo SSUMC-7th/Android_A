@@ -67,7 +67,6 @@ data class VideoContent(
 ), Serializable
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Composable
 fun getTestMusicContentList(
     @IntRange(from = 1, to = 4) number: Int
 ): List<MusicContent> = when (number) {

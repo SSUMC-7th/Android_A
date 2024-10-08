@@ -15,6 +15,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,6 +60,12 @@ private fun SongScreen(
     content: Content,
     onMinimizeButtonClicked: () -> Unit,
 ) {
+    var isPlaying by remember { mutableStateOf(false) }
+    var isRepeating by remember { mutableStateOf(false) }
+    var isShuffling by remember { mutableStateOf(false) }
+    var isLiked by remember { mutableStateOf(false) }
+    var isBlocked by remember { mutableStateOf(false) }
+
     // 이 스크린은 목업용 화면입니다.
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,18 +94,18 @@ private fun SongScreen(
         PlayProgressControlPanel(
             length = 181,
             playingPoint = 125,
-            isPlaying = true,
-            isRepeating = true,
-            isShuffling = false,
-            isLiked = true,
-            isBlocked = false,
-            onLikeButtonClicked = {},
-            onBlockButtonClicked = {},
-            onRepeatButtonClicked = {},
-            onShuffleButtonClicked = {},
+            isPlaying = isPlaying,
+            isRepeating = isRepeating,
+            isShuffling = isShuffling,
+            isLiked = isLiked,
+            isBlocked = isBlocked,
+            onLikeButtonClicked = { isLiked = it },
+            onBlockButtonClicked = { isBlocked = it },
+            onRepeatButtonClicked = { isRepeating = it },
+            onShuffleButtonClicked = { isShuffling = it },
             onPreviousButtonClicked = {},
             onNextButtonClicked = {},
-            onPlayButtonClicked = {},
+            onPlayButtonClicked = { isPlaying = it },
             onPlayingPointChanged = {},
         )
         FooterActionBar(
