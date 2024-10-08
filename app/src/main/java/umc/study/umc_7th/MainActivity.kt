@@ -22,8 +22,8 @@ class MainActivity : FragmentActivity() {
             BottomNavigationBar(
                 currentDestination = NavigationDestination.HOME,
                 currentContent = Content(
-                    title = "Butter",
-                    author = "BTS",
+                    title = "Peanut butter Sandwich",
+                    author = "jusokuryClub",
                     image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
                     length = 200,
                 ),
