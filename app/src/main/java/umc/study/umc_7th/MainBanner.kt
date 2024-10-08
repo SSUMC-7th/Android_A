@@ -41,7 +41,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MainBanner(
     title1 : String,
-    title2 : String,
     date : LocalDate,
     contentList : List<Content>,
     backgroundImage: ImageBitmap,
@@ -90,15 +89,7 @@ fun MainBanner(
                         lineBreak = LineBreak.Heading,
                     )
                 )
-                Text(
-                    text = title2,
-                    style = TextStyle(
-                        color = textColor,
-                        fontSize = 29.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineBreak = LineBreak.Heading,
-                    )
-                )
+
             }
             Row(
                 modifier = Modifier
@@ -138,7 +129,7 @@ fun MainBanner(
                     ){
                         content.image?.let {
                             Image(
-                                bitmap = it,
+                                bitmap = ImageBitmap.imageResource(id = it),
                                 contentDescription = null,
                                 modifier = Modifier.size(40.dp)
                             )
@@ -164,14 +155,14 @@ fun MainBanner(
 @Composable
 fun PreviewBanner(){
     MainBanner(
-        title1 = "포근하게 덮어주는 꿈의",
-        title2 = "목소리",
+        title1 = "포근하게 덮어주는 꿈의 목소리",
+
         date = LocalDate.parse("2019-11-11"),
         contentList = List(15){
             Content(
                 title = "Butter",
                 author = "BTS",
-                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
+                image = R.drawable.img_album_exp,
                 length = 200,
             )
         },

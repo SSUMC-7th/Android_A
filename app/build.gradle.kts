@@ -5,6 +5,10 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
     id("org.jetbrains.kotlin.kapt")
+
+    //추가
+    id("kotlin-android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -54,6 +58,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -62,6 +67,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -125,4 +132,14 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+    //네비게이션
+    implementation("androidx.navigation:navigation-compose:2.8.1")
+
+    //parcelize
+    implementation("androidx.core:core-ktx:1.13.1")
+
+    //viewpager 구현
+    implementation("com.google.accompanist:accompanist-pager:0.30.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.30.0")
 }
