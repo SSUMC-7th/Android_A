@@ -40,7 +40,7 @@ fun LockerScreen() {
     Column {
         TitleBar(
             title = "보관함",
-            isLoginDone = true,
+            isLoginDone = false,
             onLoginClicked = {}
         )
         TabLayout(
