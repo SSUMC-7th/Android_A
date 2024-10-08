@@ -51,7 +51,8 @@ enum class NavigationDestination(
 
 @Composable
 fun BottomNavigationBar(
-    onDestinationClicked: (NavigationDestination) -> Unit,
+    currentDestination: NavigationDestination,
+    onDestinationClicked: (NavigationDestination) -> Unit
 ) {
     // state of the selected item
     var currentDestination by remember { mutableStateOf(NavigationDestination.HOME) }
@@ -69,7 +70,8 @@ fun BottomNavigationBar(
                     .weight(1f)
                     .clickable {
                         currentDestination = destination
-                        onDestinationClicked(destination) },
+                        onDestinationClicked(destination)
+                    }
                     ) { // Icon, Label
                 Spacer(modifier = Modifier.height(4.dp))
                 Image(
@@ -102,5 +104,8 @@ fun BottomNavigationBar(
 @Preview(showBackground = true)
 @Composable
 fun PreviewBottomNavigationBar() {
-    BottomNavigationBar(onDestinationClicked = {},)
+    BottomNavigationBar(
+        currentDestination = NavigationDestination.HOME,
+        onDestinationClicked = {}
+    )
 }

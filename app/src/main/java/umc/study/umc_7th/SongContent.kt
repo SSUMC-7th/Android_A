@@ -155,7 +155,9 @@ fun Album() {
         }
 
         MusicProgressBar(currentTime = currentTime, totalTime = totalTime)
-
+        
+        var isPlay by remember { mutableStateOf(true) }
+        
         Row() {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
@@ -173,9 +175,9 @@ fun Album() {
                     contentDescription = "previous"
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { isPlay = !isPlay }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.nugu_btn_play_32),
+                    painter = painterResource(id = if (isPlay) R.drawable.nugu_btn_play_32 else R.drawable.btn_miniplay_pause),
                     contentDescription = "play"
                 )
             }

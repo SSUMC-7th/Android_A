@@ -39,8 +39,6 @@ fun MiniPlayer (songTitle: String?, songAuthor: String?, modifier: Modifier = Mo
     } else {
         "가수"
     }
-
-fun MiniPlayer (modifier: Modifier = Modifier) {
     NavigationBar(
         modifier = modifier
             .fillMaxWidth()
@@ -58,8 +56,6 @@ fun MiniPlayer (modifier: Modifier = Modifier) {
                 // 곡 제목
                 Text(
                     text = title,
-                    text = "제목",
-
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(start = 20.dp, top = 3.dp)
@@ -67,7 +63,6 @@ fun MiniPlayer (modifier: Modifier = Modifier) {
                 // 아티스트
                 Text(
                     text = singer,
-                    text = "가수",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     textAlign = TextAlign.Center,

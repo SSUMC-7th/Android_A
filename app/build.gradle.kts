@@ -79,6 +79,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation (libs.google.accompanist.pager)
+    implementation (libs.accompanist.pager.indicators)
+    implementation (libs.circleindicator)
+
 
     // Hilt Dependency Injection
     implementation("com.google.dagger:hilt-android:2.49")
