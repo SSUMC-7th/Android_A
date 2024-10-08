@@ -39,7 +39,6 @@ fun MiniPlayer (songTitle: String?, songAuthor: String?, modifier: Modifier = Mo
     } else {
         "가수"
     }
-    
     NavigationBar(
         modifier = modifier
             .fillMaxWidth()
@@ -95,7 +94,6 @@ fun MiniPlayer (songTitle: String?, songAuthor: String?, modifier: Modifier = Mo
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-               
                 IconButton(onClick = {
                       val intent = Intent(context, SongActivity::class.java)
                       context.startActivity(intent)

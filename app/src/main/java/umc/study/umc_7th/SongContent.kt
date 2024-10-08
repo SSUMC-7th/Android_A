@@ -155,9 +155,9 @@ fun Album() {
         }
 
         MusicProgressBar(currentTime = currentTime, totalTime = totalTime)
-
+        
         var isPlay by remember { mutableStateOf(true) }
-
+        
         Row() {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
