@@ -8,7 +8,7 @@ sealed interface Content {
     val title: String
     val authorId: Long
     val imageId: Long
-    val length: Int // 단위: 초
+    val length: Int  // 단위: 초
 }
 
 @Serializable
@@ -19,6 +19,9 @@ data class MusicContent(
     override val imageId: Long,
     override val length: Int,
     val albumId: Long,
+    val index: Int,
+    val label: String? = null,
+    val lyrics: String? = null,
 ): Content
 
 @Serializable
