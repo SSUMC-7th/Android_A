@@ -24,7 +24,7 @@ fun main() {
                 else
                     null
                 if (musics != null)
-                    call.respond(musics)
+                    call.respond(musics.map { it.toResponse() })
                 else
                     call.respondText("Invalid parameters", status = HttpStatusCode.BadRequest)
             }
@@ -33,7 +33,7 @@ fun main() {
                 val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 10
                 if (size in 1..30) {
                     val musics = MockDatabase.getRandomMusicList(size)
-                    call.respond(musics)
+                    call.respond(musics.map { it.toResponse() })
                 } else {
                     call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
                 }
@@ -44,7 +44,7 @@ fun main() {
                 if (id != null) {
                     val album = MockDatabase.getAlbumById(id)
                     if (album != null) {
-                        call.respond(album)
+                        call.respond(album.toResponse())
                     } else {
                         call.respondText("Album not found", status = HttpStatusCode.NotFound)
                     }
@@ -57,7 +57,7 @@ fun main() {
                 val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 1
                 if (size in 1..30) {
                     val podcasts = MockDatabase.getRandomPodcastList(size)
-                    call.respond(podcasts)
+                    call.respond(podcasts.map { it.toResponse() })
                 } else {
                     call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
                 }
@@ -68,7 +68,7 @@ fun main() {
                 if (id != null) {
                     val podcast = MockDatabase.getPodcastById(id)
                     if (podcast != null) {
-                        call.respond(podcast)
+                        call.respond(podcast.toResponse())
                     } else {
                         call.respondText("Podcast not found", status = HttpStatusCode.NotFound)
                     }
@@ -81,7 +81,7 @@ fun main() {
                 val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 1
                 if (size in 1..30) {
                     val videos = MockDatabase.getRandomVideoList(size)
-                    call.respond(videos)
+                    call.respond(videos.map { it.toResponse() })
                 } else {
                     call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
                 }
@@ -92,7 +92,7 @@ fun main() {
                 if (id != null) {
                     val video = MockDatabase.getVideoById(id)
                     if (video != null) {
-                        call.respond(video)
+                        call.respond(video.toResponse())
                     } else {
                         call.respondText("Video not found", status = HttpStatusCode.NotFound)
                     }
@@ -106,7 +106,7 @@ fun main() {
                 if (id != null) {
                     val author = MockDatabase.getAuthorById(id)
                     if (author != null) {
-                        call.respond(author)
+                        call.respond(author.toResponse())
                     } else {
                         call.respondText("Author not found", status = HttpStatusCode.NotFound)
                     }
@@ -118,14 +118,11 @@ fun main() {
             get("/image/{id}") {
                 val id = call.parameters["id"]?.toLongOrNull()
                 if (id != null) {
-                    MockImageStorage.getImageInputStream(id)?.use { inputStream ->
-                        val imageBytes = inputStream.readBytes()
-                        call.respondBytes(
-                            bytes = imageBytes,
-                            contentType = ContentType.Image.Any,
-                            status = HttpStatusCode.OK
-                        )
-                    } ?: call.respondText("Image not found", status = HttpStatusCode.NotFound)
+                    val file = MockImageStorage.getImageFile(id)
+                    if (file != null)
+                        call.respondFile(file = file)
+                    else
+                        call.respondText("Image not found", status = HttpStatusCode.NotFound)
                 } else {
                     call.respondText("Invalid ID", status = HttpStatusCode.BadRequest)
                 }

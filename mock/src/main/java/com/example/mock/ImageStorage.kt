@@ -1,9 +1,9 @@
 package com.example.mock
 
-import java.io.InputStream
+import java.io.File
 
 object MockImageStorage {
-    private const val IMAGE_DIRECTORY = "images"
+    private const val IMAGE_DIRECTORY = "mock/src/main/java/com/example/mock/images"
     private val images = mutableMapOf<Long, String>()
 
     init {
@@ -21,9 +21,11 @@ object MockImageStorage {
         images[301] = "img_video_exp.png"
     }
 
-    fun getImageInputStream(imageId: Long): InputStream? {
+    fun getImageFile(imageId: Long): File? {
         val fileName = images[imageId] ?: return null
-        return javaClass.classLoader?.getResourceAsStream("$IMAGE_DIRECTORY/$fileName")
+        val filePath = "${System.getProperty("user.dir")}/$IMAGE_DIRECTORY"
+        val file = File(filePath, fileName)
+        return file
     }
 
     fun addImage(imageId: Long, fileName: String) {

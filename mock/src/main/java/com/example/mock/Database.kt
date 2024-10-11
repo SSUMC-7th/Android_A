@@ -7,56 +7,15 @@ object MockDatabase {
     private val videos = mutableListOf<VideoContent>()
     private val authors = mutableListOf<Author>()
 
-    fun getMusicById(id: Long): MusicContent? {
-        return musics.find { it.id == id }
-    }
-
-    fun getMusicByAlbum(albumId: Long): List<MusicContent> {
-        return musics.filter { it.albumId == albumId }
-    }
-
-    fun getAlbumById(id: Long): Album? {
-        return albums.find { it.id == id }
-    }
-
-    fun getPodcastById(id: Long): PodcastContent? {
-        return podcasts.find { it.id == id }
-    }
-
-    fun getVideoById(id: Long): VideoContent? {
-        return videos.find { it.id == id }
-    }
-
-    fun getRandomMusicList(size: Int): List<MusicContent> {
-        val list = mutableListOf<MusicContent>()
-        while (list.size < size) {
-            val music = musics.random()
-            if (!list.contains(music)) list.add(music)
-        }
-        return list.toList()
-    }
-
-    fun getRandomPodcastList(size: Int): List<PodcastContent> {
-        val list = mutableListOf<PodcastContent>()
-        while (list.size < size) {
-            val podcast = podcasts.random()
-            if (!list.contains(podcast)) list.add(podcast)
-        }
-        return list.toList()
-    }
-
-    fun getRandomVideoList(size: Int): List<VideoContent> {
-        val list = mutableListOf<VideoContent>()
-        while (list.size < size) {
-            val video = videos.random()
-            if (!list.contains(video)) list.add(video)
-        }
-        return list.toList()
-    }
-
-    fun getAuthorById(id: Long): Author? {
-        return authors.find { it.id == id }
-    }
+    fun getMusicById(id: Long): MusicContent? = musics.find { it.id == id }
+    fun getMusicByAlbum(albumId: Long): List<MusicContent> = musics.filter { it.albumId == albumId }
+    fun getAlbumById(id: Long): Album? = albums.find { it.id == id }
+    fun getPodcastById(id: Long): PodcastContent? = podcasts.find { it.id == id }
+    fun getVideoById(id: Long): VideoContent? = videos.find { it.id == id }
+    fun getRandomMusicList(size: Int): List<MusicContent> = List(size) { musics.random() }
+    fun getRandomPodcastList(size: Int): List<PodcastContent> = List(size) { podcasts.random() }
+    fun getRandomVideoList(size: Int): List<VideoContent> = List(size) { videos.random() }
+    fun getAuthorById(id: Long): Author? = authors.find { it.id == id }
 
     init {
         // 콘텐츠 제작자 추가
