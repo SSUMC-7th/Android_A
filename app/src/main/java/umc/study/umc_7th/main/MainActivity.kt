@@ -11,26 +11,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentActivity
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestMusicContentList
 import umc.study.umc_7th.main.home.HomeFragment
 import umc.study.umc_7th.main.locker.LockerFragment
 import umc.study.umc_7th.song.SongActivity
 
 class MainActivity : FragmentActivity() {
+    private val viewModel: MainViewModel = MainViewModel()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val homeFragment = HomeFragment()
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.fragmentContainerView_main, homeFragment)
+            .add(R.id.fragmentContainerView_main, HomeFragment())
             .commit()
 
         val composeViewMain = findViewById<ComposeView>(R.id.composeView_main)
         composeViewMain.setContent {
-            val currentContent = remember { getTestMusicContentList((1..4).random()).random() }
+            val currentContent = viewModel.musics.firstOrNull()
             var currentDestination by remember { mutableStateOf(NavigationDestination.HOME) }
 
             BottomNavigationBar(
@@ -58,7 +58,8 @@ class MainActivity : FragmentActivity() {
                 },
                 onContentClicked = { content ->
                     val intent = Intent(this, SongActivity::class.java)
-                    intent.putExtra("content", content)
+                    intent.putExtra("contentId", content.id)
+                    intent.putExtra("contentType", content.javaClass.name)
                     startActivity(intent)
                 },
                 onPlayButtonClicked = { /*TODO*/ },
