@@ -82,9 +82,16 @@ fun PlayProgressControlPanel(
                 onValueChange = { onPlayingPointChanged(it.toInt()) },
                 valueRange = 0f..length.toFloat(),
                 thumb = {},
-                colors = SliderDefaults.colors(
-                    activeTrackColor = Color.Blue,
-                ),
+                track = { state ->
+                    SliderDefaults.Track(
+                        sliderState = state,
+                        colors = SliderDefaults.colors(
+                            activeTrackColor = Color.Blue,
+                        ),
+                        thumbTrackGapSize = 2.dp,
+                        modifier = Modifier.height(4.dp)
+                    )
+                },
                 modifier = Modifier.height(24.dp)
             )
             Row(

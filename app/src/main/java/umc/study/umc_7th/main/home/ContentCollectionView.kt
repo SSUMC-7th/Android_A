@@ -47,7 +47,9 @@ import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.VideoContent
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.previewMusicContentList
+import umc.study.umc_7th.previewPodcastContentList
+import umc.study.umc_7th.previewVideoContentList
 
 enum class GlobeCategory(
     val expression: String,
@@ -124,14 +126,16 @@ fun GlobeCategorizedMusicCollectionView(
             Box(
                 contentAlignment = Alignment.BottomEnd,
             ) {
-                Image(
-                    bitmap = content.imageBitmap,
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(128.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
+                content.image?.let { image ->
+                    Image(
+                        bitmap = image,
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(128.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                }
                 Icon(
                     painter = painterResource(id = R.drawable.btn_miniplayer_play),
                     contentDescription = null,
@@ -147,8 +151,8 @@ fun GlobeCategorizedMusicCollectionView(
 @Composable
 fun PodcastCollectionView(
     title: String,
-    contentList: List<Content>,
-    onContentClicked: (Content) -> Unit,
+    contentList: List<PodcastContent>,
+    onContentClicked: (PodcastContent) -> Unit,
 ) {
     ContentCollectionView(
         contentList = contentList,
@@ -169,14 +173,16 @@ fun PodcastCollectionView(
             }
         },
         thumbnail = { content ->
-            Image(
-                bitmap = content.imageBitmap,
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
+            content.image?.let { image ->
+                Image(
+                    bitmap = image,
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(128.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
+            }
         },
         onContentClicked = onContentClicked,
     )
@@ -185,7 +191,7 @@ fun PodcastCollectionView(
 @Composable
 fun VideoCollectionView(
     title: String,
-    contentList: List<Content>,
+    contentList: List<VideoContent>,
     onContentClicked: (Content) -> Unit,
 ) {
     ContentCollectionView(
@@ -208,15 +214,17 @@ fun VideoCollectionView(
         },
         thumbnail = { content ->
             Box(contentAlignment = Alignment.BottomEnd) {
-                Image(
-                    bitmap = content.imageBitmap,
-                    contentScale = ContentScale.FillHeight,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(228.dp)
-                        .height(128.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
+                content.image?.let { image ->
+                    Image(
+                            bitmap = image,
+                            contentScale = ContentScale.FillHeight,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .width(228.dp)
+                                .height(128.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                    )
+                }
                 Box(
                     modifier = Modifier
                         .padding(8.dp)
@@ -322,7 +330,7 @@ private fun <T: Content> ContentCollectionView(
 fun PreviewGlobeCategorizedMusicCollectionView() {
     GlobeCategorizedMusicCollectionView(
         title = "오늘 발매 음악",
-        contentList = getTestMusicContentList((1..4).random()),
+        contentList = previewMusicContentList,
         globeCategory = GlobeCategory.GLOBAL,
         onViewTitleClicked = {},
         onContentClicked = {},
@@ -335,14 +343,7 @@ fun PreviewGlobeCategorizedMusicCollectionView() {
 fun PreviewPodcastCollectionView() {
     PodcastCollectionView(
         title = "매일 들어도 좋은 팟캐스트",
-        contentList = List(15) {
-            PodcastContent(
-                title = "김시선의 귀책사유 FLO X 윌라",
-                author = "김시선",
-                imageId = R.drawable.img_potcast_exp,
-                length = 200,
-            )
-        },
+        contentList = previewPodcastContentList,
         onContentClicked = {},
     )
 }
@@ -352,14 +353,7 @@ fun PreviewPodcastCollectionView() {
 fun PreviewVideoCollectionView() {
     VideoCollectionView(
         title = "비디오 콜렉션",
-        contentList = List(15) {
-            VideoContent(
-                title = "제목",
-                author = "지은이",
-                imageId = R.drawable.img_video_exp,
-                length = 200,
-            )
-        },
+        contentList = previewVideoContentList,
         onContentClicked = {},
     )
 }

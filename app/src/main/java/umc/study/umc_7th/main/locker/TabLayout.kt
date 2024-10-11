@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.main.album.TabItem
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabLayout(
     tabs: List<TabItem>

@@ -37,17 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
+import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestMusicContentList
-
-data class ContentWithLabel(
-    val content: Content,
-    val label: String?,
-)
+import umc.study.umc_7th.previewMusicContentList
 
 @Composable
 fun IncludedContentsPage(
-    contentList: List<ContentWithLabel>,
+    contentList: List<MusicContent>,
     isMixed: Boolean,
     onPlayContentClicked: (Content) -> Unit,
     onContentDetailsClicked: (Content) -> Unit,
@@ -167,7 +163,7 @@ fun IncludedContentsPage(
             items(
                 count = contentList.size,
             ) { index ->
-                val (content, label) = contentList[index]
+                val content = contentList[index]
                 Box(
                     modifier = Modifier
                         .background(
@@ -209,7 +205,7 @@ fun IncludedContentsPage(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.height(24.dp)
                                 ) {
-                                    label?.let {
+                                    content.label?.let { label ->
                                         Box(
                                             modifier = Modifier
                                                 .background(
@@ -284,12 +280,7 @@ fun IncludedContentsPage(
 @Composable
 fun PreviewIncludedContentsPage() {
     IncludedContentsPage(
-        contentList = getTestMusicContentList((1..4).random()).random().album.contentList.map {
-            ContentWithLabel(
-                content = it.first,
-                label = it.second,
-            )
-        },
+        contentList = previewMusicContentList,
         isMixed = false,
         onPlayContentClicked = {},
         onContentDetailsClicked = {},

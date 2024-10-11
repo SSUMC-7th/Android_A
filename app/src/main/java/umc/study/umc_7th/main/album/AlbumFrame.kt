@@ -44,7 +44,7 @@ import java.time.format.DateTimeFormatter
 fun AlbumFrame(
     title: String,
     author: String,
-    cover: ImageBitmap,
+    cover: ImageBitmap?,
     releasedDate: LocalDate,
     type: String,
     genre: String,
@@ -108,11 +108,12 @@ fun AlbumFrame(
                     contentDescription = null,
                 )
             }
-            Image(
+            if (cover != null) Image(
                 bitmap = cover,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth(0.6f)
+                    .height(coverWidth)
                     .clip(RoundedCornerShape(8.dp))
                     .onGloballyPositioned {
                         with(density) { coverWidth = it.size.width.toDp() }

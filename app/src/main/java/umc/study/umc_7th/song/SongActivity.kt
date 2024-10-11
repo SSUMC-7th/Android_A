@@ -28,34 +28,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.Content
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 class SongActivity: ComponentActivity() {
+    private val viewModel: SongViewModel = SongViewModel()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val content = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            intent.getSerializableExtra("content", Content::class.java)
-        else
-            intent.getSerializableExtra("content") as? Content
+        val contentId = intent.getLongExtra("contentId", -1L)
+        val contentType = intent.getStringExtra("contentType") ?: "Content"
+        viewModel.getContent(
+            id = contentId,
+            type = Class.forName(contentType),
+            onFailed = {}
+        )
 
         setContent {
             Umc_7thTheme {
                 Scaffold { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        content?.let {
-                            SongScreen(
-                                content = it,
-                                onMinimizeButtonClicked = {
-                                    finish()
-                                }
-                            )
-                        }
+                        SongScreen(
+                            content = viewModel.content.value,
+                            onMinimizeButtonClicked = {
+                                finish()
+                            }
+                        )
                     }
                 }
             }
@@ -66,7 +69,7 @@ class SongActivity: ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun SongScreen(
-    content: Content,
+    content: Content?,
     onMinimizeButtonClicked: () -> Unit,
 ) {
     var playingPoint by remember(content) { mutableIntStateOf(0) }
@@ -102,10 +105,10 @@ private fun SongScreen(
             onMinimizeButtonClicked = onMinimizeButtonClicked,
             onDetailsButtonClicked = {},
         )
-        ContentFrame(
+        if (content != null) ContentFrame(
             title = content.title,
             author = content.author,
-            cover = content.imageBitmap,
+            cover = content.image,
             onAuthorNameClicked = {},
         )
         LyricsView(
@@ -144,8 +147,10 @@ private fun SongScreen(
 fun PreviewSongScreen() {
     Scaffold { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
+            val content = previewMusicContentList.random()
+
             SongScreen(
-                content = getTestMusicContentList((1..4).random()).random(),
+                content = content,
                 onMinimizeButtonClicked = {}
             )
         }

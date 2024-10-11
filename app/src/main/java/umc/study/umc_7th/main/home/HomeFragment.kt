@@ -20,6 +20,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import umc.study.umc_7th.Content
 import umc.study.umc_7th.main.BottomNavigationBar
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.main.NavigationDestination
@@ -27,10 +29,15 @@ import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.VideoContent
 import umc.study.umc_7th.main.album.AlbumFragment
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.main.MainViewModel
+import umc.study.umc_7th.previewMusicContentList
+import umc.study.umc_7th.previewPodcastContentList
+import umc.study.umc_7th.previewVideoContentList
 import java.time.LocalDate
 
 class HomeFragment : Fragment() {
+    private val viewModel by activityViewModels<MainViewModel>()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,10 +47,18 @@ class HomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false).apply {
             findViewById<ComposeView>(R.id.composeView_home).setContent {
                 HomeScreen(
-                    onMusicContentClicked = { content ->
+                    bannerContents = viewModel.bannerContents,
+                    musics = viewModel.musics,
+                    podcasts = viewModel.podcasts,
+                    videos = viewModel.videos,
+                    onContentClicked = lambda@ { content ->
+                        if (content.javaClass != MusicContent::class.java)
+                            return@lambda
+                        else
+                            content as MusicContent
                         val albumFragment = AlbumFragment()
                         val bundle = Bundle()
-                        bundle.putSerializable("album", content.album)
+                        bundle.putLong("albumId", content.albumId)
                         albumFragment.arguments = bundle
                         activity?.supportFragmentManager?.beginTransaction()
                             ?.replace(R.id.fragmentContainerView_main, albumFragment)
@@ -59,38 +74,35 @@ class HomeFragment : Fragment() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun HomeScreen(
-    onMusicContentClicked: (MusicContent) -> Unit,
+    bannerContents: List<List<MusicContent>>,
+    musics: List<MusicContent>,
+    podcasts: List<PodcastContent>,
+    videos: List<VideoContent>,
+    onContentClicked: (Content) -> Unit,
 ) {
     // 이 스크린은 목업용 화면입니다.
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         MainBanner(
             date = LocalDate.parse("2019-11-11"),
-            propsList = listOf(
+            propsList = List(bannerContents.size) { index ->
                 MainBannerProps(
                     title = "포근하게 덮어주는 꿈의 목소리",
-                    contentList = getTestMusicContentList((1..4).random()),
+                    contentList = bannerContents[index],
                     backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
-                    onContentClicked = onMusicContentClicked,
-                    onPlayButtonClicked = {},
-                ),
-                MainBannerProps(
-                    title = "달밤의 감성 산책",
-                    contentList = getTestMusicContentList((1..4).random()),
-                    backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_jenre_exp_1),
-                    onContentClicked = {},
                     onPlayButtonClicked = {},
                 )
-            ),
+            },
+            onContentClicked = onContentClicked,
             onVoiceSearchButtonClicked = {},
             onSubscriptionButtonClicked = {},
             onSettingButtonClicked = {},
         )
         GlobeCategorizedMusicCollectionView(
             title = "오늘 발매 음악",
-            contentList = getTestMusicContentList((1..4).random()),
+            contentList = musics,
             globeCategory = GlobeCategory.GLOBAL,
             onViewTitleClicked = {},
-            onContentClicked = onMusicContentClicked,
+            onContentClicked = onContentClicked,
             onCategoryClicked = {},
         )
         PromotionImageBanner(
@@ -99,27 +111,13 @@ private fun HomeScreen(
         )
         PodcastCollectionView(
             title = "매일 들어도 좋은 팟캐스트",
-            contentList = List(15) {
-                PodcastContent(
-                    title = "김시선의 귀책사유 FLO X 윌라",
-                    author = "김시선",
-                    imageId = R.drawable.img_potcast_exp,
-                    length = 200,
-                )
-            },
-            onContentClicked = { /* TODO */ },
+            contentList = podcasts,
+            onContentClicked = onContentClicked,
         )
         VideoCollectionView(
             title = "비디오 콜렉션",
-            contentList = List(15) {
-                VideoContent(
-                    title = "제목",
-                    author = "지은이",
-                    imageId = R.drawable.img_video_exp,
-                    length = 200,
-                )
-            },
-            onContentClicked = { /* TODO */ },
+            contentList = videos,
+            onContentClicked = onContentClicked,
         )
         PromotionImageBanner(
             image = ImageBitmap.imageResource(id = R.drawable.discovery_banner_aos),
@@ -148,14 +146,22 @@ fun PreviewHomeScreen() {
                 onPlayButtonClicked = {},
                 onContentClicked = {},
                 currentDestination = NavigationDestination.HOME,
-                currentContent = getTestMusicContentList((1..4).random()).random(),
+                currentContent = null,
                 isPlaying = false,
             )
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             HomeScreen(
-                onMusicContentClicked = {}
+                bannerContents = listOf(
+                    previewMusicContentList,
+                    previewMusicContentList,
+                    previewMusicContentList,
+                ),
+                musics = previewMusicContentList,
+                podcasts = previewPodcastContentList,
+                videos = previewVideoContentList,
+                onContentClicked = {}
             )
         }
     }

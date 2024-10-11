@@ -23,28 +23,31 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.main.BottomNavigationBar
 import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.main.MainViewModel
+import umc.study.umc_7th.previewAlbum
+import umc.study.umc_7th.previewMusicContentList
 
 class AlbumFragment : Fragment() {
+    private val viewModel: MainViewModel by activityViewModels()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val album = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            arguments?.getSerializable("album", Album::class.java)!!
-        else
-            arguments?.getSerializable("album")!! as Album
+        val albumId = arguments?.getLong("albumId")
+        if (albumId != null) viewModel.getAlbum(albumId) {}
 
         return inflater.inflate(R.layout.fragment_album, container, false).apply {
             findViewById<ComposeView>(R.id.composeView_album).setContent {
                 AlbumScreen(
-                    album = album,
+                    album = viewModel.currentAlbum.value,
                     onBackButtonClicked = {
                         activity?.supportFragmentManager?.beginTransaction()
                             ?.remove(this@AlbumFragment)
@@ -60,7 +63,7 @@ class AlbumFragment : Fragment() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun AlbumScreen(
-    album: Album,
+    album: Album?,
     onBackButtonClicked: () -> Unit,
 ) {
     var isMixed by remember { mutableStateOf(false) }
@@ -76,10 +79,10 @@ private fun AlbumScreen(
             onLikeButtonClicked = {},
             onDetailsButtonClicked = {}
         )
-        AlbumFrame(
+        if (album != null) AlbumFrame(
             title = album.title,
             author = album.author,
-            cover = album.imageBitmap,
+            cover = album.image,
             releasedDate = album.releasedDate,
             type = album.type,
             genre = album.genre,
@@ -89,13 +92,8 @@ private fun AlbumScreen(
                 TabItem(
                     label = "수록곡",
                     page = {
-                        IncludedContentsPage(
-                            contentList = album.contentList.map {
-                                ContentWithLabel(
-                                    content = it.first,
-                                    label = it.second,
-                                )
-                            },
+                        if (album != null) IncludedContentsPage(
+                            contentList = album.contentList,
                             isMixed = isMixed,
                             onPlayContentClicked = {},
                             onContentDetailsClicked = {},
@@ -135,14 +133,14 @@ fun PreviewAlbumScreen() {
                 onPlayButtonClicked = {},
                 onContentClicked = {},
                 currentDestination = NavigationDestination.HOME,
-                currentContent = getTestMusicContentList((1..4).random()).random(),
+                currentContent = previewMusicContentList.random(),
                 isPlaying = false,
             )
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             AlbumScreen(
-                album = getTestMusicContentList((1..4).random()).random().album,
+                album = previewAlbum,
                 onBackButtonClicked = {}
             )
         }

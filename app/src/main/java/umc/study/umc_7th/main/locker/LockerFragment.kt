@@ -19,7 +19,7 @@ import umc.study.umc_7th.main.BottomNavigationBar
 import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.R
 import umc.study.umc_7th.main.album.TabItem
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.previewMusicContentList
 
 class LockerFragment : Fragment() {
     override fun onCreateView(
@@ -72,7 +72,7 @@ fun PreviewLockerScreen() {
                 onPlayButtonClicked = {},
                 onContentClicked = {},
                 currentDestination = NavigationDestination.HOME,
-                currentContent = getTestMusicContentList((1..4).random()).random(),
+                currentContent = previewMusicContentList.random(),
                 isPlaying = false,
             )
         }

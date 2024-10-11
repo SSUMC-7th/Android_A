@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.previewMusicContentList
 
 enum class NavigationDestination(
     val expression: String,
@@ -220,7 +220,7 @@ fun BottomNavigationBar(
 fun PreviewBottomNavigationBar() {
     BottomNavigationBar(
         currentDestination = NavigationDestination.HOME,
-        currentContent = getTestMusicContentList((1..4).random()).random(),
+        currentContent = previewMusicContentList.random(),
         isPlaying = true,
         onDestinationClicked = {},
         onPlayButtonClicked = {},

@@ -2,7 +2,6 @@ package umc.study.umc_7th.main.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,25 +47,25 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
+import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.previewMusicContentList
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class MainBannerProps<T: Content>(
+data class MainBannerProps(
     val title: String,
-    val contentList: List<T>,
+    val contentList: List<MusicContent>,
     val backgroundImage: ImageBitmap,
-    val onContentClicked: (T) -> Unit,
     val onPlayButtonClicked: () -> Unit,
 )
 
-@OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainBanner(
     date: LocalDate,
-    propsList: List<MainBannerProps<out Content>>,
+    propsList: List<MainBannerProps>,
+    onContentClicked: (Content) -> Unit,
     onVoiceSearchButtonClicked: () -> Unit,
     onSubscriptionButtonClicked: () -> Unit,
     onSettingButtonClicked: () -> Unit,
@@ -83,7 +82,8 @@ fun MainBanner(
                 MainBannerPage(
                     date = date,
                     prop = propsList[index],
-                    upperPadding = buttonBarHeight
+                    upperPadding = buttonBarHeight,
+                    onContentClicked = onContentClicked
                 )
             }
             // 버튼 바
@@ -144,10 +144,11 @@ fun MainBanner(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun <T: Content> MainBannerPage(
+private fun MainBannerPage(
     date: LocalDate,
-    prop: MainBannerProps<T>,
+    prop: MainBannerProps,
     upperPadding: Dp,
+    onContentClicked: (Content) -> Unit
 ) {
     Box {
         Image(
@@ -211,7 +212,7 @@ private fun <T: Content> MainBannerPage(
                             contentColor = Color.White,
                             disabledContentColor = Color.White,
                         ),
-                        onClick = { prop.onContentClicked(content) },
+                        onClick = { onContentClicked(content) },
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
@@ -220,13 +221,15 @@ private fun <T: Content> MainBannerPage(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Image(
-                                bitmap = content.imageBitmap,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(RoundedCornerShape(2.dp))
-                            )
+                            content.image?.let { image ->
+                                Image(
+                                    bitmap = image,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(RoundedCornerShape(2.dp))
+                                )
+                            }
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
@@ -250,19 +253,18 @@ fun PreviewBanner() {
         propsList = listOf(
             MainBannerProps(
                 title = "포근하게 덮어주는 꿈의 목소리",
-                contentList = getTestMusicContentList((1..4).random()),
+                contentList = previewMusicContentList,
                 backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1),
-                onContentClicked = {},
                 onPlayButtonClicked = {},
             ),
             MainBannerProps(
                 title = "달밤의 감성 산책",
-                contentList = getTestMusicContentList((1..4).random()),
+                contentList = previewMusicContentList,
                 backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_jenre_exp_1),
-                onContentClicked = {},
                 onPlayButtonClicked = {},
             )
         ),
+        onContentClicked = {},
         onVoiceSearchButtonClicked = {},
         onSubscriptionButtonClicked = {},
         onSettingButtonClicked = {},

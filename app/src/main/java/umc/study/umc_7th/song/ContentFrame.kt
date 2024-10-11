@@ -29,13 +29,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.R
-import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.previewMusicContentList
 
 @Composable
 fun ContentFrame(
     title: String,
     author: String,
-    cover: ImageBitmap,
+    cover: ImageBitmap?,
     onAuthorNameClicked: () -> Unit,
 ) {
     Column(
@@ -75,7 +75,7 @@ fun ContentFrame(
                 )
             }
         }
-        Image(
+        if (cover != null) Image(
             bitmap = cover,
             contentDescription = null,
             contentScale = ContentScale.Crop,
@@ -90,12 +90,12 @@ fun ContentFrame(
 @Preview(showBackground = true)
 @Composable
 fun PreviewContentFrame() {
-    val content = getTestMusicContentList((1..4).random()).random()
+    val content = previewMusicContentList.random()
 
     ContentFrame(
         title = content.title,
         author = content.author,
-        cover = content.imageBitmap,
+        cover = content.image,
         onAuthorNameClicked = {},
     )
 }
