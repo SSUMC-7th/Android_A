@@ -1,4 +1,4 @@
-package umc.study.umc_7th.locker
+package umc.study.umc_7th.main.locker
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import umc.study.umc_7th.album.TabItem
+import umc.study.umc_7th.main.album.TabItem
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -15,18 +15,26 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.getTestMusicContentList
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class SongActivity: ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,11 +63,25 @@ class SongActivity: ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun SongScreen(
     content: Content,
     onMinimizeButtonClicked: () -> Unit,
 ) {
+    var playingPoint by remember(content) { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = content) {
+        scope.launch {
+            val startTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+            while (true) {
+                playingPoint = (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - startTime).toInt()
+                delay(100)
+            }
+        }
+    }
+
     var isPlaying by remember { mutableStateOf(false) }
     var isRepeating by remember { mutableStateOf(false) }
     var isShuffling by remember { mutableStateOf(false) }
@@ -93,7 +115,7 @@ private fun SongScreen(
         )
         PlayProgressControlPanel(
             length = 181,
-            playingPoint = 125,
+            playingPoint = playingPoint,
             isPlaying = isPlaying,
             isRepeating = isRepeating,
             isShuffling = isShuffling,

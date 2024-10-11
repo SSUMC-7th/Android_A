@@ -1,4 +1,4 @@
-package umc.study.umc_7th.locker
+package umc.study.umc_7th.main.locker
 
 import android.os.Build
 import android.os.Bundle
@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
-import umc.study.umc_7th.BottomNavigationBar
-import umc.study.umc_7th.NavigationDestination
+import umc.study.umc_7th.main.BottomNavigationBar
+import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.R
-import umc.study.umc_7th.album.TabItem
+import umc.study.umc_7th.main.album.TabItem
 import umc.study.umc_7th.getTestMusicContentList
 
 class LockerFragment : Fragment() {

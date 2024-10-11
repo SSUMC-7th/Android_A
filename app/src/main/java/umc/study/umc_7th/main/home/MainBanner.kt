@@ -1,4 +1,4 @@
-package umc.study.umc_7th.home
+package umc.study.umc_7th.main.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi

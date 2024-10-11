@@ -1,4 +1,4 @@
-package umc.study.umc_7th.home
+package umc.study.umc_7th.main.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

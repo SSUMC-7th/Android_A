@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main
 
 import android.content.Intent
 import android.os.Build
@@ -10,8 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentActivity
-import umc.study.umc_7th.home.HomeFragment
-import umc.study.umc_7th.locker.LockerFragment
+import umc.study.umc_7th.R
+import umc.study.umc_7th.getTestMusicContentList
+import umc.study.umc_7th.main.home.HomeFragment
+import umc.study.umc_7th.main.locker.LockerFragment
 import umc.study.umc_7th.song.SongActivity
 
 class MainActivity : FragmentActivity() {

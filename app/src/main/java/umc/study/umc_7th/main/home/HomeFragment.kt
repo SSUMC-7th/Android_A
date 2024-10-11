@@ -1,4 +1,4 @@
-package umc.study.umc_7th.home
+package umc.study.umc_7th.main.home
 
 import android.os.Build
 import android.os.Bundle
@@ -20,13 +20,13 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import umc.study.umc_7th.BottomNavigationBar
+import umc.study.umc_7th.main.BottomNavigationBar
 import umc.study.umc_7th.MusicContent
-import umc.study.umc_7th.NavigationDestination
+import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.VideoContent
-import umc.study.umc_7th.album.AlbumFragment
+import umc.study.umc_7th.main.album.AlbumFragment
 import umc.study.umc_7th.getTestMusicContentList
 import java.time.LocalDate
 

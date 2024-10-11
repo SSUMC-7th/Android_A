@@ -1,4 +1,4 @@
-package umc.study.umc_7th.album
+package umc.study.umc_7th.main.album
 
 import android.os.Build
 import android.os.Bundle
@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import umc.study.umc_7th.Album
-import umc.study.umc_7th.BottomNavigationBar
-import umc.study.umc_7th.NavigationDestination
+import umc.study.umc_7th.main.BottomNavigationBar
+import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.R
 import umc.study.umc_7th.getTestMusicContentList
 

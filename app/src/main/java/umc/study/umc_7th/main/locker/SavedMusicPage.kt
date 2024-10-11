@@ -1,4 +1,4 @@
-package umc.study.umc_7th.locker
+package umc.study.umc_7th.main.locker
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

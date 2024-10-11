@@ -1,4 +1,4 @@
-package umc.study.umc_7th.album
+package umc.study.umc_7th.main.album
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
