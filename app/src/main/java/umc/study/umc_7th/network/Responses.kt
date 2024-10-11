@@ -7,6 +7,7 @@ sealed interface ContentResponse {
     val id: Long
     val title: String
     val authorId: Long
+    val author: String
     val imageId: Long
     val length: Int  // 단위: 초
 }
@@ -16,6 +17,7 @@ data class MusicContentResponse(
     override val id: Long,
     override val title: String,
     override val authorId: Long,
+    override val author: String,
     override val imageId: Long,
     override val length: Int,
     val albumId: Long,
@@ -40,6 +42,7 @@ data class PodcastContentResponse(
     override val id: Long,
     override val title: String,
     override val authorId: Long,
+    override val author: String,
     override val imageId: Long,
     override val length: Int,
     val description: String,
@@ -50,6 +53,7 @@ data class VideoContentResponse(
     override val id: Long,
     override val title: String,
     override val authorId: Long,
+    override val author: String,
     override val imageId: Long,
     override val length: Int,
 ): ContentResponse
@@ -66,5 +70,5 @@ data class UserResponse(
 data class AuthorResponse(
     val id: Long,
     val name: String,
-    val imageId: Long?,
+    val imageId: Long? = null,
 )
