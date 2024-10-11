@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
@@ -81,49 +82,49 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     // Hilt Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.49")
-    kapt("com.google.dagger:hilt-compiler:2.49")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
-    //gson
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
-    implementation("com.google.code.gson:gson:2.10.1")
+    // Gson
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.gson)
 
-    //Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
 
     // https://github.com/square/okhttp
-    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
+    implementation(libs.okhttp)
 
     // https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
+    implementation(libs.logging.interceptor)
 
-    //lifecycle
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.extensions)
 
-    //viewModel
-    implementation("androidx.activity:activity-ktx:1.9.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    // ViewModel
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
 
     // Glide Image Loading Library
-    implementation("com.github.bumptech.glide:glide:4.14.2")
-    kapt("com.github.bumptech.glide:ksp:4.14.2")
+    implementation(libs.glide)
+    kapt(libs.ksp)
 
-    //CardView
-    implementation("androidx.cardview:cardview:1.0.0")
+    // CardView
+    implementation(libs.androidx.cardview)
 
-    // Coroutines Dependency
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
-    //Safe args
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
+    // Safe args
+    implementation(libs.androidx.navigation.fragment.ktx.v273)
+    implementation(libs.androidx.navigation.ui.ktx.v273)
 
     // ROOM Database
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 }
