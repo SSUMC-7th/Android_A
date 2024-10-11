@@ -1,25 +1,21 @@
 package umc.study.umc_7th
 
 import androidx.compose.ui.graphics.ImageBitmap
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import umc.study.umc_7th.network.Server
 
 object ImageLoader {
     private val imageMap = emptyMap<Long, ImageBitmap>().toMutableMap()
 
-    fun getImageBitmap(
-        scope: CoroutineScope,
+    suspend fun getImageBitmap(
         id: Long,
-        onLoaded: (ImageBitmap) -> Unit,
         refresh: Boolean = false,
-    ) {
+    ): ImageBitmap {
         val image = imageMap[id]
-        if (refresh || image == null) scope.launch {
+        if (refresh || image == null) {
             val loadedImage = Server.getImage(id)
             imageMap[id] = loadedImage
-            onLoaded(loadedImage)
+            return loadedImage
         }
-        else onLoaded(image)
+        else return image
     }
 }

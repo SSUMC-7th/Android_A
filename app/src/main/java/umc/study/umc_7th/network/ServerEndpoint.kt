@@ -1,15 +1,17 @@
 package umc.study.umc_7th.network
 
+import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.io.InputStream
 
 interface ServerEndpoint {
     @GET("/music/random")
     suspend fun getRandomMusics(@Query("size") size: Int): List<MusicContentResponse>
 
     @GET("/music")
-    suspend fun getMusic(@Query("id") id: Long?, @Query("albumId") albumId: Long?): MusicContentResponse
+    suspend fun getMusics(@Query("id") id: Long?, @Query("albumId") albumId: Long?): List<MusicContentResponse>
 
     @GET("/album/{id}")
     suspend fun getAlbum(@Path("id") id: Long): AlbumResponse
@@ -30,5 +32,5 @@ interface ServerEndpoint {
     suspend fun getAuthor(@Path("id") id: Long): AuthorResponse
 
     @GET("/image/{id}")
-    suspend fun getImage(@Path("id") id: Long): ByteArray
+    suspend fun getImage(@Path("id") id: Long): ResponseBody
 }
