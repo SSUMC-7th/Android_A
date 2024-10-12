@@ -1,6 +1,8 @@
 package umc.study.umc_7th
 
+import android.app.Application
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -47,22 +49,32 @@ import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.DpSize
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 
 class SongActivity : ComponentActivity() {
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = (application as MyApplication).songViewModel
+
         setContent {
 
             val songTitle = intent.getStringExtra("songtitle")
@@ -87,7 +99,7 @@ class SongActivity : ComponentActivity() {
                             likeClick = { /*TODO*/ },
                             unLikeButtonClick = { /*TODO*/ },
                             replayButtonClick = { /*TODO*/ },
-                            songPlayButtonClick = { /*TODO*/ },
+                            songPlayButtonClick = {  }, // 여기에 실행 동작 추가 하면되는데..
                             beforeSongPlayClick = { /*TODO*/ },
                             nextSongPlayClick = { /*TODO*/ },
                             shuffleClick = { /*TODO*/ },
@@ -107,10 +119,12 @@ class SongActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun SongPlayerScreen(
     viewModel: SongViewModel,
+
     content : Content,
     playerSettingButtonClick: () -> Unit,
     eqButtonClick: () -> Unit,
@@ -214,28 +228,51 @@ fun SongPlayerScreen(
                     contentDescription = null)
             }
         }
-        LinearProgressIndicator(progress = 0f,
+        val replay by viewModel.replay.observeAsState(false)
+        val played by viewModel.played.observeAsState(true)
+        val shuffle by viewModel.shuffle.observeAsState(false)
+        val currentPosition by viewModel.currentPosition.observeAsState(0f)
+        val duration by viewModel.duration.observeAsState(1f)
+
+        var progress by remember { mutableStateOf(0f) }
+
+        LaunchedEffect(played){
+            if(!played){
+                while (!played && currentPosition < duration){
+                    delay(1000L)
+                    viewModel.updatePosition(currentPosition+1f)
+                }
+            }
+        }
+        progress = currentPosition / duration
+        Slider(
+            value = progress,
+            onValueChange = { newProgress ->
+                viewModel.updatePosition(newProgress * duration)
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(3.dp)
+                .height(3.dp),
+            thumb = {
+
+            },
         )
         Row(
 
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ){
-            Text(text = "00:00", fontSize = 12.sp)
-            Text(text = "03:30", fontSize = 12.sp)
+            Text(text = formatTime(currentPosition), fontSize = 12.sp)
+            Text(text = formatTime(duration), fontSize = 12.sp)
         }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 60.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ){
-            val replay by viewModel.replay.observeAsState(false)
-            val played by viewModel.played.observeAsState(true)
-            val shuffle by viewModel.shuffle.observeAsState(false)
+
             Icon(
                 painter = painterResource(id = R.drawable.nugu_btn_repeat_inactive),
                 contentDescription = null,
@@ -262,7 +299,10 @@ fun SongPlayerScreen(
                 modifier = Modifier
                     .size(65.dp)
                     .padding(10.dp)
-                    .clickable { viewModel.togglePlayed() }
+                    .clickable {
+                        viewModel.togglePlayed()
+                        songPlayButtonClick()
+                    }
             )
 
             Icon(
@@ -306,12 +346,21 @@ fun SongPlayerScreen(
         }
     }
 }
+
+fun formatTime(timeInSeconds:Float) : String{
+    val minutes = (timeInSeconds / 60).toInt()
+    val seconds = (timeInSeconds % 60).toInt()
+    return String.format("%02d:%02d", minutes, seconds)
+}
+
+
 @RequiresApi(Build.VERSION_CODES.P)
 @Preview(showBackground = true)
 @Composable
 fun PreviewSongPlayerScreen(){
+    val fakeviewModel = FakeSongViewModel(application = Application())
     SongPlayerScreen(
-        viewModel = viewModel(),
+        viewModel = fakeviewModel,
         content = Content(
             "LILAC", "IU",
             R.drawable.img_album_exp2,
@@ -334,3 +383,27 @@ fun PreviewSongPlayerScreen(){
 }
 
 
+//프리뷰 데이터를 위한 가짜 뷰 모델 생성
+class FakeSongViewModel(application: Application) : SongViewModel(application) {
+    override val replay = MutableLiveData(false)
+    override val played = MutableLiveData(true)
+    override val shuffle = MutableLiveData(false)
+    override val currentPosition = MutableLiveData(0f)
+    override val duration = MutableLiveData(200f)
+
+    override fun updatePosition(newPosition: Float) {
+        currentPosition.value = newPosition
+    }
+
+    override fun toggleReplay() {
+        replay.value = replay.value?.not()
+    }
+
+    override fun togglePlayed() {
+        played.value = played.value?.not()
+    }
+
+    override fun toggleShuffle() {
+        shuffle.value = shuffle.value?.not()
+    }
+}

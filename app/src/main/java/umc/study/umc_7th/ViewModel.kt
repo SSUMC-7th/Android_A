@@ -6,24 +6,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SongViewModel(application: Application) : AndroidViewModel(application) {
+open class SongViewModel(application: Application) : AndroidViewModel(application) {
     private val _replay = MutableLiveData(false)
-    val replay : LiveData<Boolean> = _replay
+    open val replay : LiveData<Boolean> = _replay
 
     private val _played = MutableLiveData(true)
-    val played : LiveData<Boolean> = _played
+    open val played : LiveData<Boolean> = _played
+
+    private val _duration = MutableLiveData(200f)
+    open val duration : LiveData<Float> = _duration
+
+    private val _currentPosition = MutableLiveData(0f)
+    open val currentPosition : LiveData<Float> = _currentPosition
 
     private val _shuffle = MutableLiveData(false)
-    val shuffle : LiveData<Boolean> = _shuffle
+    open val shuffle : LiveData<Boolean> = _shuffle
 
-    fun toggleReplay() {
+    open fun toggleReplay() {
         _replay.value = _replay.value != true
     }
-    fun togglePlayed() {
+    open fun togglePlayed() {
         _played.value = _played.value != true
     }
-    fun toggleShuffle() {
+    open fun toggleShuffle() {
         _shuffle.value = _shuffle.value != true
+    }
+    open fun updatePosition(position: Float){
+        _currentPosition.value = position
+    }
+    fun setDuration(duration: Float){
+        _duration.value = duration
     }
 }
 
