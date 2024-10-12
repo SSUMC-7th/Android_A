@@ -76,7 +76,6 @@ class SongActivity : ComponentActivity() {
         val viewModel = (application as MyApplication).songViewModel
 
         setContent {
-
             val songTitle = intent.getStringExtra("songtitle")
             val singer = intent.getStringExtra("author")
             Umc_7thTheme {
@@ -89,9 +88,7 @@ class SongActivity : ComponentActivity() {
                                 R.drawable.img_album_exp2,
                                 200
                             ) ,
-                            playerSettingButtonClick = { /*TODO*/ },
-                            eqButtonClick = { /*TODO*/ },
-                            songActivityToMainActivity = {
+                            toMainActivity = {
                                 val intent = Intent(this@SongActivity, MainActivity::class.java)
                                 startActivity(intent)
                                 finish()
@@ -124,12 +121,9 @@ class SongActivity : ComponentActivity() {
 @Composable
 fun SongPlayerScreen(
     viewModel: SongViewModel,
-
     content : Content,
-    playerSettingButtonClick: () -> Unit,
-    eqButtonClick: () -> Unit,
-    songActivityToMainActivity : () -> Unit,
     likeClick : () -> Unit,
+    toMainActivity : () -> Unit,
     unLikeButtonClick: () -> Unit,
     replayButtonClick: () -> Unit,
     songPlayButtonClick: () -> Unit,
@@ -145,89 +139,29 @@ fun SongPlayerScreen(
     Column (modifier = Modifier
         .verticalScroll(rememberScrollState())
         .fillMaxHeight()
-        .padding(16.dp),
+        .padding(8.dp)
+        ,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
         ){
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){  Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            IconButton(onClick = playerSettingButtonClick,
-                modifier = Modifier.size(36.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.btn_player_setting),
-                    contentDescription = null,
+        SongTopButton(
+            SettingButtonClick = {},
+            eqButtonClick = {},
+            songActivityToMainActivity = { toMainActivity() }
+        )
 
-                    )
-            }
-            IconButton(onClick = eqButtonClick,
-                modifier = Modifier.size(36.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.btn_player_eq_off),
-                    contentDescription = null,
-                    modifier = Modifier
-                )
-            }
-        }
+        ContentFrame(
+            content = content,
+            toSingerinfoClick={},
+            likeClick ={},
+            unLikeButtonClick={},
+            viewModel = viewModel
+        )
 
-            IconButton(onClick = songActivityToMainActivity,
-                modifier = Modifier.size(36.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.nugu_btn_down),
-                    contentDescription = null,
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(text = content.title , fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Row(
-        ){
-        Text(text = content.author, fontSize = 18.sp)
-        Icon(painter = painterResource(id = R.drawable.btn_arrow_more),
-            contentDescription = null,
-            modifier = Modifier.clickable { toSingerinfoClick() })
-        }
-        Spacer(modifier = Modifier.height(20.dp))
+        Lyric(lyric1 = "내리는 꽃가루에", lyric2 = "눈이 따끔해 아야")
 
-        content.image?.let {
-            Image(bitmap = ImageBitmap.imageResource(id = it),
-                contentDescription =null,
-                modifier = Modifier
-                    .size(250.dp)
-                    .clip(RoundedCornerShape(10.dp)))
-        }
-        Column(
-            modifier = Modifier
-                .width(120.dp)
-                .height(50.dp),
-            verticalArrangement = Arrangement.Center
 
-        ) {
-            Text(text = "너라는 꽃가루에 눈이 따끔해 아야", textAlign = TextAlign.Center)
 
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(24.dp),
-            horizontalArrangement = Arrangement.Center
-        ){
-            IconButton(onClick =likeClick ) {
-                Icon(bitmap = ImageBitmap.imageResource(id = R.drawable.ic_my_like_off),
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 16.dp))
-            }
-            IconButton(onClick = unLikeButtonClick) {
-                Icon(bitmap = ImageBitmap.imageResource(id = R.drawable.btn_player_unlike_off),
-                    contentDescription = null)
-            }
-        }
         val replay by viewModel.replay.observeAsState(false)
         val played by viewModel.played.observeAsState(true)
         val shuffle by viewModel.shuffle.observeAsState(false)
@@ -343,9 +277,9 @@ fun SongPlayerScreen(
                         .clickable { onClick() })
             }
 
-        }
+        }}
     }
-}
+
 
 fun formatTime(timeInSeconds:Float) : String{
     val minutes = (timeInSeconds / 60).toInt()
@@ -366,9 +300,8 @@ fun PreviewSongPlayerScreen(){
             R.drawable.img_album_exp2,
             200
         ),
-        playerSettingButtonClick = { /*TODO*/ },
-        eqButtonClick = { /*TODO*/ },
-        songActivityToMainActivity = {},
+
+        toMainActivity = {},
         likeClick = { /*TODO*/ },
         unLikeButtonClick = { /*TODO*/ },
         replayButtonClick = {  },

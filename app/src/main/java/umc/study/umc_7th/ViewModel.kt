@@ -7,6 +7,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 open class SongViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val _like = MutableLiveData(false)
+    open val like : LiveData<Boolean> = _like
+
+    private val _unLike = MutableLiveData(false)
+    open val unLike : LiveData<Boolean> = _unLike
+
+    fun toggleLike(){
+        _like.value = _like.value != true
+    }
+
+    fun toggleUnLike(){
+        _unLike.value = _unLike.value != true
+    }
+
+
+
     private val _replay = MutableLiveData(false)
     open val replay : LiveData<Boolean> = _replay
 
@@ -21,6 +38,8 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val _shuffle = MutableLiveData(false)
     open val shuffle : LiveData<Boolean> = _shuffle
+
+
 
     open fun toggleReplay() {
         _replay.value = _replay.value != true
@@ -37,6 +56,9 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
     fun setDuration(duration: Float){
         _duration.value = duration
     }
+
+
+
 }
 
 class MyApplication : Application() {
