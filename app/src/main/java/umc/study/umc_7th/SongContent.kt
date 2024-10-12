@@ -19,6 +19,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import umc.study.umc_7th.ui.theme.Purple40
 
 @Composable
@@ -87,6 +89,16 @@ fun Album() {
 
     var currentTime by remember { mutableStateOf(0f) } // 현재 시간 상태
     val totalTime = 60f // 전체 시간
+    var isPlay by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isPlay) {
+        if (isPlay) {
+            while (currentTime < totalTime) {
+                delay(1000L) // Increment every second
+                currentTime += 1f
+            }
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -156,8 +168,6 @@ fun Album() {
 
         MusicProgressBar(currentTime = currentTime, totalTime = totalTime)
         
-        var isPlay by remember { mutableStateOf(true) }
-        
         Row() {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
@@ -177,7 +187,7 @@ fun Album() {
             }
             IconButton(onClick = { isPlay = !isPlay }) {
                 Icon(
-                    painter = painterResource(id = if (isPlay) R.drawable.nugu_btn_play_32 else R.drawable.btn_miniplay_pause),
+                    painter = painterResource(id = if (isPlay) R.drawable.btn_miniplay_pause else R.drawable.nugu_btn_play_32),
                     contentDescription = "play"
                 )
             }
@@ -231,7 +241,6 @@ fun BottomBar() {
 
 @Composable
 fun MusicProgressBar(currentTime: Float, totalTime: Float) {
-    val progress = currentTime / totalTime
 
     Column(
         modifier = Modifier

@@ -72,10 +72,6 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AlbumScreen() {
-    AlbumFragment()
-}
-
 fun MyApp() {
     // 네비게이션 컨트롤러 생성
     val navController = rememberNavController()
