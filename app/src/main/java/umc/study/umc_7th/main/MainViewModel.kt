@@ -15,11 +15,14 @@ import umc.study.umc_7th.VideoContent
 import umc.study.umc_7th.network.Server
 
 class MainViewModel: ViewModel() {
+    private val _currentAlbum = mutableStateOf<Album?>(null)
+
     val bannerContents = mutableStateListOf<List<MusicContent>>()
     val musics = mutableStateListOf<MusicContent>()
     val podcasts = mutableStateListOf<PodcastContent>()
     val videos = mutableStateListOf<VideoContent>()
-    val currentAlbum = mutableStateOf<Album?>(null)
+    var currentAlbum: Album? get() = _currentAlbum.value
+        private set(value) { _currentAlbum.value = value }
 
     init {
         viewModelScope.launch {
@@ -70,9 +73,9 @@ class MainViewModel: ViewModel() {
         viewModelScope.launch {
             try {
                 val album = Server.getAlbum(id)
-                currentAlbum.value = album
+                currentAlbum = album
                 val image = ImageLoader.getImageBitmap(id = album.imageId)
-                currentAlbum.value = album.copy(image = image)
+                currentAlbum = album.copy(image = image)
             }
             catch (e: Exception) {
                 e.printStackTrace()
