@@ -32,31 +32,39 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.Fragment
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.R
+import umc.study.umc_7th.main.home.HomeFragment
+import umc.study.umc_7th.main.locker.LockerFragment
 import umc.study.umc_7th.previewMusicContentList
 
 enum class NavigationDestination(
+    val fragment: Fragment,
     val expression: String,
     val unselectedIconId: Int,
     val selectedIconId: Int,
 ) {
     HOME(
+        fragment = HomeFragment(),
         expression = "홈",
         unselectedIconId = R.drawable.ic_bottom_home_no_select,
         selectedIconId = R.drawable.ic_bottom_home_select,
     ),
     BROWSE(
+        fragment = HomeFragment(),
         expression = "둘러보기",
         unselectedIconId = R.drawable.ic_bottom_look_no_select,
         selectedIconId = R.drawable.ic_bottom_look_select,
     ),
     SEARCH(
+        fragment = HomeFragment(),
         expression = "검색",
         unselectedIconId = R.drawable.ic_bottom_search_no_select,
         selectedIconId = R.drawable.ic_bottom_search_select,
     ),
     MY(
+        fragment = LockerFragment(),
         expression = "보관함",
         unselectedIconId = R.drawable.ic_bottom_locker_no_select,
         selectedIconId = R.drawable.ic_bottom_locker_select,
