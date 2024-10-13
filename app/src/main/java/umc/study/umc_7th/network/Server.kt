@@ -9,16 +9,15 @@ import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import umc.study.umc_7th.Album
+import umc.study.umc_7th.BuildConfig
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.VideoContent
 import java.time.LocalDate
 
-private const val BASE_URL = "http://10.0.2.2:8080/"
-
 val retrofitInstance: ServerEndpoint by lazy {
     val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(BuildConfig.SERVER_URL)
         .addConverterFactory(
             GsonConverterFactory.create(GsonBuilder().setLenient().create())
         )
