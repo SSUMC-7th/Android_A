@@ -47,7 +47,7 @@ class AlbumFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_album, container, false).apply {
             findViewById<ComposeView>(R.id.composeView_album).setContent {
                 AlbumScreen(
-                    album = viewModel.currentAlbum.value,
+                    album = viewModel.currentAlbum,
                     onBackButtonClicked = {
                         activity?.supportFragmentManager?.beginTransaction()
                             ?.remove(this@AlbumFragment)

@@ -21,15 +21,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import umc.study.umc_7th.Content
-import umc.study.umc_7th.main.BottomNavigationBar
 import umc.study.umc_7th.MusicContent
-import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.VideoContent
-import umc.study.umc_7th.main.album.AlbumFragment
+import umc.study.umc_7th.main.BottomNavigationBar
+import umc.study.umc_7th.main.MainActivity
 import umc.study.umc_7th.main.MainViewModel
+import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.previewPodcastContentList
 import umc.study.umc_7th.previewVideoContentList
@@ -37,6 +36,7 @@ import java.time.LocalDate
 
 class HomeFragment : Fragment() {
     private val viewModel by activityViewModels<MainViewModel>()
+    private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -51,19 +51,8 @@ class HomeFragment : Fragment() {
                     musics = viewModel.musics,
                     podcasts = viewModel.podcasts,
                     videos = viewModel.videos,
-                    onContentClicked = lambda@ { content ->
-                        if (content.javaClass != MusicContent::class.java)
-                            return@lambda
-                        else
-                            content as MusicContent
-                        val albumFragment = AlbumFragment()
-                        val bundle = Bundle()
-                        bundle.putLong("albumId", content.albumId)
-                        albumFragment.arguments = bundle
-                        activity?.supportFragmentManager?.beginTransaction()
-                            ?.replace(R.id.fragmentContainerView_main, albumFragment)
-                            ?.addToBackStack(null)
-                            ?.commit()
+                    onMusicContentClicked = lambda@ { content ->
+                        contentPlayerService.setContent(content)
                     }
                 )
             }
@@ -78,7 +67,7 @@ private fun HomeScreen(
     musics: List<MusicContent>,
     podcasts: List<PodcastContent>,
     videos: List<VideoContent>,
-    onContentClicked: (Content) -> Unit,
+    onMusicContentClicked: (MusicContent) -> Unit,
 ) {
     // 이 스크린은 목업용 화면입니다.
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -92,7 +81,7 @@ private fun HomeScreen(
                     onPlayButtonClicked = {},
                 )
             },
-            onContentClicked = onContentClicked,
+            onContentClicked = { /* TODO */ },
             onVoiceSearchButtonClicked = {},
             onSubscriptionButtonClicked = {},
             onSettingButtonClicked = {},
@@ -102,7 +91,7 @@ private fun HomeScreen(
             contentList = musics,
             globeCategory = GlobeCategory.GLOBAL,
             onViewTitleClicked = {},
-            onContentClicked = onContentClicked,
+            onContentClicked = onMusicContentClicked,
             onCategoryClicked = {},
         )
         PromotionImageBanner(
@@ -112,21 +101,21 @@ private fun HomeScreen(
         PodcastCollectionView(
             title = "매일 들어도 좋은 팟캐스트",
             contentList = podcasts,
-            onContentClicked = onContentClicked,
+            onContentClicked = { /* TODO */ },
         )
         VideoCollectionView(
             title = "비디오 콜렉션",
             contentList = videos,
-            onContentClicked = onContentClicked,
+            onContentClicked = { /* TODO */ },
         )
         PromotionImageBanner(
             image = ImageBitmap.imageResource(id = R.drawable.discovery_banner_aos),
             padding = 16.dp,
-            onClicked = {},
+            onClicked = { /* TODO */ },
         )
         PromotionImageBanner(
             image = ImageBitmap.imageResource(id = R.drawable.img_home_viewpager_exp2),
-            onClicked = {},
+            onClicked = { /* TODO */ },
         )
         Footer()
     }
@@ -161,7 +150,7 @@ fun PreviewHomeScreen() {
                 musics = previewMusicContentList,
                 podcasts = previewPodcastContentList,
                 videos = previewVideoContentList,
-                onContentClicked = {}
+                onMusicContentClicked = {},
             )
         }
     }

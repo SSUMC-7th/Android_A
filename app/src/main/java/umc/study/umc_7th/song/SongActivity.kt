@@ -1,10 +1,16 @@
 package umc.study.umc_7th.song
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,40 +30,99 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.Content
+import umc.study.umc_7th.ContentPlayerService
+import umc.study.umc_7th.R
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.util.concurrent.CountDownLatch
 
 class SongActivity: ComponentActivity() {
-    private val viewModel: SongViewModel = SongViewModel()
+    private val viewModel: SongViewModel by viewModels()
+    lateinit var contentPlayerService: ContentPlayerService
+    private val serviceBound = CountDownLatch(1)
+
+    private val connection = object: ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as ContentPlayerService.LocalBinder
+            contentPlayerService = binder.getService()
+            serviceBound.countDown()
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) = Unit
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        setContentView(R.layout.activity_song)
 
-        val contentId = intent.getLongExtra("contentId", -1L)
-        val contentType = intent.getStringExtra("contentType") ?: "Content"
+        Intent(this, ContentPlayerService::class.java).also {
+            startService(it)
+            bindService(it, connection, Context.BIND_AUTO_CREATE)
+        }
+
+        val contentId = intent.getLongExtra("content_id", -1L)
+        val contentType = intent.getStringExtra("content_type") ?: "Content"
         viewModel.getContent(
             id = contentId,
             type = Class.forName(contentType),
             onFailed = {}
         )
 
-        setContent {
+        lifecycleScope.launch(Dispatchers.IO) {
+            serviceBound.await()
+            setScreen()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(connection)
+    }
+    
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setScreen() {
+        val composeView = findViewById<ComposeView>(R.id.composeView_song)
+        composeView.setContent {
             Umc_7thTheme {
                 Scaffold { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        SongScreen(
-                            content = viewModel.content.value,
-                            onMinimizeButtonClicked = {
-                                finish()
+                        val content by contentPlayerService.currentContent.collectAsStateWithLifecycle()
+                        val isPlaying by contentPlayerService.isPlaying.collectAsStateWithLifecycle()
+                        var playingPoint by remember { mutableIntStateOf(0) }
+                        val scope = rememberCoroutineScope()
+
+                        LaunchedEffect(key1 = viewModel.content.value) {
+                            scope.launch {
+                                while (true) {
+                                    playingPoint = contentPlayerService.getPlayingTime() ?: 0
+                                    delay(100)
+                                }
                             }
+                        }
+
+                        SongScreen(
+                            content = content,
+                            playingPoint = playingPoint,
+                            isPlaying = isPlaying,
+                            onMinimizeButtonClicked = { finish() },
+                            onPlayButtonClicked = {
+                                contentPlayerService.let { service ->
+                                    if (it) service.resume()
+                                    else service.pause()
+                                }
+                            },
+                            onPlayingPointChanged = {
+                                contentPlayerService.seek(it)
+                            },
                         )
                     }
                 }
@@ -70,22 +135,12 @@ class SongActivity: ComponentActivity() {
 @Composable
 private fun SongScreen(
     content: Content?,
+    playingPoint: Int,
+    isPlaying: Boolean,
     onMinimizeButtonClicked: () -> Unit,
+    onPlayButtonClicked: (Boolean) -> Unit,
+    onPlayingPointChanged: (Int) -> Unit,
 ) {
-    var playingPoint by remember(content) { mutableIntStateOf(0) }
-    val scope = rememberCoroutineScope()
-
-    LaunchedEffect(key1 = content) {
-        scope.launch {
-            val startTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-            while (true) {
-                playingPoint = (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - startTime).toInt()
-                delay(100)
-            }
-        }
-    }
-
-    var isPlaying by remember { mutableStateOf(false) }
     var isRepeating by remember { mutableStateOf(false) }
     var isShuffling by remember { mutableStateOf(false) }
     var isLiked by remember { mutableStateOf(false) }
@@ -116,8 +171,8 @@ private fun SongScreen(
             line2 = "눈이 따끔해 아야",
             onClicked = {},
         )
-        PlayProgressControlPanel(
-            length = 181,
+        if (content != null) PlayProgressControlPanel(
+            length = content.length,
             playingPoint = playingPoint,
             isPlaying = isPlaying,
             isRepeating = isRepeating,
@@ -128,10 +183,10 @@ private fun SongScreen(
             onBlockButtonClicked = { isBlocked = it },
             onRepeatButtonClicked = { isRepeating = it },
             onShuffleButtonClicked = { isShuffling = it },
-            onPreviousButtonClicked = {},
-            onNextButtonClicked = {},
-            onPlayButtonClicked = { isPlaying = it },
-            onPlayingPointChanged = {},
+            onPreviousButtonClicked = { /* TODO */ },
+            onNextButtonClicked = { /* TODO */ },
+            onPlayButtonClicked = onPlayButtonClicked,
+            onPlayingPointChanged = onPlayingPointChanged,
         )
         FooterActionBar(
             onPlaylistButtonClicked = {},
@@ -151,7 +206,11 @@ fun PreviewSongScreen() {
 
             SongScreen(
                 content = content,
-                onMinimizeButtonClicked = {}
+                playingPoint = 20,
+                isPlaying = true,
+                onMinimizeButtonClicked = {},
+                onPlayButtonClicked = {},
+                onPlayingPointChanged = {},
             )
         }
     }
