@@ -103,7 +103,6 @@ object MockDatabase {
         )
 
         // 팟캐스트 추가
-        seq = 0
         podcasts.addAll(
             listOf(
                 PodcastContent(++seq, "김시선의 귀책사유", 7, 201, 1800, "첫 번째 팟캐스트 에피소드"),
