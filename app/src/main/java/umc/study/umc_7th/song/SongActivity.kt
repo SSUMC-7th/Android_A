@@ -67,13 +67,8 @@ class SongActivity: ComponentActivity() {
             bindService(it, connection, Context.BIND_AUTO_CREATE)
         }
 
-        val contentId = intent.getLongExtra("content_id", -1L)
-        val contentType = intent.getStringExtra("content_type") ?: "Content"
-        viewModel.getContent(
-            id = contentId,
-            type = Class.forName(contentType),
-            onFailed = {}
-        )
+        val contentId = intent.getLongExtra("contentId", -1)
+        if (contentId != -1L) viewModel.getContent(contentId)
 
         lifecycleScope.launch(Dispatchers.IO) {
             serviceBound.await()
@@ -161,7 +156,7 @@ private fun SongScreen(
         if (content != null) ContentFrame(
             title = content.title,
             author = content.author,
-            cover = content.image,
+            imageId = content.imageId,
             onAuthorNameClicked = {},
         )
         LyricsView(

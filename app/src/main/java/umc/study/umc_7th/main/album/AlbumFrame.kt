@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.R
+import umc.study.umc_7th.SuspendedImage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -44,7 +45,7 @@ import java.time.format.DateTimeFormatter
 fun AlbumFrame(
     title: String,
     author: String,
-    cover: ImageBitmap?,
+    imageId: Long,
     releasedDate: LocalDate,
     type: String,
     genre: String,
@@ -108,19 +109,20 @@ fun AlbumFrame(
                     contentDescription = null,
                 )
             }
-            if (cover != null) Image(
-                bitmap = cover,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .height(coverWidth)
-                    .clip(RoundedCornerShape(8.dp))
-                    .onGloballyPositioned {
-                        with(density) { coverWidth = it.size.width.toDp() }
-                    },
-                contentDescription = null,
-            )
-
+            SuspendedImage(id = imageId) { bitmap ->
+                if (bitmap != null) Image(
+                    bitmap = bitmap,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .height(coverWidth)
+                        .clip(RoundedCornerShape(8.dp))
+                        .onGloballyPositioned {
+                            with(density) { coverWidth = it.size.width.toDp() }
+                        },
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
@@ -132,7 +134,7 @@ fun PreviewAlbumFrame() {
     AlbumFrame(
         title = "IU 5th Album \"LILAC\"",
         author = "아이유(IU)",
-        cover = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+        imageId = -1,
         releasedDate = LocalDate.parse("2021-03-25"),
         type = "정규",
         genre = "댄스 팝",

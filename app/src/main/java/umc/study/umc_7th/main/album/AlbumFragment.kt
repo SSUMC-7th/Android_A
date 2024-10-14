@@ -24,16 +24,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import umc.study.umc_7th.Album
+import umc.study.umc_7th.AlbumContent
+import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.main.BottomNavigationBar
 import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.R
+import umc.study.umc_7th.main.MainActivity
 import umc.study.umc_7th.main.MainViewModel
-import umc.study.umc_7th.previewAlbum
+import umc.study.umc_7th.previewAlbumContent
 import umc.study.umc_7th.previewMusicContentList
 
 class AlbumFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
+    private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -41,13 +44,16 @@ class AlbumFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val albumId = arguments?.getLong("albumId")
+        val albumId = arguments?.getLong("album_id")
         if (albumId != null) viewModel.getAlbum(albumId) {}
 
         return inflater.inflate(R.layout.fragment_album, container, false).apply {
             findViewById<ComposeView>(R.id.composeView_album).setContent {
                 AlbumScreen(
                     album = viewModel.currentAlbum,
+                    onPlayContentClicked = {
+                        contentPlayerService.setContent(it)
+                    },
                     onBackButtonClicked = {
                         activity?.supportFragmentManager?.beginTransaction()
                             ?.remove(this@AlbumFragment)
@@ -63,7 +69,8 @@ class AlbumFragment : Fragment() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun AlbumScreen(
-    album: Album?,
+    album: AlbumContent?,
+    onPlayContentClicked: (MusicContent) -> Unit,
     onBackButtonClicked: () -> Unit,
 ) {
     var isMixed by remember { mutableStateOf(false) }
@@ -76,13 +83,13 @@ private fun AlbumScreen(
         TopButtonBar(
             isLiked = false,
             onBackButtonClicked = onBackButtonClicked,
-            onLikeButtonClicked = {},
-            onDetailsButtonClicked = {}
+            onLikeButtonClicked = { /* TODO */ },
+            onDetailsButtonClicked = { /* TODO */ }
         )
         if (album != null) AlbumFrame(
             title = album.title,
             author = album.author,
-            cover = album.image,
+            imageId = album.imageId,
             releasedDate = album.releasedDate,
             type = album.type,
             genre = album.genre,
@@ -92,27 +99,23 @@ private fun AlbumScreen(
                 TabItem(
                     label = "수록곡",
                     page = {
-                        if (album != null) IncludedContentsPage(
+                        if (album != null) IncludedMusicsPage(
                             contentList = album.contentList,
                             isMixed = isMixed,
-                            onPlayContentClicked = {},
-                            onContentDetailsClicked = {},
+                            onPlayContentClicked = onPlayContentClicked,
+                            onContentDetailsClicked = { /* TODO */ },
                             onMixButtonClicked = { isMixed = it },
-                            onPlayAllButtonClicked = {},
+                            onPlayAllButtonClicked = { /* TODO */ },
                         )
                     },
                 ),
                 TabItem(
                     label = "상세정보",
-                    page = {
-                        AlbumDetailsPage()
-                    },
+                    page = { AlbumDetailsPage() },
                 ),
                 TabItem(
                     label = "영상",
-                    page = {
-                        VideosPage()
-                    },
+                    page = { VideosPage() },
                 ),
             )
         )
@@ -140,8 +143,9 @@ fun PreviewAlbumScreen() {
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             AlbumScreen(
-                album = previewAlbum,
-                onBackButtonClicked = {}
+                album = previewAlbumContent,
+                onBackButtonClicked = {},
+                onPlayContentClicked = {},
             )
         }
     }

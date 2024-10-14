@@ -42,6 +42,17 @@ fun main() {
                 call.respond(musics.map { it.toResponse() })
             }
 
+            get("/album/random") {
+                val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 1
+                if (size !in 1..30) {
+                    call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
+                    return@get
+                }
+
+                val albums = MockDatabase.getRandomAlbumList(size)
+                call.respond(albums.map { it.toResponse() })
+            }
+
             get("/album/{id}") {
                 val id = call.parameters["id"]?.toLongOrNull()
                 if (id == null) {
@@ -55,7 +66,7 @@ fun main() {
                     return@get
                 }
 
-                call.respond(album.toResponse())
+                call.respond(album.toContentResponse())
             }
 
             get("/podcast/random") {
@@ -148,7 +159,7 @@ fun main() {
             get("/stream/sound/{id}") {
                 val id = call.parameters["id"]?.toLongOrNull()
                 val rangeHeader = call.request.headers["Range"]
-                if (id == null || rangeHeader == null) {
+                if (id == null) {
                     call.respondText("Invalid request", status = HttpStatusCode.BadRequest)
                     return@get
                 }
@@ -159,12 +170,17 @@ fun main() {
                     return@get
                 }
 
+                if (rangeHeader == null) {
+                    call.respondFile(file = file)
+                    return@get
+                }
+
                 val ranges = rangeHeader.removePrefix("bytes=").split("-")
                 MockStream.streamFile(
                     call = call,
                     file = file,
                     start = ranges[0].toLong(),
-                    end = if (ranges.size > 1) ranges[1].toLong() else null,
+                    end = if (ranges.size > 1) ranges[1].toLongOrNull() else null,
                 )
             }
         }

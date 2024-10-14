@@ -12,8 +12,11 @@ interface ServerEndpoint {
     @GET("/music")
     suspend fun getMusics(@Query("id") id: Long?, @Query("albumId") albumId: Long?): List<MusicContentResponse>
 
+    @GET("/album/random")
+    suspend fun getRandomAlbums(@Query("size") size: Int): List<AlbumResponse>
+
     @GET("/album/{id}")
-    suspend fun getAlbum(@Path("id") id: Long): AlbumResponse
+    suspend fun getAlbum(@Path("id") id: Long): AlbumContentResponse
 
     @GET("/podcast/random")
     suspend fun getRandomPodcasts(@Query("size") size: Int): List<PodcastContentResponse>

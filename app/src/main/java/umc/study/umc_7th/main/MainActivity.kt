@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.ContentPlayerService
+import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.song.SongActivity
 import java.util.concurrent.CountDownLatch
@@ -77,10 +78,15 @@ class MainActivity : FragmentActivity() {
                     navigate(it)
                     currentDestination = it
                 },
-                onContentClicked = { content ->
-                    Intent(this@MainActivity, SongActivity::class.java).apply {
+                onContentClicked = lambda@ { content ->
+                    Intent(
+                        this@MainActivity,
+                        when (content.javaClass) {
+                            MusicContent::class.java -> SongActivity::class.java
+                            else -> return@lambda  // TODO: 다른 콘텐츠 타입에 대한 내비게이팅 구현
+                        },
+                    ).apply {
                         putExtra("content_id", content.id)
-                        putExtra("content_type", content.javaClass.name)
                     }.also {
                         startActivity(it)
                     }

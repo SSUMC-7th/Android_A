@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.R
+import umc.study.umc_7th.SuspendedImage
 import umc.study.umc_7th.previewMusicContentList
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -65,7 +66,7 @@ data class MainBannerProps(
 fun MainBanner(
     date: LocalDate,
     propsList: List<MainBannerProps>,
-    onContentClicked: (Content) -> Unit,
+    onContentClicked: (MusicContent) -> Unit,
     onVoiceSearchButtonClicked: () -> Unit,
     onSubscriptionButtonClicked: () -> Unit,
     onSettingButtonClicked: () -> Unit,
@@ -148,7 +149,7 @@ private fun MainBannerPage(
     date: LocalDate,
     prop: MainBannerProps,
     upperPadding: Dp,
-    onContentClicked: (Content) -> Unit
+    onContentClicked: (MusicContent) -> Unit
 ) {
     Box {
         Image(
@@ -221,9 +222,9 @@ private fun MainBannerPage(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            content.image?.let { image ->
-                                Image(
-                                    bitmap = image,
+                            SuspendedImage(id = content.imageId) { bitmap ->
+                                if (bitmap != null) Image(
+                                    bitmap = bitmap,
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(40.dp)

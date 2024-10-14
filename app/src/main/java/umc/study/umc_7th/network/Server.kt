@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import umc.study.umc_7th.Album
+import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.BuildConfig
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
@@ -56,11 +57,25 @@ object Server {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getAlbum(id: Long): Album {
+    suspend fun getRandomAlbums(size: Int): List<Album> {
+        val response = retrofitInstance.getRandomAlbums(size)
+        return response.map {
+            Album(
+                id = it.id,
+                title = it.title,
+                author = it.author,
+                imageId = it.imageId,
+                releasedDate = LocalDate.parse(it.releaseDate),
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getAlbum(id: Long): AlbumContent {
         val albumResponse = retrofitInstance.getAlbum(id)
         val authorResponse = retrofitInstance.getAuthor(albumResponse.authorId)
         val musicResponseList = retrofitInstance.getMusics(id = null, albumId = id)
-        return Album(
+        return AlbumContent(
             id = albumResponse.id,
             title = albumResponse.title,
             author = authorResponse.name,

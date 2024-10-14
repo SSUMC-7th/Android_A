@@ -13,6 +13,7 @@ object MockDatabase {
     fun getPodcastById(id: Long): PodcastContent? = podcasts.find { it.id == id }
     fun getVideoById(id: Long): VideoContent? = videos.find { it.id == id }
     fun getRandomMusicList(size: Int): List<MusicContent> = List(size) { musics.random() }
+    fun getRandomAlbumList(size: Int): List<Album> = List(size) { albums.random() }
     fun getRandomPodcastList(size: Int): List<PodcastContent> = List(size) { podcasts.random() }
     fun getRandomVideoList(size: Int): List<VideoContent> = List(size) { videos.random() }
     fun getAuthorById(id: Long): Author? = authors.find { it.id == id }
@@ -53,67 +54,66 @@ object MockDatabase {
         seq = 0
         musics.addAll(
             listOf(
-                MusicContent(++seq, "Butter", 1, 101, 200, 1, 0, "SINGLE", null),
+                MusicContent(++seq, "Butter", 1, 1, 0, "SINGLE", null),
 
-                MusicContent(++seq, "라일락", 2, 102, 200, 2, 0, "TITLE", null),
-                MusicContent(++seq, "Flu", 2, 102, 200, 2, 1, null, null),
-                MusicContent(++seq, "Coin", 2, 102, 200, 2, 2, "TITLE", null),
-                MusicContent(++seq, "봄 안녕 봄", 2, 102, 200, 2, 3, null, null),
-                MusicContent(++seq, "Celebrity", 2, 102, 200, 2, 4, null, null),
-                MusicContent(++seq, "돌림노래 (feat. DEAN)", 2, 102, 200, 2, 5, null, null),
-                MusicContent(++seq, "빈 컵 (Empty Cup)", 2, 102, 200, 2, 6, null, null),
-                MusicContent(++seq, "아이와 나의 바다", 2, 102, 200, 2, 7, null, null),
-                MusicContent(++seq, "어푸 (Ah puh)", 2, 102, 200, 2, 8, null, null),
-                MusicContent(++seq, "에필로그", 2, 102, 200, 2, 9, null, null),
+                MusicContent(++seq, "라일락", 2, 2, 0, "TITLE", null),
+                MusicContent(++seq, "Flu", 2, 2, 1, null, null),
+                MusicContent(++seq, "Coin", 2, 2, 2, "TITLE", null),
+                MusicContent(++seq, "봄 안녕 봄", 2, 2, 3, null, null),
+                MusicContent(++seq, "Celebrity", 2, 2, 4, null, null),
+                MusicContent(++seq, "돌림노래 (feat. DEAN)", 2, 2, 5, null, null),
+                MusicContent(++seq, "빈 컵 (Empty Cup)", 2, 2, 6, null, null),
+                MusicContent(++seq, "아이와 나의 바다", 2, 2, 7, null, null),
+                MusicContent(++seq, "어푸 (Ah puh)", 2, 2, 8, null, null),
+                MusicContent(++seq, "에필로그", 2, 2, 9, null, null),
 
-                MusicContent(++seq, "Next Level", 3, 103, 200, 3, 0, "SINGLE", null),
+                MusicContent(++seq, "Next Level", 3, 3, 0, "SINGLE", null),
 
-                MusicContent(++seq, "Intro : Persona", 1, 104, 200, 4, 0, null, null),
-                MusicContent(++seq, "작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)", 1, 104, 200, 4, 1, "TITLE", null),
-                MusicContent(++seq, "소우주 (Mikrokosmos)", 1, 104, 200, 4, 2, null, null),
-                MusicContent(++seq, "Make It Right", 1, 104, 200, 4, 3, null, null),
-                MusicContent(++seq, "HOME", 1, 104, 200, 4, 4, null, null),
-                MusicContent(++seq, "Jamais Vu", 1, 104, 200, 4, 5, null, null),
-                MusicContent(++seq, "Dionysus", 1, 104, 200, 4, 6, null, null),
+                MusicContent(++seq, "Intro : Persona", 1, 4, 0, null, null),
+                MusicContent(++seq, "작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)", 1, 4, 1, "TITLE", null),
+                MusicContent(++seq, "소우주 (Mikrokosmos)", 1, 4, 2, null, null),
+                MusicContent(++seq, "Make It Right", 1, 4, 3, null, null),
+                MusicContent(++seq, "HOME", 1, 4, 4, null, null),
+                MusicContent(++seq, "Jamais Vu", 1, 4, 5, null, null),
+                MusicContent(++seq, "Dionysus", 1, 4, 6, null, null),
 
-                MusicContent(++seq, "BAAM", 4, 105, 200, 5, 0, "TITLE", null),
-                MusicContent(++seq, "베리 베리", 4, 105, 200, 5, 1, null, null),
-                MusicContent(++seq, "빙고게임", 4, 105, 200, 5, 2, null, null),
-                MusicContent(++seq, "Only one you", 4, 105, 200, 5, 3, null, null),
-                MusicContent(++seq, "BAAM (inst.)", 4, 105, 200, 5, 4, null, null),
+                MusicContent(++seq, "BAAM", 4, 5, 0, "TITLE", null),
+                MusicContent(++seq, "베리 베리", 4, 5, 1, null, null),
+                MusicContent(++seq, "빙고게임", 4, 5, 2, null, null),
+                MusicContent(++seq, "Only one you", 4, 5, 3, null, null),
+                MusicContent(++seq, "BAAM (inst.)", 4, 5, 4, null, null),
 
-                MusicContent(++seq, "Weekend", 5, 106, 200, 6, 0, "SINGLE", null),
+                MusicContent(++seq, "Weekend", 5, 6, 0, "SINGLE", null),
 
-                MusicContent(++seq, "해야 (HEYA)", 6, 107, 200, 7, 0, "TITLE", null),
-                MusicContent(++seq, "Accendio", 6, 107, 200, 7, 1, "TITLE", null),
-                MusicContent(++seq, "Blue Heart", 6, 107, 200, 7, 2, null, null),
-                MusicContent(++seq, "Ice Queen", 6, 107, 200, 7, 3, null, null),
-                MusicContent(++seq, "WOW", 6, 107, 200, 7, 4, null, null),
-                MusicContent(++seq, "RESET", 6, 107, 200, 7, 5, null, null),
+                MusicContent(++seq, "해야 (HEYA)", 6, 7, 0, "TITLE", null),
+                MusicContent(++seq, "Accendio", 6, 7, 1, "TITLE", null),
+                MusicContent(++seq, "Blue Heart", 6, 7, 2, null, null),
+                MusicContent(++seq, "Ice Queen", 6, 7, 3, null, null),
+                MusicContent(++seq, "WOW", 6, 7, 4, null, null),
+                MusicContent(++seq, "RESET", 6, 7, 5, null, null),
 
-                MusicContent(++seq, "Love wins all", 2, 108, 200, 8, 0, null, null),
+                MusicContent(++seq, "Love wins all", 2, 8, 0, null, null),
 
-                MusicContent(++seq, "Drama", 3, 109, 200, 9, 0, "TITLE", null),
-                MusicContent(++seq, "Trick or Trick", 3, 109, 200, 9, 1, null, null),
-                MusicContent(++seq, "Don't Blink", 3, 109, 200, 9, 2, null, null),
-                MusicContent(++seq, "Hot Air Balloon", 3, 109, 200, 9, 3, null, null),
-                MusicContent(++seq, "YOLO", 3, 109, 200, 9, 4, null, null),
-                MusicContent(++seq, "You", 3, 109, 200, 9, 5, null, null),
+                MusicContent(++seq, "Drama", 3, 9, 0, "TITLE", null),
+                MusicContent(++seq, "Trick or Trick", 3, 9, 1, null, null),
+                MusicContent(++seq, "Don't Blink", 3, 9, 2, null, null),
+                MusicContent(++seq, "Hot Air Balloon", 3, 9, 3, null, null),
+                MusicContent(++seq, "YOLO", 3, 9, 4, null, null),
+                MusicContent(++seq, "You", 3, 9, 5, null, null),
             )
         )
 
         // 팟캐스트 추가
         podcasts.addAll(
             listOf(
-                PodcastContent(++seq, "김시선의 귀책사유", 7, 201, 1800, "첫 번째 팟캐스트 에피소드"),
+                PodcastContent(++seq, "김시선의 귀책사유", 7, 201, "첫 번째 팟캐스트 에피소드"),
             )
         )
 
         // 비디오 추가
-        seq = 0
         videos.addAll(
             listOf(
-                VideoContent(++seq, "비디오 컨텐츠", 8, 301, 600),
+                VideoContent(++seq, "비디오 컨텐츠", 8, 301),
             )
         )
     }

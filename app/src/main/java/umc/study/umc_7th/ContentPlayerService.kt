@@ -14,11 +14,9 @@ class ContentPlayerService: Service() {
     private var mediaPlayer: MediaPlayer? = null
 
     private val _currentContent = MutableStateFlow<Content?>(null)
-    private val _currentPlayingPoint = MutableStateFlow(0)
     private val _isPlaying = MutableStateFlow(false)
 
     val currentContent: StateFlow<Content?> = _currentContent.asStateFlow()
-    val currentPlayingPoint: StateFlow<Int> = _currentPlayingPoint.asStateFlow()
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
     private val binder = LocalBinder()
@@ -35,8 +33,7 @@ class ContentPlayerService: Service() {
     }
 
     fun setContent(content: Content, startPoint: Int = 0  /* 단위: 초 */) {
-        // val url = "${BuildConfig.SERVER_URL}/stream/sound/${content.id}"
-        val url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        val url = "${BuildConfig.SERVER_URL}/stream/sound/${content.id}"
 
         _currentContent.value = null
         mediaPlayer?.release()

@@ -42,12 +42,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.Album
+import umc.study.umc_7th.Authorized
 import umc.study.umc_7th.Content
-import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
+import umc.study.umc_7th.SuspendedImage
 import umc.study.umc_7th.VideoContent
-import umc.study.umc_7th.previewMusicContentList
+import umc.study.umc_7th.Viewable
+import umc.study.umc_7th.previewAlbumContent
 import umc.study.umc_7th.previewPodcastContentList
 import umc.study.umc_7th.previewVideoContentList
 
@@ -60,12 +63,12 @@ enum class GlobeCategory(
 }
 
 @Composable
-fun GlobeCategorizedMusicCollectionView(
+fun GlobeCategorizedAlbumCollectionView(
     title: String,
-    contentList: List<MusicContent>,
+    contentList: List<Album>,
     globeCategory: GlobeCategory,
     onViewTitleClicked: () -> Unit,
-    onContentClicked: (MusicContent) -> Unit,
+    onAlbumClicked: (Album) -> Unit,
     onCategoryClicked: (GlobeCategory) -> Unit,
 ) {
     ContentCollectionView(
@@ -126,9 +129,9 @@ fun GlobeCategorizedMusicCollectionView(
             Box(
                 contentAlignment = Alignment.BottomEnd,
             ) {
-                content.image?.let { image ->
-                    Image(
-                        bitmap = image,
+                SuspendedImage(id = content.imageId) { bitmap ->
+                    if (bitmap != null) Image(
+                        bitmap = bitmap,
                         contentScale = ContentScale.Crop,
                         contentDescription = null,
                         modifier = Modifier
@@ -144,7 +147,7 @@ fun GlobeCategorizedMusicCollectionView(
                 )
             }
         },
-        onContentClicked = onContentClicked,
+        onContentClicked = onAlbumClicked,
     )
 }
 
@@ -173,9 +176,9 @@ fun PodcastCollectionView(
             }
         },
         thumbnail = { content ->
-            content.image?.let { image ->
-                Image(
-                    bitmap = image,
+            SuspendedImage(id = content.imageId) { bitmap ->
+                if (bitmap != null) Image(
+                    bitmap = bitmap,
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
@@ -214,9 +217,9 @@ fun VideoCollectionView(
         },
         thumbnail = { content ->
             Box(contentAlignment = Alignment.BottomEnd) {
-                content.image?.let { image ->
-                    Image(
-                            bitmap = image,
+                SuspendedImage(id = content.imageId) { bitmap ->
+                    if (bitmap != null) Image(
+                            bitmap = bitmap,
                             contentScale = ContentScale.FillHeight,
                             contentDescription = null,
                             modifier = Modifier
@@ -246,12 +249,12 @@ fun VideoCollectionView(
 }
 
 @Composable
-private fun <T: Content> ContentCollectionView(
+private fun <T>ContentCollectionView(
     contentList: List<T>,
     titleBar: @Composable () -> Unit, // 제목 바에 그려질 컴포저블
     thumbnail: @Composable (T) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
     onContentClicked: (T) -> Unit
-) {
+) where T: Viewable, T: Authorized {
     val density = LocalDensity.current
     var contentWidth by remember { mutableStateOf(0.dp) }
 
@@ -328,12 +331,21 @@ private fun <T: Content> ContentCollectionView(
 @Preview(showBackground = true)
 @Composable
 fun PreviewGlobeCategorizedMusicCollectionView() {
-    GlobeCategorizedMusicCollectionView(
+    GlobeCategorizedAlbumCollectionView(
         title = "오늘 발매 음악",
-        contentList = previewMusicContentList,
+        contentList = List(10) {
+            val album = previewAlbumContent
+            Album(
+                id = album.id,
+                title = album.title,
+                author = album.author,
+                imageId = album.imageId,
+                releasedDate = album.releasedDate,
+            )
+        },
         globeCategory = GlobeCategory.GLOBAL,
         onViewTitleClicked = {},
-        onContentClicked = {},
+        onAlbumClicked = {},
         onCategoryClicked = {},
     )
 }

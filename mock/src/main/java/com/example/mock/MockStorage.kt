@@ -24,7 +24,7 @@ object MockStorage {
         images[301] = "img_video_exp.png"
 
         // 음성 콘텐츠 매핑
-        repeat(100) { sounds[it.toLong()] = "test.mp3" }
+        repeat(100) { sounds[it.toLong()] = "test.wav" }
     }
 
     fun getImageFile(imageId: Long): File? {
