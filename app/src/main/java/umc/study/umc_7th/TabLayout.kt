@@ -76,7 +76,9 @@ fun TabLayout() {
                     ),
                     playButtonClick = { /*TODO*/ },
                     playAllButtonClick = { /*TODO*/ },
-                    selectAllButtonClick = { /*TODO*/ }){}
+                    selectAllButtonClick = { /*TODO*/ },
+                    mixButtonClick = {},
+                    moreInfoButtonClick = {})
                 1 -> Text("상세정보 내용", modifier = Modifier.padding(16.dp))
                 2 -> Text("영상 내용", modifier = Modifier.padding(16.dp))
             }
