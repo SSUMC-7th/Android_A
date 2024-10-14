@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.Home
 
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +21,10 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import umc.study.umc_7th.BottomNavigationBar
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.NavigationDestination
+import umc.study.umc_7th.R
 import java.time.LocalDate
 
 class HomeFragment : Fragment() {
