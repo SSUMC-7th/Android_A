@@ -12,6 +12,8 @@ pluginManagement {
     }
     plugins {
         kotlin("jvm") version "2.0.21"
+        // alias(libs.plugins.android.application)
+        // alias(libs.plugins.jetbrains.kotlin.android)
     }
 }
 
@@ -30,3 +32,4 @@ dependencyResolutionManagement {
 rootProject.name = "umc_7th"
 include(":app")
 include(":mock")
+include(":timer")
