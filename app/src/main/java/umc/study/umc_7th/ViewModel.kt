@@ -27,7 +27,7 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
     private val _replay = MutableLiveData(false)
     open val replay : LiveData<Boolean> = _replay
 
-    private val _played = MutableLiveData(true)
+    private val _played = MutableLiveData(false)
     open val played : LiveData<Boolean> = _played
 
     private val _duration = MutableLiveData(200f)
@@ -64,4 +64,29 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
 class MyApplication : Application() {
     val songViewModel : SongViewModel by lazy { SongViewModel(this) }
 
+}
+
+//프리뷰 데이터를 위한 가짜 뷰 모델 생성
+class FakeSongViewModel(application: Application) : SongViewModel(application) {
+    override val replay = MutableLiveData(false)
+    override val played = MutableLiveData(true)
+    override val shuffle = MutableLiveData(false)
+    override val currentPosition = MutableLiveData(0f)
+    override val duration = MutableLiveData(200f)
+
+    override fun updatePosition(newPosition: Float) {
+        currentPosition.value = newPosition
+    }
+
+    override fun toggleReplay() {
+        replay.value = replay.value?.not()
+    }
+
+    override fun togglePlayed() {
+        played.value = played.value?.not()
+    }
+
+    override fun toggleShuffle() {
+        shuffle.value = shuffle.value?.not()
+    }
 }

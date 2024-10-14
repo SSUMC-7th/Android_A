@@ -1,5 +1,6 @@
 package umc.study.umc_7th
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -77,12 +78,13 @@ fun MiniPlayer(
                     modifier = Modifier
                         .size(50.dp)
                         .clickable { beforeSongPlayButtonClick() })
-                Icon(painter = painterResource(id = if(played) R.drawable.btn_miniplayer_play
-                else R.drawable.btn_miniplay_pause),
+                Icon(painter = painterResource(id = if(played) R.drawable.btn_miniplay_pause
+                else R.drawable.btn_miniplayer_play),
                     contentDescription = null,
                     modifier = Modifier
                         .size(50.dp)
-                        .clickable { viewModel.togglePlayed() })
+                        .clickable { viewModel.togglePlayed()
+                        playSongButtonClick()})
                 Icon(painter = painterResource(id = R.drawable.btn_miniplayer_next),
                     contentDescription = null,
                     modifier = Modifier
@@ -103,8 +105,9 @@ fun MiniPlayer(
 @Preview(showBackground = true)
 @Composable
 fun PreviewMiniPlayer(){
+    val fakeSongViewModel = FakeSongViewModel(application = Application())
     MiniPlayer(
-        viewModel = viewModel(),
+        viewModel = fakeSongViewModel,
         content = Content(
             title = "LILAC",
             author = "IU",

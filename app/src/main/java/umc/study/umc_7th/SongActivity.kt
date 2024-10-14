@@ -92,19 +92,7 @@ class SongActivity : ComponentActivity() {
                                 val intent = Intent(this@SongActivity, MainActivity::class.java)
                                 startActivity(intent)
                                 finish()
-                            },
-                            likeClick = { /*TODO*/ },
-                            unLikeButtonClick = { /*TODO*/ },
-                            replayButtonClick = { /*TODO*/ },
-                            songPlayButtonClick = {  }, // 여기에 실행 동작 추가 하면되는데..
-                            beforeSongPlayClick = { /*TODO*/ },
-                            nextSongPlayClick = { /*TODO*/ },
-                            shuffleClick = { /*TODO*/ },
-                            instagramShareClick = { /*TODO*/ },
-                            similarSongButtonClick = { /*TODO*/ },
-                            musicQueueClick = { /*TODO*/ }) {
-
-                        }
+                            },)
                     }
 
                 }
@@ -116,25 +104,13 @@ class SongActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun SongPlayerScreen(
     viewModel: SongViewModel,
     content : Content,
-    likeClick : () -> Unit,
     toMainActivity : () -> Unit,
-    unLikeButtonClick: () -> Unit,
-    replayButtonClick: () -> Unit,
-    songPlayButtonClick: () -> Unit,
-    beforeSongPlayClick : () -> Unit,
-    nextSongPlayClick : () -> Unit,
-    shuffleClick: () -> Unit,
-    instagramShareClick: () -> Unit,
-    similarSongButtonClick : () -> Unit,
-    musicQueueClick : () -> Unit,
-    toSingerinfoClick: ()-> Unit,
-
     ){
     Column (modifier = Modifier
         .verticalScroll(rememberScrollState())
@@ -160,124 +136,18 @@ fun SongPlayerScreen(
 
         Lyric(lyric1 = "내리는 꽃가루에", lyric2 = "눈이 따끔해 아야")
 
-
-
-        val replay by viewModel.replay.observeAsState(false)
-        val played by viewModel.played.observeAsState(true)
-        val shuffle by viewModel.shuffle.observeAsState(false)
-        val currentPosition by viewModel.currentPosition.observeAsState(0f)
-        val duration by viewModel.duration.observeAsState(1f)
-
-        var progress by remember { mutableStateOf(0f) }
-
-        LaunchedEffect(played){
-            if(!played){
-                while (!played && currentPosition < duration){
-                    delay(1000L)
-                    viewModel.updatePosition(currentPosition+1f)
-                }
-            }
-        }
-        progress = currentPosition / duration
-        Slider(
-            value = progress,
-            onValueChange = { newProgress ->
-                viewModel.updatePosition(newProgress * duration)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(3.dp),
-            thumb = {
-
-            },
+        PlayProgressBar(
+            viewModel = viewModel,
+            beforeSongPlayClick = { /*TODO*/ },
+            songPlayButtonClick = { /*TODO*/ },
+            nextSongPlayClick = {}
         )
-        Row(
-
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Text(text = formatTime(currentPosition), fontSize = 12.sp)
-            Text(text = formatTime(duration), fontSize = 12.sp)
+        SongSnsBar(
+            instagramShareClick = { /*TODO*/ },
+            similarSongButtonClick = { /*TODO*/ },
+            musicQueueClick ={}
+        )
         }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 60.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ){
-
-            Icon(
-                painter = painterResource(id = R.drawable.nugu_btn_repeat_inactive),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(65.dp)
-                    .padding(10.dp)
-                    .clickable { viewModel.toggleReplay() }
-                    , tint = if (replay) Color.Blue else Color.Black
-            )
-
-            Icon(
-                painter = painterResource(id = R.drawable.nugu_btn_skip_previous_32),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(65.dp)
-                    .padding(10.dp)
-                    .clickable { beforeSongPlayClick() }
-            )
-
-            Icon(
-                painter = painterResource(id = if(played) R.drawable.nugu_btn_play_32
-                else R.drawable.nugu_btn_pause_32),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(65.dp)
-                    .padding(10.dp)
-                    .clickable {
-                        viewModel.togglePlayed()
-                        songPlayButtonClick()
-                    }
-            )
-
-            Icon(
-                painter = painterResource(id = R.drawable.nugu_btn_skip_next_32),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(65.dp)
-                    .padding(10.dp)
-                    .clickable { nextSongPlayClick() }
-            )
-
-            Icon(
-                painter = painterResource(id = R.drawable.nugu_btn_random_inactive),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(65.dp)
-                    .padding(10.dp)
-                    .clickable { viewModel.toggleShuffle() },
-                tint = if (shuffle) Color.Blue else Color.Black
-            )
-
-        }
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-
-            ){
-            listOf(
-                instagramShareClick to R.drawable.btn_actionbar_instagram,
-                similarSongButtonClick to R.drawable.btn_player_related,
-                musicQueueClick to R.drawable.btn_player_go_list
-            ).forEach { (onClick, icon) ->
-                Icon(painter = painterResource(id = icon),
-                    contentDescription =null,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clickable { onClick() })
-            }
-
-        }}
     }
 
 
@@ -300,43 +170,8 @@ fun PreviewSongPlayerScreen(){
             R.drawable.img_album_exp2,
             200
         ),
-
         toMainActivity = {},
-        likeClick = { /*TODO*/ },
-        unLikeButtonClick = { /*TODO*/ },
-        replayButtonClick = {  },
-        songPlayButtonClick = { /*TODO*/ },
-        beforeSongPlayClick = { /*TODO*/ },
-        nextSongPlayClick = { /*TODO*/ },
-        shuffleClick = { /*TODO*/ },
-        instagramShareClick = { /*TODO*/ },
-        similarSongButtonClick = { /*TODO*/ },
-        musicQueueClick = {},
-        toSingerinfoClick = {/*TODO*/},)
+        )
 }
 
 
-//프리뷰 데이터를 위한 가짜 뷰 모델 생성
-class FakeSongViewModel(application: Application) : SongViewModel(application) {
-    override val replay = MutableLiveData(false)
-    override val played = MutableLiveData(true)
-    override val shuffle = MutableLiveData(false)
-    override val currentPosition = MutableLiveData(0f)
-    override val duration = MutableLiveData(200f)
-
-    override fun updatePosition(newPosition: Float) {
-        currentPosition.value = newPosition
-    }
-
-    override fun toggleReplay() {
-        replay.value = replay.value?.not()
-    }
-
-    override fun togglePlayed() {
-        played.value = played.value?.not()
-    }
-
-    override fun toggleShuffle() {
-        shuffle.value = shuffle.value?.not()
-    }
-}
