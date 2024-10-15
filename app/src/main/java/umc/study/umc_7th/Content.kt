@@ -1,40 +1,71 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.umc.study.umc_7th
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import java.io.Serializable
 import java.time.LocalDate
 
-sealed interface Content: Serializable {
+
+sealed interface Identifiable: Serializable {
     val id: Long
+}
+
+sealed interface Playable: Identifiable, Serializable {
+    val length: Int
+}
+
+sealed interface Viewable: Identifiable, Serializable {
+    val imageId: Long
+}
+
+sealed interface Authorized: Identifiable, Serializable {
     val title: String
     val author: String
-    val imageId: Long
-    val image: ImageBitmap?
-    val length: Int  // 단위: 초
 }
 
 data class Album(
-    val id: Long,
-    val title: String,
-    val author: String,
-    val imageId: Long,
-    val image: ImageBitmap? = null,
+    override val id: Long,
+    override val title: String,
+    override val author: String,
+    override val imageId: Long,
+    val releasedDate: LocalDate,
+): Authorized, Viewable, Serializable
+
+sealed interface Content: Playable, Viewable, Authorized, Serializable {
+    override val id: Long
+    override val title: String
+    override val author: String
+    override val imageId: Long
+    override val length: Int
+}
+
+data class AlbumContent(
+    override val id: Long,
+    override val title: String,
+    override val author: String,
+    override val imageId: Long,
     val type: String,
     val genre: String,
     val releasedDate: LocalDate,
     val contentList: List<MusicContent>,
-): Serializable
+): Content, Serializable {
+    override val length: Int = contentList.sumOf { it.length }
+
+    fun toAlbum() = Album(
+        id = id,
+        title = title,
+        author = author,
+        imageId = imageId,
+        releasedDate = releasedDate,
+    )
+}
 
 data class MusicContent(
     override val id: Long,
     override val title: String,
     override val author: String,
     override val imageId: Long,
-    override val image: ImageBitmap? = null,
     override val length: Int,
     val albumId: Long,
     val label: String? = null,
@@ -45,7 +76,6 @@ data class PodcastContent(
     override val title: String,
     override val author: String,
     override val imageId: Long,
-    override val image: ImageBitmap? = null,
     override val length: Int,
     val description: String?,
 ): Content, Serializable
@@ -55,17 +85,15 @@ data class VideoContent(
     override val title: String,
     override val author: String,
     override val imageId: Long,
-    override val image: ImageBitmap? = null,
     override val length: Int,
 ): Content, Serializable
 
 
-val previewAlbum @RequiresApi(Build.VERSION_CODES.O) @Composable get() = Album(
+val previewAlbumContent @RequiresApi(Build.VERSION_CODES.O) @Composable get() = AlbumContent(
     id = 100,
     title = "IU 5th Album \"LILAC\"",
     author = "아이유(IU)",
-    imageId = 100,
-    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+    imageId = -1,
     type = "정규",
     genre = "댄스 팝",
     releasedDate = LocalDate.of(2023, 1, 1),
@@ -88,8 +116,7 @@ val previewMusicContentList @Composable get() = listOf(
         id = 100,
         title = title,
         author = "아이유(IU)",
-        imageId = 101,
-        image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+        imageId = -1,
         length = 210,
         albumId = 100,
         label = if (index == 0 || index == 2) "TITLE" else null
@@ -101,8 +128,7 @@ val previewPodcastContentList @Composable get() = List(15) {
         id = 100,
         title = "김시선의 귀책사유 FLO X 윌라",
         author = "김시선",
-        imageId = 100,
-        image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
+        imageId = -2,
         length = 200,
         description = null,
     )
@@ -113,8 +139,7 @@ val previewVideoContentList @Composable get() = List(15) {
         id = 100,
         title = "제목",
         author = "지은이",
-        imageId = 100,
-        image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
+        imageId = -3,
         length = 200,
     )
 }

@@ -25,10 +25,10 @@ class StopwatchActivity : ComponentActivity() {
 @Composable
 fun TimerScreen() {
     // 상태 변수 선언
-    var timeInMillis by remember { mutableStateOf(0L) }
-    var isRunning by remember { mutableStateOf(false) }
+    var timeInMillis by remember { mutableStateOf(0L) } // 타이머의 시간을 저장, 실시간으로 업데이트
+    var isRunning by remember { mutableStateOf(false) } // 타이머가 실행 중인지 여부를 나타내는 상태 변수
     val coroutineScope = rememberCoroutineScope()  // CoroutineScope 유지
-    var job by remember { mutableStateOf<Job?>(null) }  // Job 관리용
+    var job by remember { mutableStateOf<Job?>(null) }  // Job 관리용(현재 실행중인 Coroutine을 추적하여 중지할 때 사용
 
     // UI 레이아웃 구성
     Column(
@@ -53,7 +53,7 @@ fun TimerScreen() {
                 if (isRunning) {
                     stopTimer(job)  // 타이머 멈춤
                 } else {
-                    startTimer(coroutineScope, timeInMillis) { elapsedTime ->
+                    job = startTimer(coroutineScope, timeInMillis) { elapsedTime -> // job 선언을 명시하 않음 바보 자식!
                         timeInMillis = elapsedTime
                     }
                 }
@@ -78,9 +78,9 @@ fun TimerScreen() {
 
 // 타이머 시작 함수
 fun startTimer(
-    scope: CoroutineScope,
+    scope: CoroutineScope, // 비동기 작업으로 타이머를 시작
     currentTime: Long,
-    onTick: (Long) -> Unit
+    onTick: (Long) -> Unit // 콜백을 통해 시간이 변경될 때마다 UI에 반영
 ): Job {
     val startTime = System.currentTimeMillis() - currentTime
     return scope.launch {
