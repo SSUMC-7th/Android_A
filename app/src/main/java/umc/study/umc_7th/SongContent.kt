@@ -166,7 +166,13 @@ fun Album() {
             }
         }
 
-        MusicProgressBar(currentTime = currentTime, totalTime = totalTime)
+        MusicProgressBar(
+            currentTime = currentTime,
+            totalTime = totalTime,
+            onValueChange = { newValue ->
+                currentTime = newValue
+            }
+            )
         
         Row() {
             IconButton(onClick = { /*TODO*/ }) {
@@ -240,7 +246,11 @@ fun BottomBar() {
 }
 
 @Composable
-fun MusicProgressBar(currentTime: Float, totalTime: Float) {
+fun MusicProgressBar(
+    currentTime: Float,
+    totalTime: Float,
+    onValueChange: (Float) -> Unit
+    ) {
 
     Column(
         modifier = Modifier
@@ -252,7 +262,9 @@ fun MusicProgressBar(currentTime: Float, totalTime: Float) {
         // 프로그레스 바
         Slider(
             value = currentTime,
-            onValueChange = {},
+            onValueChange = { newValue ->
+                onValueChange(newValue)
+            },
             valueRange = 0f..totalTime,
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
