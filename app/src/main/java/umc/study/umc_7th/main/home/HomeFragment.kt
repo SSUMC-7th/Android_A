@@ -151,6 +151,7 @@ fun PreviewHomeScreen() {
                 currentDestination = NavigationDestination.HOME,
                 currentContent = null,
                 isPlaying = false,
+                playingPoint = 50,
             )
         }
     ) { innerPadding ->

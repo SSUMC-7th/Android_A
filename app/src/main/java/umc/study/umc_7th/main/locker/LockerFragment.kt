@@ -74,6 +74,7 @@ fun PreviewLockerScreen() {
                 currentDestination = NavigationDestination.HOME,
                 currentContent = previewMusicContentList.random(),
                 isPlaying = false,
+                playingPoint = 50,
             )
         }
     ) { innerPadding ->

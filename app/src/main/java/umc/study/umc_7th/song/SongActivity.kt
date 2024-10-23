@@ -19,12 +19,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.ContentPlayerService
@@ -90,21 +86,11 @@ class SongActivity: ComponentActivity() {
                     Box(modifier = Modifier.padding(innerPadding)) {
                         val content by contentPlayerService.currentContent.collectAsStateWithLifecycle()
                         val isPlaying by contentPlayerService.isPlaying.collectAsStateWithLifecycle()
-                        var playingPoint by remember { mutableIntStateOf(0) }
-                        val scope = rememberCoroutineScope()
-
-                        LaunchedEffect(key1 = viewModel.content.value) {
-                            scope.launch {
-                                while (true) {
-                                    playingPoint = contentPlayerService.getPlayingTime() ?: 0
-                                    delay(100)
-                                }
-                            }
-                        }
+                        val playingPoint by contentPlayerService.playingPoint.collectAsStateWithLifecycle()
 
                         SongScreen(
                             content = content,
-                            playingPoint = playingPoint,
+                            playingPoint = playingPoint ?: 0,
                             isPlaying = isPlaying,
                             onMinimizeButtonClicked = { finish() },
                             onPlayButtonClicked = {
