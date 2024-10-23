@@ -6,18 +6,26 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class ContentPlayerService: Service() {
     private var mediaPlayer: MediaPlayer? = null
+    private lateinit var timer: Job
 
     private val _currentContent = MutableStateFlow<Content?>(null)
     private val _isPlaying = MutableStateFlow(false)
+    private val _playingPoint = MutableStateFlow<Int?>(0)
 
     val currentContent: StateFlow<Content?> = _currentContent.asStateFlow()
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+    val playingPoint: StateFlow<Int?> = _playingPoint.asStateFlow()
 
     private val binder = LocalBinder()
     inner class LocalBinder: Binder() {
@@ -26,6 +34,17 @@ class ContentPlayerService: Service() {
 
     override fun onBind(intent: Intent): IBinder {
         return binder
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        timer = CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                _playingPoint.value = mediaPlayer?.currentPosition?.div(1000)
+                delay(100)
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -72,14 +91,6 @@ class ContentPlayerService: Service() {
 
     fun seek(position: Int /* 단위: 초 */) {
         mediaPlayer?.seekTo(position * 1000)
-    }
-
-    fun getPlayingTime(): Int? /* 단위: 초 */ {
-        return mediaPlayer?.currentPosition?.div(1000)
-    }
-
-    fun getDuration(): Int? /* 단위: 초 */ {
-        return mediaPlayer?.duration?.div(1000)
     }
 
     override fun onDestroy() {

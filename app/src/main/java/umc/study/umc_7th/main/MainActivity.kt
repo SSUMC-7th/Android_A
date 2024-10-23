@@ -69,10 +69,12 @@ class MainActivity : FragmentActivity() {
             var currentDestination by remember { mutableStateOf(NavigationDestination.HOME) }
             val currentContent by contentPlayerService.currentContent.collectAsStateWithLifecycle()
             val isPlaying by contentPlayerService.isPlaying.collectAsStateWithLifecycle()
+            val playingPoint by contentPlayerService.playingPoint.collectAsStateWithLifecycle()
 
             BottomNavigationBar(
                 currentDestination = currentDestination,
                 currentContent = currentContent,
+                playingPoint = playingPoint,
                 isPlaying = isPlaying,
                 onDestinationClicked = {
                     navigate(it)
