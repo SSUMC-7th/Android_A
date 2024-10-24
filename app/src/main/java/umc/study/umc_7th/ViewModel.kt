@@ -5,6 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 open class SongViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -39,14 +43,34 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
     private val _shuffle = MutableLiveData(false)
     open val shuffle : LiveData<Boolean> = _shuffle
 
-
+    private var playbackJob : Job? = null
 
     open fun toggleReplay() {
         _replay.value = _replay.value != true
     }
     open fun togglePlayed() {
         _played.value = _played.value != true
+
+        if (_played.value == true) {
+            startPlayback()
+        }else {
+            stopPlayedback()
+        }
     }
+
+    private fun startPlayback(){
+        playbackJob?.cancel()
+        playbackJob = viewModelScope.launch {
+            while (_played.value == true && _currentPosition.value!! < _duration.value!!){
+                delay(1000L)
+                _currentPosition.value = _currentPosition.value!! + 1f
+            }
+        }
+    }
+    private fun stopPlayedback(){
+        playbackJob?.cancel()
+    }
+
     open fun toggleShuffle() {
         _shuffle.value = _shuffle.value != true
     }
@@ -56,6 +80,11 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
     fun setDuration(duration: Float){
         _duration.value = duration
     }
+    fun resetProgress(){ // 그 .. beforeSongPlayClick() 에 넣어줄 것
+        _currentPosition.value = 0f
+    }
+
+
 
 
 
