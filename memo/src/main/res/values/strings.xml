@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Memo</string>
+    <string name="memo">Memo</string>
+    <string name="confirm">Confirm</string>
+    <string name="hint">Memo here..</string>
+    <string name="done">Done</string>
+    <string name="back">Back</string>
+    <string name="rewrite_confirm">Do you want to rewrite?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>
