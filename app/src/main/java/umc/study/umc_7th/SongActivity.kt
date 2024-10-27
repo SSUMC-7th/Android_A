@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 class SongActivity : ComponentActivity() {
@@ -31,7 +30,7 @@ fun SongScreen(viewModel: MusicViewModel) {
         modifier = Modifier.fillMaxSize()
     ) {
         TopButtonsView()
-        Album(viewModel = MusicViewModel())
+        Album(viewModel = viewModel)
         BottomBar()
     }
 }
