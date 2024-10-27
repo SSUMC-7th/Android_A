@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +31,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,15 +48,16 @@ class MainActivity : ComponentActivity() {
     fun Context.showToast(message: String?, duration: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(this@MainActivity, message, duration).show()
     }
-    
+
+    private val viewModel: MusicViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         setContent {
             Umc_7thTheme {
-                MyApp()
+                MyApp(viewModel = viewModel)
             }
         }
     }
@@ -72,7 +76,7 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MyApp() {
+fun MyApp(viewModel: MusicViewModel) {
     // 네비게이션 컨트롤러 생성
     val navController = rememberNavController()
     var currentDestination by remember { mutableStateOf(NavigationDestination.HOME) }
@@ -93,7 +97,7 @@ fun MyApp() {
             startDestination = NavigationDestination.HOME.expression,
             Modifier.padding(innerPadding)
         ) {
-            composable(NavigationDestination.HOME.expression) { HomeScreen(navController) }
+            composable(NavigationDestination.HOME.expression) { HomeScreen(navController, viewModel = viewModel) }
             composable(NavigationDestination.LOOK.expression) {  }
             composable(NavigationDestination.SEARCH.expression) { }
             composable(NavigationDestination.MY.expression) { LockerScreen() }
@@ -104,12 +108,14 @@ fun MyApp() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
+    val currentTime by viewModel.currentTime.collectAsState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(songTitle, songAuthor)
+                MiniPlayer(viewModel = viewModel, progress = currentTime, songTitle, songAuthor)
             }
         }
     ) { innerPadding ->
@@ -205,6 +211,6 @@ fun LockerScreen() {
 @Composable
 fun MyAppPreview(widthDp: Dp = 412.dp, heightDp: Dp = 915.dp) {
     Umc_7thTheme {
-        MyApp()
+        MyApp(viewModel = MusicViewModel())
     }
 }

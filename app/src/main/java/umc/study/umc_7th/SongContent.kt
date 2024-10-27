@@ -82,7 +82,7 @@ fun TopButtonsView() {
 }
 
 @Composable
-fun Album() {
+fun Album(viewModel: MusicViewModel) {
 
     var isColorful_like by remember { mutableStateOf(false) }
     var isColorful_unlike by remember { mutableStateOf(false) }
@@ -166,13 +166,44 @@ fun Album() {
             }
         }
 
-        MusicProgressBar(
-            currentTime = currentTime,
-            totalTime = totalTime,
-            onValueChange = { newValue ->
-                currentTime = newValue
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp), // 여백 추가
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // 프로그레스 바
+            Slider(
+                value = currentTime,
+                onValueChange = { value ->
+                    currentTime = value
+                    viewModel.updateCurrentTime(value)
+                },
+                valueRange = 0f..totalTime,
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.primary,
+                    activeTrackColor = MaterialTheme.colorScheme.primary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                )
             )
+
+            // 현재 시간과 전체 시간을 표시하는 텍스트
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = formatTime(currentTime),
+                    fontSize = 14.sp,
+                    color = Purple40
+                )
+                Text(
+                    text = formatTime(totalTime),
+                    fontSize = 14.sp
+                )
+            }
+        }
         
         Row() {
             IconButton(onClick = { /*TODO*/ }) {
@@ -191,7 +222,11 @@ fun Album() {
                     contentDescription = "previous"
                 )
             }
-            IconButton(onClick = { isPlay = !isPlay }) {
+            IconButton(onClick =
+            {
+                isPlay = !isPlay
+                viewModel.togglePlayPause()
+            } ) {
                 Icon(
                     painter = painterResource(id = if (isPlay) R.drawable.btn_miniplay_pause else R.drawable.nugu_btn_play_32),
                     contentDescription = "play"
@@ -245,51 +280,6 @@ fun BottomBar() {
     }
 }
 
-@Composable
-fun MusicProgressBar(
-    currentTime: Float,
-    totalTime: Float,
-    onValueChange: (Float) -> Unit
-    ) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp), // 여백 추가
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // 프로그레스 바
-        Slider(
-            value = currentTime,
-            onValueChange = { newValue ->
-                onValueChange(newValue)
-            },
-            valueRange = 0f..totalTime,
-            colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.primary,
-                activeTrackColor = MaterialTheme.colorScheme.primary,
-                inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-            )
-        )
-
-        // 현재 시간과 전체 시간을 표시하는 텍스트
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = formatTime(currentTime),
-                fontSize = 14.sp,
-                color = Purple40
-            )
-            Text(
-                text = formatTime(totalTime),
-                fontSize = 14.sp
-            )
-        }
-    }
-}
 
 fun formatTime(seconds: Float): String {
     val totalSeconds = seconds.toInt()
@@ -307,7 +297,7 @@ fun PreviewTopButtonsView() {
 @Preview
 @Composable
 fun PreviewAlbum() {
-    Album()
+    Album(viewModel = MusicViewModel())
 }
 
 @Preview
