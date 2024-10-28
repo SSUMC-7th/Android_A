@@ -1,8 +1,9 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,12 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -44,6 +42,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.MusicContent
+import umc.study.umc_7th.PodcastContent
+import umc.study.umc_7th.R
+import umc.study.umc_7th.VideoContent
+import umc.study.umc_7th.getTestMusicContentList
 
 enum class GlobeCategory(
     val expression: String,
@@ -56,10 +60,10 @@ enum class GlobeCategory(
 @Composable
 fun GlobeCategorizedMusicCollectionView(
     title: String,
-    contentList: List<Content>,
+    contentList: List<MusicContent>,
     globeCategory: GlobeCategory,
     onViewTitleClicked: () -> Unit,
-    onContentClicked: (Content) -> Unit,
+    onContentClicked: (MusicContent) -> Unit,
     onCategoryClicked: (GlobeCategory) -> Unit,
 ) {
     ContentCollectionView(
@@ -121,7 +125,7 @@ fun GlobeCategorizedMusicCollectionView(
                 contentAlignment = Alignment.BottomEnd,
             ) {
                 Image(
-                    bitmap = content.image,
+                    bitmap = content.imageBitmap,
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
@@ -166,7 +170,7 @@ fun PodcastCollectionView(
         },
         thumbnail = { content ->
             Image(
-                bitmap = content.image,
+                bitmap = content.imageBitmap,
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
                 modifier = Modifier
@@ -205,7 +209,7 @@ fun VideoCollectionView(
         thumbnail = { content ->
             Box(contentAlignment = Alignment.BottomEnd) {
                 Image(
-                    bitmap = content.image,
+                    bitmap = content.imageBitmap,
                     contentScale = ContentScale.FillHeight,
                     contentDescription = null,
                     modifier = Modifier
@@ -234,11 +238,11 @@ fun VideoCollectionView(
 }
 
 @Composable
-private fun ContentCollectionView(
-    contentList: List<Content>,
+private fun <T: Content> ContentCollectionView(
+    contentList: List<T>,
     titleBar: @Composable () -> Unit, // 제목 바에 그려질 컴포저블
-    thumbnail: @Composable (Content) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
-    onContentClicked: (Content) -> Unit
+    thumbnail: @Composable (T) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
+    onContentClicked: (T) -> Unit
 ) {
     val density = LocalDensity.current
     var contentWidth by remember { mutableStateOf(0.dp) }
@@ -277,22 +281,32 @@ private fun ContentCollectionView(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             modifier = Modifier.width(contentWidth)
                         ) {
-                            Text(
-                                text = content.title,
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                ),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            Text(
-                                text = content.author,
-                                style = TextStyle(
-                                    color = TextStyle.Default.color.copy(alpha = 0.5f)
-                                ),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.height(24.dp)
+                            ) {
+                                Text(
+                                    text = content.title,
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.height(24.dp)
+                            ) {
+                                Text(
+                                    text = content.author,
+                                    style = TextStyle(
+                                        color = TextStyle.Default.color.copy(alpha = 0.5f)
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
                         }
                     }
                 }
@@ -302,19 +316,13 @@ private fun ContentCollectionView(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewGlobeCategorizedMusicCollectionView() {
     GlobeCategorizedMusicCollectionView(
         title = "오늘 발매 음악",
-        contentList = List(15) {
-            Content(
-                title = "LILAC",
-                author = "IU",
-                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                length = 200,
-            )
-        },
+        contentList = getTestMusicContentList((1..4).random()),
         globeCategory = GlobeCategory.GLOBAL,
         onViewTitleClicked = {},
         onContentClicked = {},
@@ -328,10 +336,10 @@ fun PreviewPodcastCollectionView() {
     PodcastCollectionView(
         title = "매일 들어도 좋은 팟캐스트",
         contentList = List(15) {
-            Content(
+            PodcastContent(
                 title = "김시선의 귀책사유 FLO X 윌라",
                 author = "김시선",
-                image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
+                imageId = R.drawable.img_potcast_exp,
                 length = 200,
             )
         },
@@ -345,10 +353,10 @@ fun PreviewVideoCollectionView() {
     VideoCollectionView(
         title = "비디오 콜렉션",
         contentList = List(15) {
-            Content(
+            VideoContent(
                 title = "제목",
                 author = "지은이",
-                image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
+                imageId = R.drawable.img_video_exp,
                 length = 200,
             )
         },
