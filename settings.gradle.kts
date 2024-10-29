@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "umc_7th"
 include(":app")
+include(":memo")

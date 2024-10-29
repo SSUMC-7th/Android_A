@@ -36,7 +36,7 @@ fun LockerFragment() {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(songTitle, songAuthor)
+                MiniPlayer(viewModel = MusicViewModel(), progress = 0f, songTitle, songAuthor)
             }
         }
     ) { innerPadding ->
