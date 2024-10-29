@@ -46,14 +46,14 @@ import kotlinx.coroutines.delay
 
     var progress by remember { mutableStateOf(0f) }
 
-    LaunchedEffect(played){
-        if(played){
-            while ( played && currentPosition < duration){
-                delay(1000L)
-                viewModel.updatePosition(currentPosition+1f)
-            }
-        }
-    }
+//    LaunchedEffect(played){
+//        if(played){
+//            while ( played && currentPosition < duration){
+//                delay(1000L)
+//                viewModel.updatePosition(currentPosition+1f)
+//            }
+//        }
+//    }
     progress = currentPosition / duration
     Slider(
         value = progress,
@@ -101,7 +101,9 @@ import kotlinx.coroutines.delay
             modifier = Modifier
                 .size(65.dp)
                 .padding(10.dp)
-                .clickable { beforeSongPlayClick() }
+                .clickable { beforeSongPlayClick()
+                }
+
         )
 
         Icon(
