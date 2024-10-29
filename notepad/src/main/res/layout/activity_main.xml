@@ -15,5 +15,5 @@
         android:id="@+id/btnNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="작성화면으로 이동" />
+        android:text="확인화면 이동" />
 </LinearLayout>
