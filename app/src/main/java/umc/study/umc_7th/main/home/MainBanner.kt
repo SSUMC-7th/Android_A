@@ -46,7 +46,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import umc.study.umc_7th.Content
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SuspendedImage

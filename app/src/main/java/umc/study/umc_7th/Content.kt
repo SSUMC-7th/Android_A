@@ -3,8 +3,6 @@ package umc.study.umc_7th
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import java.io.Serializable
 import java.time.LocalDate
 

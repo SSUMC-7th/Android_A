@@ -5,7 +5,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
-    id("org.jetbrains.kotlin.kapt")
     kotlin("plugin.serialization") version "2.0.21"
 }
 
@@ -79,7 +78,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation (libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
@@ -87,7 +86,7 @@ dependencies {
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Gson
     implementation(libs.kotlinx.coroutines.android)
@@ -113,7 +112,7 @@ dependencies {
 
     // Glide Image Loading Library
     implementation(libs.glide)
-    kapt(libs.ksp)
+    ksp(libs.ksp)
 
     // CardView
     implementation(libs.androidx.cardview)
