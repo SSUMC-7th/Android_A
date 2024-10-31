@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -57,20 +60,16 @@ fun AlbumMusicList(
         item {
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(10.dp)
             ) {
                 Row(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally) // 여기에 background 컬러 추가해야함.
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.background(Color.Black.copy(0.05f),
+                        shape= RoundedCornerShape(percent= 50)
+                    ).padding(8.dp)
                 ) {
-//                    Box(
-//                    ){
-//                        Button(onClick =mixButtonClick,
-//                            colors = ButtonDefaults.buttonColors(
-//                                contentColor = colorResource(id =),
-//                            )) {
 //
-//                        }
                         Text(text = "내 취향 MIX", fontSize = 15.sp)
 
                         var checked by remember { mutableStateOf(false) }
@@ -109,7 +108,8 @@ fun AlbumMusicList(
                     Row(
                         modifier = Modifier
                             .clickable { playAllButtonClick() }
-                            .align(Alignment.CenterEnd)
+                            .align(Alignment.CenterEnd),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_browse_arrow_right),
@@ -129,6 +129,56 @@ fun AlbumMusicList(
         }
 
         itemsIndexed(album.trackList) { index, track ->
+            if(track in album.titleTrackList)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp),
+                    verticalAlignment = Alignment.Top){
+                    Text(
+                        text = "${index + 1}", Modifier.padding(horizontal = 4.dp),
+                        fontSize = 12.sp, fontWeight = FontWeight.Bold
+                    )
+                    Column {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Row(modifier =Modifier.background(Color.Blue,
+                                shape = RoundedCornerShape(percent = 30))
+                                .padding(horizontal =2.dp)){
+                                Text(text="title", fontSize= 10.sp, color = Color.White,)
+                            }
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Text(text = track)
+
+                        }
+
+                        Text(
+                            text = album.author,
+                            color = Color.Black.copy(0.5f),
+                            fontSize = 12.sp)
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Icon(painter = painterResource(id = R.drawable.btn_player_play),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable { playButtonClick() })
+                        Icon(painter = painterResource(id = R.drawable.btn_player_more),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable { moreInfoButtonClick() })
+                    }
+
+                }
+                else
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -185,7 +235,7 @@ fun PreviewAlbumMusicList(){
             albumTitle = "IU 5th Album 'LILAC'",
             date = LocalDate.parse("2023-03-27"),
             author = "IU(아이유)",
-            albumImage =ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+            albumImage = R.drawable.img_album_exp2,
             trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
             titleTrackList = listOf("LILAC", "Flu")
         ),

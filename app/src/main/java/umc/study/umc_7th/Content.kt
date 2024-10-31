@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import java.time.LocalDate
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.res.imageResource
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -16,15 +17,15 @@ data class Content(
     val length: Int,
 ) : Parcelable
 
-
+@Parcelize
 data class Album (
     val albumTitle : String, // iu 5th Album 'LILAC',
     val date : LocalDate,
     val author : String,
-    val albumImage: ImageBitmap,
+    val albumImage: Int,
     val trackList : List<String> ,
     val titleTrackList : List<String>
-)
+) : Parcelable
 
 
 @Parcelize
@@ -84,3 +85,35 @@ val bannerDataList = listOf(
         textColor = 0xFFFFFFFF
     )
 )
+
+
+@RequiresApi(Build.VERSION_CODES.P)
+val albumData = listOf(
+    Album(
+        albumTitle = "IU 5th Album 'LILAC'",
+        date = LocalDate.parse("2023-03-27"),
+        author = "IU(아이유)",
+        albumImage = R.drawable.img_album_exp2,
+        trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+        titleTrackList = listOf("LILAC", "Flu")
+    ),
+
+    Album(
+        albumTitle = "Map Of The Soul:PERSONA",
+        date = LocalDate.parse("2019-04-12"),
+        author = "BTS(방탄소년단)",
+        albumImage = R.drawable.img_album_exp4,
+        trackList = listOf("Boy With Luv", "소우주", "Make It Right", "HOME", "Jamais Vu", "Dionysus"),
+        titleTrackList = listOf("Boy With Luv")
+    ),
+    Album(
+        albumTitle = "Next Level",
+        date = LocalDate.parse("2019-04-12"),
+        author = "BTS(방탄소년단)",
+        albumImage = R.drawable.img_album_exp3,
+        trackList = listOf("Next Level"),
+        titleTrackList = listOf("Next Level")
+    )
+
+)
+

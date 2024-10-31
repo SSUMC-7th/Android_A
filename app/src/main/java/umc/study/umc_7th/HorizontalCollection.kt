@@ -111,7 +111,7 @@ fun LocationMusicContentView(
                 contentAlignment = Alignment.BottomEnd,
             ){
 
-                    Image(bitmap = content.albumImage,
+                    Image(bitmap = ImageBitmap.imageResource(id = content.albumImage),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -356,7 +356,7 @@ fun PreviewLocationMusicContentView(){
                 albumTitle = "IU 5th Album 'LILAC'",
                 date = LocalDate.parse("2023-03-27"),
                 author = "IU(아이유)",
-                albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                albumImage =  R.drawable.img_album_exp2,
                 trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
                 titleTrackList = listOf("LILAC", "Flu")
             )

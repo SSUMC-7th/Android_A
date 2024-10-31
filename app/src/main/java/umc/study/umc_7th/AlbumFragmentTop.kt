@@ -72,7 +72,8 @@ fun AlbumFragmentTop(
                     Icon(bitmap = if(like == true) ImageBitmap.imageResource(id = R.drawable.ic_my_like_on)
                     else ImageBitmap.imageResource(id = R.drawable.ic_my_like_off),
                         contentDescription = null,
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier
+                            .size(50.dp)
                             .clickable { like = !like })
                 }
 
@@ -108,7 +109,7 @@ fun AlbumFragmentTop(
             Box(
                 contentAlignment = Alignment.Center
             ){
-                Image(bitmap = album.albumImage,
+                Image(bitmap = ImageBitmap.imageResource(id = album.albumImage),
                     contentDescription =null ,
                     modifier = Modifier
                         .size(210.dp)
@@ -138,7 +139,7 @@ fun priviewalbum1(){
             albumTitle = "IU 5th Album 'LILAC'",
             date = LocalDate.parse("2023-03-27"),
             author = "IU(아이유)",
-            albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+            albumImage =  R.drawable.img_album_exp2,
             trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
             titleTrackList = listOf("LILAC", "Flu")
         ),

@@ -27,6 +27,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 
 
 import androidx.compose.runtime.*
@@ -83,15 +84,16 @@ fun LockerTab(){
     val pagerState= rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
     Column {
-        TabRow(selectedTabIndex = pagerState.currentPage,
+        ScrollableTabRow(selectedTabIndex = pagerState.currentPage,
             containerColor = Color.White,
-            modifier = Modifier.fillMaxWidth(),
+            edgePadding = 0.dp,
+
 
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier
                         .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-                        .padding(horizontal = tabPositions[pagerState.currentPage].width / 3),
+                        .padding(horizontal = tabPositions[pagerState.currentPage].width / 4),
                     color = Color.Blue,
                     height = 2.dp
                 )
@@ -118,7 +120,10 @@ fun LockerTab(){
         modifier = Modifier.fillMaxWidth()
         ) { page ->
         when (page){
-            0 -> LockerMusic()
+            0 -> LockerMusic(
+                selectAllButtonClick = {},
+                playAllButtonClick = {}
+            )
             1 -> LockerMusicFile()
         }
     }
@@ -130,14 +135,72 @@ fun LockerTab(){
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LockerMusic(){
+fun LockerMusic(
+    selectAllButtonClick:()-> Unit,
+    playAllButtonClick:()-> Unit
+){
     Scaffold { innerPadding ->
         Column (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ){
-            Text(text = "저장한 곡")
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp, vertical = 12.dp)) {
+
+                var selected by remember { mutableStateOf(false) }
+                Row(){
+                    Row(
+                        modifier = Modifier
+                            .clickable { selectAllButtonClick() }
+
+
+                    ) {
+
+                        Icon(
+                            painter = painterResource(
+                                id = if (selected == false) R.drawable.btn_playlist_select_off
+                                else R.drawable.btn_playlist_select_on
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier.size(23.dp)
+                        )
+                        Text(
+                            text = "전체 선택",
+                            fontSize = 16.sp,
+                            color = if (selected == false) Color.Black.copy(0.5f) else Color.Blue
+                        )
+                    }
+                    Spacer(modifier =Modifier.width(16.dp))
+                    Row(
+                        modifier = Modifier
+                            .clickable { playAllButtonClick() }
+                        ,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_browse_arrow_right),
+                            contentDescription = null,
+                            modifier = Modifier.size(23.dp)
+                        )
+                        Text(
+                            text = "전체 듣기", color = Color.Black.copy(0.5f),
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+
+                Row(
+                    modifier= Modifier.align(Alignment.CenterEnd),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(text = "편집", fontSize = 16.sp, color = Color.Black.copy(0.5f))
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+            }
+
         }
     }
 
@@ -173,7 +236,9 @@ fun LockerFragment(navController: NavController){
 fun PreviewLockerFragment(){
     Scaffold { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
             LockerFragment1()
             LockerTab()

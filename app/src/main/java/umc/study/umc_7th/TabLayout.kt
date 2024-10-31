@@ -13,7 +13,11 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -70,7 +74,7 @@ fun TabLayout() {
                         albumTitle = "IU 5th Album 'LILAC'",
                         date = LocalDate.parse("2023-03-27"),
                         author = "IU(아이유)",
-                        albumImage = ImageBitmap.imageResource(id =R.drawable.img_album_exp2 ) ,
+                        albumImage = R.drawable.img_album_exp2  ,
                         trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
                         titleTrackList = listOf("LILAC", "Flu")
                     ),
@@ -85,6 +89,7 @@ fun TabLayout() {
         }
     }
 }
+
 
 
 @RequiresApi(Build.VERSION_CODES.P)

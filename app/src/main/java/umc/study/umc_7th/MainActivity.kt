@@ -92,9 +92,10 @@ class MainActivity : ComponentActivity() {
 
                             composable("homeFragment") { homeFragment(navController) }
                             composable(
-                                "albumFragment/{albumTitle}/{author}/{date}/{trackList}/{titleTrackList}",
+                                "albumFragment/{albumTitle}/{albumImage}/{author}/{date}/{trackList}/{titleTrackList}",
                                 arguments = listOf(
                                     navArgument("albumTitle") { type = NavType.StringType },
+                                    navArgument("albumImage"){ type = NavType.StringType },
                                     navArgument("author") { type = NavType.StringType },
                                     navArgument("date") { type = NavType.StringType },
                                     navArgument("trackList") { type = NavType.StringType },
@@ -102,11 +103,13 @@ class MainActivity : ComponentActivity() {
                                 )
                             ) { backStackEntry ->
                                 val albumTitle = backStackEntry.arguments?.getString("albumTitle") ?: ""
+                                val albumImageString= backStackEntry.arguments?.getString("albumImage")?:"0"
+                                val albumImage = albumImageString.toIntOrNull()?:0
                                 val author = backStackEntry.arguments?.getString("author") ?: ""
                                 val date = backStackEntry.arguments?.getString("date") ?: ""
                                 val trackList = backStackEntry.arguments?.getString("trackList")?.split(",") ?: listOf()
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
-                                albumFragment(navController, albumTitle, author, LocalDate.parse(date), trackList, titleTrackList)
+                                albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
                             }
                             composable("lockerFragment") { LockerFragment(navController) }
                             composable("searchFragment") { searchFragment(navController) }
@@ -167,23 +170,14 @@ fun homeFragment(navController: NavController){
             activeColor = Color.Blue,
             inactiveColor = Color.Gray)
 
-
+        val albumList = albumData
         LocationMusicContentView(
             title = "오늘 발매 음악",
-            contentList = List(15){
-                Album(
-                    albumTitle = "IU 5th Album 'LILAC'",
-                    date = LocalDate.parse("2023-03-27"),
-                    author = "IU(아이유)",
-                    albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                    trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
-                    titleTrackList = listOf("LILAC", "Flu")
-                )
-            },
+            contentList = albumList,
             baseLocationCategory = BaseLocationCategory.GLOABAL ,
             viewTitleClick = { },
             contentClick ={ album ->
-                navController.navigate("albumFragment/${album.albumTitle}/${album.author}/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
+                navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
             categoryClick = {}
         )
         PodcastCollectionView(

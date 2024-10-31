@@ -70,6 +70,7 @@ fun AlbumVideo(){
 fun albumFragment(
     navController: NavController,
     albumTitle: String,
+    albumImage: Int,
     author: String,
     date: LocalDate,
     trackList: List<String>,
@@ -81,7 +82,7 @@ fun albumFragment(
                 albumTitle = albumTitle,
                 date = date,
                 author = author,
-                albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                albumImage = albumImage,
                 trackList = trackList,
                 titleTrackList = titleTrackList
             ),
