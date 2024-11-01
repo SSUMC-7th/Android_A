@@ -126,56 +126,51 @@ fun LockerTab(){
             0 -> LockerMusic(
                 selectAllButtonClick = {},
                 playAllButtonClick = {},
-                contentList = List(8){
+                contentList = listOf(
                     Content(
                         title = "Butter",
                         author = "BTS",
                         image = R.drawable.img_album_exp,
                         length = 200)
-                    Content(
+                    ,Content(
                         title = "Next Level",
                         author = "aespa",
                         image = R.drawable.img_album_exp3,
-                        length = 212)
+                        length = 212),
                     Content(
                         title = "해야",
                         author = "IVE",
                         image = R.drawable.img_album_heya,
                         length = 199
-                    )
+                        ),
                     Content(
                         title = "LILAC",
                         author = "IU",
                         image = R.drawable.img_album_exp2,
-                        length = 216
-                    )
+                        length = 21),
                     Content(
                         title = "Dionysious",
                         author = "BTS",
                         image = R.drawable.img_album_exp4,
-                        length= 229
-                    )
+                        length= 229),
                     Content(
                         title = "Drama",
                         author ="aespa",
                         image = R.drawable.img_album_drama,
                         length = 231
-                    )
+                    ),
                     Content(
                         title = "Supernova",
                         author ="aespa",
                         image = R.drawable.img_album_drama,
                         length = 192
-                    )
+                    ),
                     Content(
                         title = "Love Wins All",
                         author = "IU",
                         image = R.drawable.img_album_lovewinsall,
-                        length = 262
-
-                    )
-
-                }
+                        length = 262)
+                )
             )
             1 -> LockerMusicFile()
         }
@@ -276,8 +271,10 @@ fun LockerMusic(
                                     .align(Alignment.CenterVertically)
                                     .padding(horizontal = 8.dp)
                             ) {
-                                Text(text= content.title, modifier= Modifier.padding(bottom = 2.dp),
-                                    fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text(text= content.title,
+                                    modifier= Modifier.padding(bottom = 2.dp),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp)
                                 Text(text= content.author,
                                     color= Color.Black.copy(0.5f),
                                     fontSize= 14.sp)
