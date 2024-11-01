@@ -126,7 +126,7 @@ fun LockerTab(){
             0 -> LockerMusic(
                 selectAllButtonClick = {},
                 playAllButtonClick = {},
-                contentList = List(15){
+                contentList = List(8){
                     Content(
                         title = "Butter",
                         author = "BTS",
@@ -268,7 +268,7 @@ fun LockerMusic(
                                 Image(bitmap = ImageBitmap.imageResource(id = it),
                                     contentDescription =null,
                                     modifier = Modifier
-                                        .size(40.dp)
+                                        .size(50.dp)
                                         .clip(RoundedCornerShape(3.dp)))
                             }
                             Column(
@@ -279,7 +279,8 @@ fun LockerMusic(
                                 Text(text= content.title, modifier= Modifier.padding(bottom = 2.dp),
                                     fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 Text(text= content.author,
-                                    color= Color.Black.copy(0.5f))
+                                    color= Color.Black.copy(0.5f),
+                                    fontSize= 14.sp)
                             }
 
                         }

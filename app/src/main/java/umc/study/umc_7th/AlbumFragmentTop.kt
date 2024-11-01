@@ -74,7 +74,8 @@ fun AlbumFragmentTop(
                         contentDescription = null,
                         modifier = Modifier
                             .size(50.dp)
-                            .clickable { like = !like })
+                            .clickable { like = !like },
+                        tint = Color.Unspecified)
                 }
 
                 Icon(bitmap = ImageBitmap.imageResource(id = R.drawable.btn_player_more),
@@ -118,7 +119,7 @@ fun AlbumFragmentTop(
                 IconButton(onClick = playAlbumButtonClick,
                     modifier = Modifier.align(Alignment.BottomEnd)) {
                     Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.widget_black_play),
-                        contentDescription =null )
+                        contentDescription =null , tint= Color.Unspecified)
                 }
             }
             Image(painter = painterResource(id = R.drawable.img_album_lp),

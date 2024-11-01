@@ -30,7 +30,9 @@ import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun TabLayout() {
+fun TabLayout(
+    album : Album,
+) {
     val tabs = listOf("수록곡", "상세정보", "영상")
     val pagerState = rememberPagerState{ tabs.size }
     val coroutineScope = rememberCoroutineScope()
@@ -70,14 +72,7 @@ fun TabLayout() {
         ) { page ->
             when (page) {
                 0 -> AlbumMusicList(
-                    album = Album(
-                        albumTitle = "IU 5th Album 'LILAC'",
-                        date = LocalDate.parse("2023-03-27"),
-                        author = "IU(아이유)",
-                        albumImage = R.drawable.img_album_exp2  ,
-                        trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
-                        titleTrackList = listOf("LILAC", "Flu")
-                    ),
+                    album = album,
                     playButtonClick = { /*TODO*/ },
                     playAllButtonClick = { /*TODO*/ },
                     selectAllButtonClick = { /*TODO*/ },
@@ -96,5 +91,13 @@ fun TabLayout() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewTabLayout(){
-    TabLayout()
+    TabLayout(album =Album(
+        albumTitle = "IU 5th Album 'LILAC'",
+        date = LocalDate.parse("2023-03-27"),
+        author = "IU(아이유)",
+        albumImage =  R.drawable.img_album_exp2,
+        trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+        titleTrackList = listOf("LILAC", "Flu")
+    )
+    )
 }

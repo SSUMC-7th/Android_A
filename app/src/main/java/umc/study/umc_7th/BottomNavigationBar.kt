@@ -73,7 +73,7 @@ fun BottomNavigationBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
-            .background(color=Color.White)
+            .background(color=Color.Unspecified)
     ){
         DestinationClass.entries.forEach { destination ->
             Column(
@@ -88,7 +88,8 @@ fun BottomNavigationBar(
                     modifier = Modifier.size(24.dp).clickable {
                         currentDestination = destination
                         onClick(destination)
-                        navController.navigate(destination.route)})
+                        navController.navigate(destination.route)},
+                    tint = Color.Unspecified)
 
                 Text(text = destination.mean,
                     color = if(destination ==currentDestination)
@@ -100,11 +101,3 @@ fun BottomNavigationBar(
     }
 }
 
-//@RequiresApi(Build.VERSION_CODES.P)
-//@Preview(showBackground = true)
-//@Composable
-//fun PreiviewBottomNavigationBar(){
-//    BottomNavigationBar(
-//        onClick = {  }
-//    )
-//}

@@ -186,7 +186,8 @@ fun homeFragment(navController: NavController){
             baseLocationCategory = BaseLocationCategory.GLOABAL ,
             viewTitleClick = { },
             contentClick ={ album ->
-                navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
+                navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}" +
+                        "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
 //                navController.navigate("albumFragment")},
             categoryClick = {}
         )

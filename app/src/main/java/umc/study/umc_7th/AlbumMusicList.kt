@@ -67,7 +67,7 @@ fun AlbumMusicList(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.background(Color.Black.copy(0.05f),
                         shape= RoundedCornerShape(percent= 50)
-                    ).padding(8.dp)
+                    ).padding(vertical =6.dp, horizontal = 10.dp)
                 ) {
 //
                         Text(text = "내 취향 MIX", fontSize = 15.sp)
@@ -79,7 +79,8 @@ fun AlbumMusicList(
                         ), contentDescription = null,
                             modifier = Modifier
                                 .clickable { checked = !checked }
-                                .size(20.dp))
+                                .size(30.dp),
+                            tint = Color.Unspecified)
 //                    }
 
                 }
@@ -144,7 +145,8 @@ fun AlbumMusicList(
                             verticalAlignment = Alignment.CenterVertically
                         ){
                             Text(text="title", fontSize= 10.sp, color = Color.White,
-                                    modifier= Modifier.background(Color.Blue, shape = RoundedCornerShape(percent=30)))
+                                    modifier= Modifier.background(Color.Blue, shape = RoundedCornerShape(percent=30))
+                                        .padding(horizontal =4.dp, vertical = 0.dp))
 
                             Spacer(modifier = Modifier.size(4.dp))
                             Text(text = track)

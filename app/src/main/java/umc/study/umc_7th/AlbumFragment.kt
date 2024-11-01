@@ -93,7 +93,15 @@ fun albumFragment(
             playerMoreButtonClick = { /*TODO*/ }) {
 
         }
-        TabLayout()
+        TabLayout(album =
+        Album(
+            albumTitle = albumTitle,
+            date = date,
+            author = author,
+            albumImage = albumImage,
+            trackList = trackList,
+            titleTrackList = titleTrackList
+        ))
     }
 
 }
