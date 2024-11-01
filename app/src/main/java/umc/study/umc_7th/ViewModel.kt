@@ -84,10 +84,6 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
         _currentPosition.value = 0f
     }
 
-
-
-
-
 }
 
 class MyApplication : Application() {

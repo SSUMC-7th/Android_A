@@ -61,6 +61,7 @@ fun LocationMusicContentView(
     baseLocationCategory: BaseLocationCategory,
     viewTitleClick : () -> Unit,
     contentClick : (Album) -> Unit,
+    albumMusicStart :() -> Unit,
     categoryClick : (BaseLocationCategory) -> Unit,
 ){
     horizontalScrollAlbumContentView(
@@ -120,10 +121,11 @@ fun LocationMusicContentView(
                     )
 
                 Icon(
+
                     painter = painterResource(id = R.drawable.btn_miniplayer_play),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(48.dp).clickable { albumMusicStart() }
                 )
             }
         },
@@ -364,7 +366,8 @@ fun PreviewLocationMusicContentView(){
         baseLocationCategory = BaseLocationCategory.GLOABAL ,
         viewTitleClick = { },
         contentClick ={}, // 여기에 프래그먼트 전환기능 추가해야됨
-        categoryClick = {}
+        categoryClick = {},
+        albumMusicStart = {}
     )
 }
 

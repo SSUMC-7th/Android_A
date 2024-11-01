@@ -189,7 +189,8 @@ fun homeFragment(navController: NavController){
                 navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}" +
                         "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
 //                navController.navigate("albumFragment")},
-            categoryClick = {}
+            categoryClick = {},
+            albumMusicStart = {}
         )
         PodcastCollectionView(
             title = "매일 들어도 좋은 팟캐스트" ,

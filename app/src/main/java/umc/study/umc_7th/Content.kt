@@ -99,11 +99,11 @@ val albumData = listOf(
     ),
 
     Album(
-        albumTitle = "Map Of The Soul:PERSONA",
+        albumTitle = "BTS 'Map of the Soul: Persona'",
         date = LocalDate.parse("2019-04-12"),
         author = "BTS(방탄소년단)",
         albumImage = R.drawable.img_album_exp4,
-        trackList = listOf("Boy With Luv", "소우주", "Make It Right", "HOME", "Jamais Vu", "Dionysus"),
+        trackList = listOf("Intro: Persona", "Boy With Luv", "Mikrokosmos", "Make It Right", "Home"),
         titleTrackList = listOf("Boy With Luv")
     ),
     Album(
@@ -113,7 +113,40 @@ val albumData = listOf(
         albumImage = R.drawable.img_album_exp3,
         trackList = listOf("Next Level"),
         titleTrackList = listOf("Next Level")
+    ),
+    Album(
+        albumTitle = "MOMOLAND 'BAAM'",
+        date = LocalDate.parse("2018-06-26"),
+        author = "MOMOLAND",
+        albumImage = R.drawable.img_album_exp5,
+        trackList = listOf("BAAM", "Veryvery", "Bingo Game", "Only one you", "Falling U"),
+        titleTrackList = listOf("BAAM")
+    ),
+    Album(
+        albumTitle = "Taeyeon 'Weekend'",
+        date = LocalDate.parse("2021-07-06"),
+        author = "Taeyeon(태연)",
+        albumImage = R.drawable.img_album_exp6,
+        trackList = listOf("Weekend"),
+        titleTrackList = listOf("Weekend")
+    ),
+    Album(
+        albumTitle = "aespa 'Next Level: Drama'",
+        date = LocalDate.parse("2023-06-15"),
+        author = "aespa(에스파)",
+        albumImage = R.drawable.img_album_exp, // 적절한 이미지 리소스 이름으로 교체 필요
+        trackList = listOf("Next Level", "Drama", "Black Mamba", "Forever", "Savage"),
+        titleTrackList = listOf("Drama", "Next Level")
+    ),
+    Album(
+        albumTitle = "IVE 'I've HAEYA'",
+        date = LocalDate.parse("2023-08-10"),
+        author = "IVE(아이브)",
+        albumImage = R.drawable.img_album_heya,
+        trackList = listOf("HAEYA", "After LIKE", "ELEVEN", "LOVE DIVE", "ROYAL"),
+        titleTrackList = listOf("HAEYA", "After LIKE")
     )
+
 
 )
 
