@@ -143,11 +143,9 @@ fun AlbumMusicList(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ){
-                            Row(modifier =Modifier.background(Color.Blue,
-                                shape = RoundedCornerShape(percent = 30))
-                                .padding(horizontal =2.dp)){
-                                Text(text="title", fontSize= 10.sp, color = Color.White,)
-                            }
+                            Text(text="title", fontSize= 10.sp, color = Color.White,
+                                    modifier= Modifier.background(Color.Blue, shape = RoundedCornerShape(percent=30)))
+
                             Spacer(modifier = Modifier.size(4.dp))
                             Text(text = track)
 

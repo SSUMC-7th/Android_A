@@ -3,6 +3,7 @@ package umc.study.umc_7th
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import android.os.Build
+import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 
 import androidx.compose.material3.Icon
@@ -34,6 +36,7 @@ import androidx.compose.runtime.*
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
@@ -122,7 +125,57 @@ fun LockerTab(){
         when (page){
             0 -> LockerMusic(
                 selectAllButtonClick = {},
-                playAllButtonClick = {}
+                playAllButtonClick = {},
+                contentList = List(15){
+                    Content(
+                        title = "Butter",
+                        author = "BTS",
+                        image = R.drawable.img_album_exp,
+                        length = 200)
+                    Content(
+                        title = "Next Level",
+                        author = "aespa",
+                        image = R.drawable.img_album_exp3,
+                        length = 212)
+                    Content(
+                        title = "해야",
+                        author = "IVE",
+                        image = R.drawable.img_album_heya,
+                        length = 199
+                    )
+                    Content(
+                        title = "LILAC",
+                        author = "IU",
+                        image = R.drawable.img_album_exp2,
+                        length = 216
+                    )
+                    Content(
+                        title = "Dionysious",
+                        author = "BTS",
+                        image = R.drawable.img_album_exp4,
+                        length= 229
+                    )
+                    Content(
+                        title = "Drama",
+                        author ="aespa",
+                        image = R.drawable.img_album_drama,
+                        length = 231
+                    )
+                    Content(
+                        title = "Supernova",
+                        author ="aespa",
+                        image = R.drawable.img_album_drama,
+                        length = 192
+                    )
+                    Content(
+                        title = "Love Wins All",
+                        author = "IU",
+                        image = R.drawable.img_album_lovewinsall,
+                        length = 262
+
+                    )
+
+                }
             )
             1 -> LockerMusicFile()
         }
@@ -137,13 +190,13 @@ fun LockerTab(){
 @Composable
 fun LockerMusic(
     selectAllButtonClick:()-> Unit,
-    playAllButtonClick:()-> Unit
+    playAllButtonClick:()-> Unit,
+    contentList : List<Content> ,
 ){
-    Scaffold { innerPadding ->
         Column (
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+
         ){
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -200,9 +253,55 @@ fun LockerMusic(
                 }
 
             }
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(contentList){ content ->
+                    Box(
+                        modifier= Modifier.fillMaxWidth()
+                    ){
+                        Row(
+                            modifier = Modifier.padding(horizontal =8.dp)
+                        ){
+                            content.image?.let {
+                                Image(bitmap = ImageBitmap.imageResource(id = it),
+                                    contentDescription =null,
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(RoundedCornerShape(3.dp)))
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 8.dp)
+                            ) {
+                                Text(text= content.title, modifier= Modifier.padding(bottom = 2.dp),
+                                    fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text(text= content.author,
+                                    color= Color.Black.copy(0.5f))
+                            }
 
+                        }
+                        Row(
+                            modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp)
+                        ){
+                            Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.btn_player_play),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    )
+                            Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.btn_player_more),
+                                contentDescription = null,
+                                modifier= Modifier.size(30.dp))
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    }
+
+            }
         }
-    }
+
 
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

@@ -76,7 +76,7 @@ fun albumFragment(
     trackList: List<String>,
     titleTrackList: List<String>
 ){
-    Column {
+    Column() {
         AlbumFragmentTop(
             album = Album(
                 albumTitle = albumTitle,
@@ -86,6 +86,7 @@ fun albumFragment(
                 trackList = trackList,
                 titleTrackList = titleTrackList
             ),
+//            album= Album,
             date = date,
             albumFgtoMain = { navController.navigate("homeFragment") },
             likeButtonClick = { /*TODO*/ },

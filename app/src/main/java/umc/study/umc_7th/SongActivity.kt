@@ -79,8 +79,7 @@ class SongActivity : ComponentActivity() {
             val songTitle = intent.getStringExtra("songtitle")
             val singer = intent.getStringExtra("author")
             Umc_7thTheme {
-                Scaffold { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)){
+                    Box(){
                         SongPlayerScreen(
                             viewModel= viewModel,
                             content =Content(
@@ -95,7 +94,7 @@ class SongActivity : ComponentActivity() {
                             },)
                     }
 
-                }
+
 
 
             }

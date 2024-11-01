@@ -111,6 +111,15 @@ class MainActivity : ComponentActivity() {
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
                                 albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
                             }
+//                            composable(
+//                                "albumFragment",
+//                                arguments = listOf(navArgument("album") { type = NavType.ParcelableType(Album::class.java) })
+//                            ) { backStackEntry ->
+//                                val album = backStackEntry.arguments?.getParcelable<Album>("album")
+//                                album?.let {
+//                                    albumFragment(navController)
+//                                }
+//                            }
                             composable("lockerFragment") { LockerFragment(navController) }
                             composable("searchFragment") { searchFragment(navController) }
                             composable("aroundFragment") { aroundFragment(navController) }
@@ -178,6 +187,7 @@ fun homeFragment(navController: NavController){
             viewTitleClick = { },
             contentClick ={ album ->
                 navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
+//                navController.navigate("albumFragment")},
             categoryClick = {}
         )
         PodcastCollectionView(

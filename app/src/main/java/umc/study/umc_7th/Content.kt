@@ -109,7 +109,7 @@ val albumData = listOf(
     Album(
         albumTitle = "Next Level",
         date = LocalDate.parse("2019-04-12"),
-        author = "BTS(방탄소년단)",
+        author = "aespa",
         albumImage = R.drawable.img_album_exp3,
         trackList = listOf("Next Level"),
         titleTrackList = listOf("Next Level")
