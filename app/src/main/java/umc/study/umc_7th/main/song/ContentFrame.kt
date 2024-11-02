@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.song
 
 import android.app.Application
 import androidx.compose.foundation.Image
@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 @Composable
 fun ContentFrame(
@@ -77,7 +79,8 @@ fun ContentFrame(
                 ){
                 IconButton(onClick =likeClick ) {
                     Image(bitmap = ImageBitmap.imageResource(id = if(like) R.drawable.ic_my_like_on
-                    else R.drawable.ic_my_like_off),
+                    else R.drawable.ic_my_like_off
+                    ),
                         contentDescription = null,
                         contentScale= ContentScale.Crop,
                         modifier = Modifier.clickable { viewModel.toggleLike() }
@@ -86,7 +89,8 @@ fun ContentFrame(
                 Spacer(modifier = Modifier.padding(10.dp))
                 IconButton(onClick = unLikeButtonClick) { // unlikeButtonClick에서는 더 복잡한 것들을 처리
                     Icon(bitmap = ImageBitmap.imageResource(id = if(unLike) R.drawable.btn_player_unlike_off
-                    else R.drawable.btn_player_unlike_on),
+                    else R.drawable.btn_player_unlike_on
+                    ),
                         contentDescription = null,
                         modifier = Modifier.clickable { viewModel.toggleUnLike() }) // 단순한 toggle 상태만을 관찰하도록.
                 }
@@ -110,5 +114,6 @@ fun PreviewContentFrame(){
         toSingerinfoClick = {},
         likeClick = {},
         unLikeButtonClick = {},
-        viewModel = SongViewModel(application = Application()))
+        viewModel = SongViewModel(application = Application())
+    )
 }

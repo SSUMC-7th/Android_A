@@ -1,6 +1,5 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.home
 
-import android.icu.text.UnicodeSetSpanner.CountMethod
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -40,10 +39,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.time.LocalDate
+import umc.study.umc_7th.Album
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 
 enum class BaseLocationCategory(

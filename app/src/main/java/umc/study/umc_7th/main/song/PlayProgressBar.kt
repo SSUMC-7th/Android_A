@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.song
 
 import android.app.Application
 import androidx.compose.foundation.clickable
@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
+import umc.study.umc_7th.FakeSongViewModel
+import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +37,7 @@ import kotlinx.coroutines.delay
     songPlayButtonClick: () -> Unit,
     nextSongPlayClick : ()-> Unit,
 
-){
+    ){
     val replay by viewModel.replay.observeAsState(false)
     val shuffle by viewModel.shuffle.observeAsState(false)
 
@@ -108,7 +109,8 @@ import kotlinx.coroutines.delay
 
         Icon(
             painter = painterResource(id = if(played) R.drawable.nugu_btn_pause_32
-            else R.drawable.nugu_btn_play_32),
+            else R.drawable.nugu_btn_play_32
+            ),
             contentDescription = null,
             modifier = Modifier
                 .size(65.dp)

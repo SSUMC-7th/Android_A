@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.home
 
 import android.content.Intent
 import android.os.Build
@@ -40,7 +40,18 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
 
 import androidx.compose.foundation.layout.navigationBarsPadding
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.MyApplication
+import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
+import umc.study.umc_7th.album.albumFragment
+import umc.study.umc_7th.albumData
+import umc.study.umc_7th.aroundFragment
+import umc.study.umc_7th.bannerDataList
 import umc.study.umc_7th.locker.LockerFragment
+import umc.study.umc_7th.main.song.MiniPlayer
+import umc.study.umc_7th.main.song.SongActivity
+import umc.study.umc_7th.searchFragment
 
 
 class MainActivity : ComponentActivity() {
@@ -131,7 +142,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun homeFragment(navController: NavController,
-                 viewModel: SongViewModel){
+                 viewModel: SongViewModel
+){
     Column (
         modifier = Modifier.verticalScroll(rememberScrollState())
     ){
@@ -223,7 +235,7 @@ fun homeFragment(navController: NavController,
 
 @Composable
 @RequiresApi(Build.VERSION_CODES.P)
-fun MainMiniplayer(viewModel : SongViewModel , toSongActivity : (Content) -> Unit){
+fun MainMiniplayer(viewModel : SongViewModel, toSongActivity : (Content) -> Unit){
     MiniPlayer(
         viewModel = viewModel,
         beforeSongPlayButtonClick = { /*TODO*/ },

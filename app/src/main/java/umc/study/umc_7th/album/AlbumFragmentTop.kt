@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.album
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -33,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.Album
+import umc.study.umc_7th.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

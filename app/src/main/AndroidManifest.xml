@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Umc_7th"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".main.home.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Umc_7th">
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SongActivity"
+            android:name=".main.song.SongActivity"
             android:exported="true"
             android:label="songActicity"
             android:theme="@style/Theme.Umc_7th" />

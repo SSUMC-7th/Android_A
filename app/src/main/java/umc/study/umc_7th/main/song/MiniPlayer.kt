@@ -1,6 +1,5 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.song
 
-import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -22,15 +21,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Slider
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,7 +100,8 @@ fun MiniPlayer(
                                 .size(50.dp)
                                 .clickable { beforeSongPlayButtonClick() })
                         Icon(painter = painterResource(id = if(played) R.drawable.btn_miniplay_pause
-                        else R.drawable.btn_miniplayer_play),
+                        else R.drawable.btn_miniplayer_play
+                        ),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(40.dp)
