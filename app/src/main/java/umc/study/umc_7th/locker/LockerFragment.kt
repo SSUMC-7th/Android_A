@@ -1,10 +1,7 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.locker
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import android.os.Build
-import android.widget.Space
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,17 +11,13 @@ import androidx.compose.foundation.layout.*
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
@@ -41,8 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +42,8 @@ import androidx.navigation.NavController
 //import com.google.accompanist.pager.*
 
 import kotlinx.coroutines.launch
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.R
 
 
 @Composable
@@ -132,7 +125,7 @@ fun LockerTab(){
                         author = "BTS",
                         image = R.drawable.img_album_exp,
                         length = 200)
-                    ,Content(
+                    , Content(
                         title = "Next Level",
                         author = "aespa",
                         image = R.drawable.img_album_exp3,
@@ -162,7 +155,7 @@ fun LockerTab(){
                     Content(
                         title = "Supernova",
                         author ="aespa",
-                        image = R.drawable.img_album_drama,
+                        image = R.drawable.img_album_supernova,
                         length = 192
                     ),
                     Content(
@@ -186,7 +179,7 @@ fun LockerTab(){
 fun LockerMusic(
     selectAllButtonClick:()-> Unit,
     playAllButtonClick:()-> Unit,
-    contentList : List<Content> ,
+    contentList : List<Content>,
 ){
         Column (
             modifier = Modifier

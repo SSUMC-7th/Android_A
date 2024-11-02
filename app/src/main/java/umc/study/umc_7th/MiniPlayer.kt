@@ -38,111 +38,118 @@ import androidx.compose.material3.Slider
 @Composable
 fun MiniPlayer(
     viewModel: SongViewModel,
-    content: Content,
+
     beforeSongPlayButtonClick: () -> Unit,
     playSongButtonClick: () -> Unit,
     nextSongPlayButtonClick: () -> Unit,
     musicQueueClick: () -> Unit,
     toSongActivity: (Content) -> Unit,
 ){
-    Column {
-        val currentPosition by viewModel.currentPosition.observeAsState(0f)
-        val duration by viewModel.duration.observeAsState(1f)
+    val currentSong by viewModel.currentSong.observeAsState()
 
-        val progress = currentPosition / duration
+    currentSong?.let{ content ->
+        Column {
+            val currentPosition by viewModel.currentPosition.observeAsState(0f)
+            val duration by viewModel.duration.observeAsState(1f)
 
-        Slider(
-            value = progress,
-            onValueChange = { newProgress ->
-                viewModel.updatePosition(newProgress * duration)
-            },
-            modifier = Modifier
-                .fillMaxWidth().height(3.dp),
-            thumb = {},
-        )
-        Box(modifier = Modifier.clickable {toSongActivity(content) }
-        )
-        {
-            Row(
+            val progress = currentPosition / duration
+
+            Slider(
+                value = progress,
+                onValueChange = { newProgress ->
+                    viewModel.updatePosition(newProgress * duration)
+                },
                 modifier = Modifier
-                    .background(color = Color.White)
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(120.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(1.dp)
-                ){
-                    Text(text = content.title,
-                        fontSize = 18.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis)
-                    Text(
-                        text = content.author,
-                        fontSize = 15.sp,
-                        style = TextStyle(
-                            color = TextStyle.Default.color.copy(alpha = 0.5f)
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                    .fillMaxWidth().height(3.dp),
+                thumb = {},
+            )
+            Box(modifier = Modifier.clickable {toSongActivity(content) }
+            )
+            {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(120.dp),
                     verticalAlignment = Alignment.CenterVertically
-                ){  val played by viewModel.played.observeAsState(true)
-                    Icon(painter = painterResource(id = R.drawable.btn_miniplayer_previous),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clickable { beforeSongPlayButtonClick() })
-                    Icon(painter = painterResource(id = if(played) R.drawable.btn_miniplay_pause
-                    else R.drawable.btn_miniplayer_play),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clickable {
-                                viewModel.togglePlayed()
-                                playSongButtonClick()
-                            })
-                    Icon(painter = painterResource(id = R.drawable.btn_miniplayer_next),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clickable { nextSongPlayButtonClick() })
-                    Icon(painter = painterResource(id = R.drawable.btn_miniplayer_go_list),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(45.dp)
-                            .clickable { musicQueueClick() })
+                ){
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(1.dp)
+                    ){
+                        Text(text = content.title,
+                            fontSize = 18.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis)
+                        Text(
+                            text = content.author,
+                            fontSize = 15.sp,
+                            style = TextStyle(
+                                color = TextStyle.Default.color.copy(alpha = 0.5f)
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){  val played by viewModel.played.observeAsState(true)
+                        Icon(painter = painterResource(id = R.drawable.btn_miniplayer_previous),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable { beforeSongPlayButtonClick() })
+                        Icon(painter = painterResource(id = if(played) R.drawable.btn_miniplay_pause
+                        else R.drawable.btn_miniplayer_play),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clickable {
+                                    viewModel.togglePlayed()
+                                    playSongButtonClick()
+                                })
+                        Icon(painter = painterResource(id = R.drawable.btn_miniplayer_next),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable { nextSongPlayButtonClick() })
+                        Icon(painter = painterResource(id = R.drawable.btn_miniplayer_go_list),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(45.dp)
+                                .clickable { musicQueueClick() })
+                    }
                 }
             }
+        }
+    }?:run {
+        Box(modifier = Modifier.fillMaxWidth()
+            .padding(16.dp).background(Color.LightGray)){
+            Text(text="현재 재생 중인 곡이 없습니다.",
+                fontSize = 18.sp,
+                color= Color.Gray,
+                modifier = Modifier.align(Alignment.Center))
         }
     }
 
 
 
 
+
 }
 
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewMiniPlayer(){
-    val fakeSongViewModel = FakeSongViewModel(application = Application())
-    MiniPlayer(
-        viewModel = fakeSongViewModel,
-        content = Content(
-            title = "LILAC",
-            author = "IU",
-            image = R.drawable.img_album_exp2,
-            length = 200
-        ),
-        beforeSongPlayButtonClick = { /*TODO*/ },
-        playSongButtonClick = { /*TODO*/ },
-        nextSongPlayButtonClick = { /*TODO*/ },
-        musicQueueClick = { /*TODO*/ },
-        toSongActivity = {})
-}
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewMiniPlayer(){
+//    val fakeSongViewModel = FakeSongViewModel(application = Application())
+//    MiniPlayer(
+//        viewModel = fakeSongViewModel,
+//        beforeSongPlayButtonClick = { /*TODO*/ },
+//        playSongButtonClick = { /*TODO*/ },
+//        nextSongPlayButtonClick = { /*TODO*/ },
+//        musicQueueClick = { /*TODO*/ },
+//        toSongActivity = {})
+//}
 

@@ -134,7 +134,7 @@ val albumData = listOf(
         albumTitle = "aespa 'Next Level: Drama'",
         date = LocalDate.parse("2023-06-15"),
         author = "aespa(에스파)",
-        albumImage = R.drawable.img_album_exp, // 적절한 이미지 리소스 이름으로 교체 필요
+        albumImage = R.drawable.img_album_drama,
         trackList = listOf("Next Level", "Drama", "Black Mamba", "Forever", "Savage"),
         titleTrackList = listOf("Drama", "Next Level")
     ),

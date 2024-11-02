@@ -84,6 +84,15 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
         _currentPosition.value = 0f
     }
 
+    private val _currentSong = MutableLiveData<Content?>(null)
+    open val currentSong : LiveData<Content?> = _currentSong
+
+    fun setCurrentSong(content:Content){
+        _currentSong.value = content
+        resetProgress()
+        togglePlayed()
+    }
+
 }
 
 class MyApplication : Application() {

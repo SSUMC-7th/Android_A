@@ -82,11 +82,6 @@ class SongActivity : ComponentActivity() {
                     Box(){
                         SongPlayerScreen(
                             viewModel= viewModel,
-                            content =Content(
-                                songTitle.toString(), singer.toString(),
-                                R.drawable.img_album_exp2,
-                                200
-                            ) ,
                             toMainActivity = {
                                 val intent = Intent(this@SongActivity, MainActivity::class.java)
                                 startActivity(intent)
@@ -108,7 +103,6 @@ class SongActivity : ComponentActivity() {
 @Composable
 fun SongPlayerScreen(
     viewModel: SongViewModel,
-    content : Content,
     toMainActivity : () -> Unit,
     ){
     Column (modifier = Modifier
@@ -126,7 +120,7 @@ fun SongPlayerScreen(
         )
 
         ContentFrame(
-            content = content,
+
             toSingerinfoClick={},
             likeClick ={},
             unLikeButtonClick={},
@@ -164,11 +158,6 @@ fun PreviewSongPlayerScreen(){
     val fakeviewModel = FakeSongViewModel(application = Application())
     SongPlayerScreen(
         viewModel = fakeviewModel,
-        content = Content(
-            "LILAC", "IU",
-            R.drawable.img_album_exp2,
-            200
-        ),
         toMainActivity = {},
         )
 }

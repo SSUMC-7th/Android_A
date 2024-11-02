@@ -57,11 +57,12 @@ enum class BaseLocationCategory(
 @Composable
 fun LocationMusicContentView(
     title : String,
+    viewModel : SongViewModel,
     contentList : List<Album>,
     baseLocationCategory: BaseLocationCategory,
     viewTitleClick : () -> Unit,
     contentClick : (Album) -> Unit,
-    albumMusicStart :() -> Unit,
+    albumMusicStart :(Album) -> Unit,
     categoryClick : (BaseLocationCategory) -> Unit,
 ){
     horizontalScrollAlbumContentView(
@@ -125,7 +126,7 @@ fun LocationMusicContentView(
                     painter = painterResource(id = R.drawable.btn_miniplayer_play),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(48.dp).clickable { albumMusicStart() }
+                    modifier = Modifier.size(48.dp).clickable { albumMusicStart(content) }
                 )
             }
         },
@@ -347,61 +348,61 @@ private fun horizontalScrollContentView(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewLocationMusicContentView(){
-    LocationMusicContentView(
-        title = "오늘 발매 음악",
-        contentList = List(15){
-            Album(
-                albumTitle = "IU 5th Album 'LILAC'",
-                date = LocalDate.parse("2023-03-27"),
-                author = "IU(아이유)",
-                albumImage =  R.drawable.img_album_exp2,
-                trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
-                titleTrackList = listOf("LILAC", "Flu")
-            )
-        },
-        baseLocationCategory = BaseLocationCategory.GLOABAL ,
-        viewTitleClick = { },
-        contentClick ={}, // 여기에 프래그먼트 전환기능 추가해야됨
-        categoryClick = {},
-        albumMusicStart = {}
-    )
-}
-
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewPodcastCollectionView(){
-    PodcastCollectionView(
-        title = "매일 들어도 좋은 팟캐스트" ,
-        contentList = List(15){
-            Content(
-                title = "김시선의 귀책사유 FLO X 윌라",
-                author= "김시선",
-                image = R.drawable.img_potcast_exp,
-                length = 200,
-            )
-        },
-        contentClick = {}
-    )
-}
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewVideoCollectionView(){
-    VideoCollectionView(
-        title ="비디오 콜렉션" ,
-        contentList =List(15){
-            Content(
-                title = "제목",
-                author = "지은이",
-                image = R.drawable.img_video_exp,
-                length = 200,
-            )
-        } ,
-        contentClick = {}
-    )
-}
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewLocationMusicContentView(){
+//    LocationMusicContentView(
+//        title = "오늘 발매 음악",
+//        contentList = List(15){
+//            Album(
+//                albumTitle = "IU 5th Album 'LILAC'",
+//                date = LocalDate.parse("2023-03-27"),
+//                author = "IU(아이유)",
+//                albumImage =  R.drawable.img_album_exp2,
+//                trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+//                titleTrackList = listOf("LILAC", "Flu")
+//            )
+//        },
+//        baseLocationCategory = BaseLocationCategory.GLOABAL ,
+//        viewTitleClick = { },
+//        contentClick ={}, // 여기에 프래그먼트 전환기능 추가해야됨
+//        categoryClick = {},
+//        albumMusicStart = {}
+//    )
+//}
+//
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewPodcastCollectionView(){
+//    PodcastCollectionView(
+//        title = "매일 들어도 좋은 팟캐스트" ,
+//        contentList = List(15){
+//            Content(
+//                title = "김시선의 귀책사유 FLO X 윌라",
+//                author= "김시선",
+//                image = R.drawable.img_potcast_exp,
+//                length = 200,
+//            )
+//        },
+//        contentClick = {}
+//    )
+//}
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewVideoCollectionView(){
+//    VideoCollectionView(
+//        title ="비디오 콜렉션" ,
+//        contentList =List(15){
+//            Content(
+//                title = "제목",
+//                author = "지은이",
+//                image = R.drawable.img_video_exp,
+//                length = 200,
+//            )
+//        } ,
+//        contentClick = {}
+//    )
+//}
