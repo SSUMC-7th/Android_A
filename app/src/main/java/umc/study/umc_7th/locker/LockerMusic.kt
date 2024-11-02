@@ -2,6 +2,7 @@ package umc.study.umc_7th.locker
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.R
 
@@ -46,6 +49,8 @@ fun LockerMusic(
 
 ){
     var contentList by remember{ mutableStateOf(contentList.toMutableList())}
+
+
 
     Column (
         modifier = Modifier
@@ -107,13 +112,20 @@ fun LockerMusic(
             }
 
         }
+
+        val itemStates = remember { mutableStateMapOf<Content, Boolean>().apply { contentList.forEach { put(it, false) } } }
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(contentList){ content ->
+                val isSelected = itemStates[content]?:false
                 Box(
                     modifier= Modifier.fillMaxWidth()
+                        .background(if (!isSelected) Color.Unspecified else Color.Blue.copy(0.05f))
+                        .clickable { itemStates[content] = !isSelected }
+
                 ){
                     Row(
                         modifier = Modifier.padding(horizontal =8.dp)
