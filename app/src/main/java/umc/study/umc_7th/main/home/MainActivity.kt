@@ -52,6 +52,7 @@ import umc.study.umc_7th.locker.LockerFragment
 import umc.study.umc_7th.main.song.MiniPlayer
 import umc.study.umc_7th.main.song.SongActivity
 import umc.study.umc_7th.searchFragment
+import umc.study.umc_7th.startMusicService
 
 
 class MainActivity : ComponentActivity() {
@@ -72,10 +73,7 @@ class MainActivity : ComponentActivity() {
                             MainMiniplayer(
                                 viewModel = viewModel,
                                 toSongActivity = { content ->
-                                val intent = Intent(this@MainActivity, SongActivity::class.java).apply{
-                                    putExtra("songtitle", content.title)
-                                    putExtra("author", content.author)
-                                }
+                                val intent = Intent(this@MainActivity, SongActivity::class.java)
                                 startActivity(intent)
                             } )
                             BottomNavigationBar(
@@ -133,6 +131,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+        startMusicService(this)
     }
 }
 

@@ -35,7 +35,6 @@ import umc.study.umc_7th.albumData
 @Composable
 fun AlbumItem(){
     LazyVerticalGrid(columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(30.dp),
         modifier = Modifier.padding(horizontal = 8.dp)) {
         items(albumData){ content ->
             Column(

@@ -34,8 +34,7 @@ class SongActivity : ComponentActivity() {
         val viewModel = (application as MyApplication).songViewModel
 
         setContent {
-            val songTitle = intent.getStringExtra("songtitle")
-            val singer = intent.getStringExtra("author")
+
             Umc_7thTheme {
                     Box(){
                         SongPlayerScreen(

@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
 
     <application
         android:name = ".MyApplication"
@@ -15,7 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Umc_7th"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        tools:ignore="ForegroundServicePermission">
+
         <activity
             android:name=".main.home.MainActivity"
             android:exported="true"
@@ -32,6 +36,13 @@
             android:exported="true"
             android:label="songActicity"
             android:theme="@style/Theme.Umc_7th" />
+        <service
+            android:name=".MusicPlayerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+
     </application>
 
 </manifest>
