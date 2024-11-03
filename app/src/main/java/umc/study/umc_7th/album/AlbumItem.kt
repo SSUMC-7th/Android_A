@@ -1,6 +1,9 @@
 package umc.study.umc_7th.album
 
 import android.os.Build
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +34,16 @@ import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.R
 import umc.study.umc_7th.albumData
 
+
+class AlbumItemActiviy : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        setContent{
+            AlbumItem()
+        }
+    }
+}
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AlbumItem(){
@@ -42,7 +55,9 @@ fun AlbumItem(){
             ){
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier= Modifier.wrapContentSize().padding( vertical = 20.dp)
+                    modifier= Modifier
+                        .wrapContentSize()
+                        .padding(vertical = 20.dp)
                 ){
 
                     Image(bitmap = ImageBitmap.imageResource(id = content.albumImage),
@@ -58,7 +73,9 @@ fun AlbumItem(){
                         painter = painterResource(id = R.drawable.btn_miniplayer_play),
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(48.dp).align(Alignment.BottomEnd)
+                        modifier = Modifier
+                            .size(48.dp)
+                            .align(Alignment.BottomEnd)
                     )
                 }
                 Column(

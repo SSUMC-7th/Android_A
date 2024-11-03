@@ -110,15 +110,6 @@ class MainActivity : ComponentActivity() {
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
                                 albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
                             }
-//                            composable(
-//                                "albumFragment",
-//                                arguments = listOf(navArgument("album") { type = NavType.ParcelableType(Album::class.java) })
-//                            ) { backStackEntry ->
-//                                val album = backStackEntry.arguments?.getParcelable<Album>("album")
-//                                album?.let {
-//                                    albumFragment(navController)
-//                                }
-//                            }
                             composable("lockerFragment") { LockerFragment(navController) }
                             composable("searchFragment") { searchFragment(navController) }
                             composable("aroundFragment") { aroundFragment(navController) }

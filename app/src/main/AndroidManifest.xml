@@ -32,6 +32,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".album.AlbumItemActiviy"
+            />
+        <activity
             android:name=".main.song.SongActivity"
             android:exported="true"
             android:label="songActicity"

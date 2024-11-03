@@ -1,5 +1,6 @@
 package umc.study.umc_7th.main.home
 
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -45,6 +47,7 @@ import umc.study.umc_7th.Album
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
+import umc.study.umc_7th.album.AlbumItemActiviy
 
 
 enum class BaseLocationCategory(
@@ -66,6 +69,7 @@ fun LocationMusicContentView(
     albumMusicStart :(Album) -> Unit,
     categoryClick : (BaseLocationCategory) -> Unit,
 ){
+    val context = LocalContext.current
     horizontalScrollAlbumContentView(
         contentList = contentList,
         titleBar = {
@@ -91,7 +95,10 @@ fun LocationMusicContentView(
                     Icon(
                         painter = painterResource(id = R.drawable.btn_main_arrow_more),
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(16.dp).clickable{
+                            val intent = Intent(context, AlbumItemActiviy::class.java)
+                            context.startActivity(intent)
+                        }
                     )
                 }
                 Row(
