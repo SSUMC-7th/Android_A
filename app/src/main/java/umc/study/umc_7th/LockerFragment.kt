@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -38,7 +39,8 @@ import umc.study.umc_7th.ui.theme.Purple40
 data class Music(
     val albumImage: Int,
     val title: String,
-    val artist: String
+    val artist: String,
+    var isChecked: Boolean = false // 스위치 ON/OFF 체크
 )
 
 
@@ -60,6 +62,8 @@ fun LockerFragment() {
         Music(R.drawable.img_album_heya, "해야 (HEYA)", "IVE"),
         Music(R.drawable.img_album_supernova, "Supernova", " 에스파"),
     )
+
+    var listState by remember { mutableStateOf(musicList.toMutableList()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -148,7 +152,7 @@ fun LockerFragment() {
             modifier = Modifier.padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(musicList) { Music ->
+            items(listState) { Music ->
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -170,7 +174,7 @@ fun LockerFragment() {
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier
                                 .padding(bottom = 4.dp)
-                                .width(200.dp),
+                                .width(150.dp),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -178,7 +182,7 @@ fun LockerFragment() {
                             text = Music.artist,
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.Gray,
-                            modifier = Modifier.width(200.dp),
+                            modifier = Modifier.width(150.dp),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -186,14 +190,32 @@ fun LockerFragment() {
 
                     Spacer(modifier = Modifier.weight(1f))
                     // 오른쪽 아이콘들
-                    Row {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Switch(
+                            checked = Music.isChecked,
+                            onCheckedChange = { isChecked ->
+                                val index = listState.indexOf(Music)
+                                if (index >= 0) {
+                                    listState = listState.toMutableList().apply {
+                                        this[index] = this[index].copy(isChecked = isChecked)
+                                    }
+                                }
+                            },
+                            modifier = Modifier.size(1.dp)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
                         IconButton(onClick = { /* Play 버튼 클릭 시 액션 */ }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.btn_player_play),
                                 contentDescription = "Play"
                             )
                         }
-                        IconButton(onClick = { /* More 버튼 클릭 시 액션 */ }) {
+                        IconButton(onClick = {
+                            listState = listState.toMutableList().apply { remove(Music) }
+                        }
+                        ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.btn_player_more),
                                 contentDescription = "More"
