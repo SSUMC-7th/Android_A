@@ -56,6 +56,13 @@ class ContentPlayerService: Service() {
             notificationManager.createNotificationChannel(channel)
         }
 
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("FLO")
+            .setContentText("원하는 음악을 재생하세요.")
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .build()
+        startForeground(NOTIFICATION_ID, notification)
+
         timer = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
                 _playingPoint.value = mediaPlayer?.currentPosition?.div(1000)
@@ -65,12 +72,6 @@ class ContentPlayerService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("FLO")
-            .setContentText("원하는 음악을 재생하세요.")
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .build()
-        startForeground(NOTIFICATION_ID, notification)
         return START_NOT_STICKY
     }
 
@@ -98,10 +99,6 @@ class ContentPlayerService: Service() {
                 setNotification(
                     title = "지금 재생 중",
                     text = "${content.author} - ${content.title}",
-                    icon = IconCompat.createWithResource(
-                        this@ContentPlayerService,
-                        R.mipmap.ic_launcher_round
-                    ),
                 )
             }
         }
@@ -117,10 +114,6 @@ class ContentPlayerService: Service() {
             setNotification(
                 title = "일시 정지됨",
                 text = "${content.author} - ${content.title}",
-                icon = IconCompat.createWithResource(
-                    this@ContentPlayerService,
-                    R.mipmap.ic_launcher_round
-                ),
             )
         }
     }
@@ -135,10 +128,6 @@ class ContentPlayerService: Service() {
             setNotification(
                 title = "지금 재생 중",
                 text = "${content.author} - ${content.title}",
-                icon = IconCompat.createWithResource(
-                    this@ContentPlayerService,
-                    R.mipmap.ic_launcher_round
-                ),
             )
         }
     }
@@ -157,13 +146,12 @@ class ContentPlayerService: Service() {
     private fun setNotification(
         title: String,
         text: String,
-        icon: IconCompat,
     ) {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val notificationBuilder = NotificationCompat.Builder(this@ContentPlayerService, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
-            .setSmallIcon(icon)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
     }
 }
