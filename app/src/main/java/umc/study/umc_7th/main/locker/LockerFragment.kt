@@ -15,13 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.main.BottomNavigationBar
 import umc.study.umc_7th.main.NavigationDestination
 import umc.study.umc_7th.R
+import umc.study.umc_7th.main.MainActivity
+import umc.study.umc_7th.main.MainViewModel
 import umc.study.umc_7th.main.album.TabItem
 import umc.study.umc_7th.previewMusicContentList
 
 class LockerFragment : Fragment() {
+    private val viewModel: MainViewModel by viewModels()
+    private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,25 +37,42 @@ class LockerFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false).apply {
             findViewById<ComposeView>(R.id.composeView_home).setContent {
-                LockerScreen()
+                LockerScreen(
+                    savedMusics = viewModel.savedMusics.toList(),
+                    onMusicContentClicked = { contentPlayerService.setContent(it) },
+                    onDeleteContentClicked = { viewModel.deleteSavedMusic(it) },
+                )
             }
         }
     }
 }
 
 @Composable
-fun LockerScreen() {
+fun LockerScreen(
+    savedMusics: List<MusicContent>,
+    onMusicContentClicked: (MusicContent) -> Unit,
+    onDeleteContentClicked: (MusicContent) -> Unit,
+) {
     Column {
         TitleBar(
             title = "보관함",
             isLoginDone = false,
-            onLoginClicked = {}
+            onLoginClicked = { /* TODO */ }
         )
         TabLayout(
             tabs = listOf(
                 TabItem(
                     label = "저장한 곡",
-                    page = { SavedMusicPage() }
+                    page = {
+                        SavedMusicPage(
+                            musics = savedMusics,
+                            onEditButtonClicked = { /* TODO */ },
+                            onPlayAllButtonClicked = { /* TODO */ },
+                            onPlayButtonClicked = onMusicContentClicked,
+                            onDeleteClicked = onDeleteContentClicked,
+                            onDetailsClicked = { /* TODO */ },
+                        )
+                    }
                 ),
                 TabItem(
                     label = "음악파일",
@@ -79,7 +104,11 @@ fun PreviewLockerScreen() {
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            LockerScreen()
+            LockerScreen(
+                savedMusics = previewMusicContentList,
+                onMusicContentClicked = {},
+                onDeleteContentClicked = {},
+            )
         }
     }
 }

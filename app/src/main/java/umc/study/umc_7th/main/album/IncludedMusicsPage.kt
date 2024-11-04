@@ -103,18 +103,16 @@ fun IncludedMusicsPage(
                     modifier = Modifier
                         .clip(RoundedCornerShape(percent = 50))
                         .clickable {
-                            if (isContentSelected.contains(true))
-                                repeat(isContentSelected.size) { isContentSelected[it] = false }
-                            else
-                                repeat(isContentSelected.size) { isContentSelected[it] = true }
+                            val isAllSelected = isContentSelected.all { it }
+                            isContentSelected.replaceAll { !isAllSelected }
                         }
                 ) {
                     Image(
                         painter = painterResource(
-                            id = if (!isContentSelected.contains(false))
-                                R.drawable.btn_playlist_select_on
-                            else
+                            id = if (isContentSelected.any { !it })
                                 R.drawable.btn_playlist_select_off
+                            else
+                                R.drawable.btn_playlist_select_on
                         ),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
@@ -124,10 +122,11 @@ fun IncludedMusicsPage(
                         text = "전체선택",
                         style = TextStyle(
                             fontSize = 12.sp,
-                            color = if (!isContentSelected.contains(false))
-                                Color.Blue
-                            else
+                            color = if (isContentSelected.any { !it })
                                 Color.Unspecified
+                            else
+                                Color.Blue
+
                         ),
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -163,111 +162,129 @@ fun IncludedMusicsPage(
                 count = contentList.size,
             ) { index ->
                 val content = contentList[index]
+                val selected = isContentSelected[index]
+                MusicItem(
+                    music = content,
+                    index = index,
+                    isSelected = selected,
+                    onClicked = { isContentSelected[index] = !selected },
+                    onPlayButtonClicked = { onPlayContentClicked(content) },
+                    onDetailsButtonClicked = { onContentDetailsClicked(content) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MusicItem(
+    music: MusicContent,
+    index: Int,
+    isSelected: Boolean,
+    onClicked: () -> Unit,
+    onPlayButtonClicked: () -> Unit,
+    onDetailsButtonClicked: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .background(
+                color = if (isSelected)
+                    Color.Black.copy(0.1f)
+                else
+                    Color.Transparent
+            )
+            .clickable { onClicked() }
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .background(
-                            color = if (isContentSelected[index])
-                                Color.Black.copy(0.1f)
-                            else
-                                Color.Transparent
-                        )
-                        .clickable {
-                            isContentSelected[index] = !isContentSelected[index]
-                        }
+                        .width(24.dp)
+                        .height(24.dp),
                 ) {
+                    Text(
+                        text = "%02d".format(index + 1),
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                        )
+                    )
+                }
+                Column {
                     Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
+                        modifier = Modifier.height(24.dp)
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
+                        music.label?.let { label ->
                             Box(
-                                contentAlignment = Alignment.Center,
                                 modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp),
+                                    .background(
+                                        color = Color.Blue,
+                                        shape = RoundedCornerShape(percent = 50)
+                                    )
+                                    .padding(horizontal = 4.dp, vertical = 1.dp)
                             ) {
                                 Text(
-                                    text = "%02d".format(index + 1),
+                                    text = label,
                                     style = TextStyle(
+                                        fontSize = 8.sp,
                                         fontWeight = FontWeight.Bold,
-                                    )
-                                )
-                            }
-                            Column {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.height(24.dp)
-                                ) {
-                                    content.label?.let { label ->
-                                        Box(
-                                            modifier = Modifier
-                                                .background(
-                                                    color = Color.Blue,
-                                                    shape = RoundedCornerShape(percent = 50)
-                                                )
-                                                .padding(horizontal = 4.dp, vertical = 1.dp)
-                                        ) {
-                                            Text(
-                                                text = label,
-                                                style = TextStyle(
-                                                    fontSize = 8.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = Color.White
-                                                ),
-                                            )
-                                        }
-                                    }
-                                    Text(
-                                        text = content.title,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Clip,
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.height(20.dp),
-                                ) {
-                                    Text(
-                                        text = content.author,
-                                        style = TextStyle(
-                                            color = Color.Black.copy(0.5f),
-                                            fontSize = 12.sp
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Clip,
-                                    )
-                                }
-                            }
-                        }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            IconButton(
-                                onClick = { onPlayContentClicked(content) },
-                                modifier = Modifier.size(24.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.btn_player_play),
-                                    contentDescription = null
-                                )
-                            }
-                            IconButton(
-                                onClick = { onContentDetailsClicked(content) },
-                                modifier = Modifier.size(24.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.btn_player_more),
-                                    contentDescription = null
+                                        color = Color.White
+                                    ),
                                 )
                             }
                         }
+                        Text(
+                            text = music.title,
+                            maxLines = 1,
+                            overflow = TextOverflow.Clip,
+                        )
                     }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.height(20.dp),
+                    ) {
+                        Text(
+                            text = music.author,
+                            style = TextStyle(
+                                color = Color.Black.copy(0.5f),
+                                fontSize = 12.sp
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Clip,
+                        )
+                    }
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                IconButton(
+                    onClick = onPlayButtonClicked,
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.btn_player_play),
+                        contentDescription = null
+                    )
+                }
+                IconButton(
+                    onClick = onDetailsButtonClicked,
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.btn_player_more),
+                        contentDescription = null
+                    )
                 }
             }
         }
