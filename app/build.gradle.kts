@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -9,7 +11,7 @@ plugins {
 
 android {
     namespace = "umc.study.umc_7th"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "umc.study.umc_7th"
@@ -41,6 +43,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        viewBinding = true
         dataBinding = true
         compose = true
     }

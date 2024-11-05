@@ -1,40 +1,84 @@
-//package umc.study.umc_7th
-//
-//import android.os.Bundle
-//import androidx.compose.ui.graphics.ImageBitmap
-//import androidx.compose.ui.platform.ComposeView
-//import androidx.compose.ui.res.imageResource
-//import androidx.fragment.app.FragmentActivity
-//import umc.study.umc_7th.umc.study.umc_7th.Content
-//
-//class MainActivity : FragmentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//
-//        val homeFragment = HomeFragment()
-//        supportFragmentManager
-//            .beginTransaction()
-//            .add(R.id.fragmentContainerView_main, homeFragment)
-//            .commit()
-//
-//        val composeViewMain = findViewById<ComposeView>(R.id.composeView_main)
-//        composeViewMain.setContent {
-//            BottomNavigationBar(
-//                currentDestination = NavigationDestination.HOME,
-//                currentContent = Content(
-//                    title = "Peanut butter Sandwich",
-//                    author = "jusokuryClub",
-//                    image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
-//                    length = 200,
-//                ),
-//                isPlaying = false,
-//                onDestinationClicked = { /*TODO*/ },
-//                onContentClicked = { /*TODO*/ },
-//                onPlayButtonClicked = { /*TODO*/ },
-//                onNextButtonClicked = { /*TODO*/ },
-//                onPreviousButtonClicked = { /*TODO*/ }) {
-//            }
-//        }
-//    }
-//}
+package umc.study.umc_7th
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import umc.study.umc_7th.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+
+    lateinit var binding : ActivityMainBinding
+    lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        initBottomNavigation()
+
+        val song = Song(binding.mainMiniplayerTitleTv.text.toString(), binding.mainMiniplayerSingerTv.text.toString())
+
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    val message = data.getStringExtra("message")
+                    Log.d("message", message!!)
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        binding.mainPlayerCl.setOnClickListener {
+            val intent = Intent(this, SongActivity::class.java)
+            intent.putExtra("title", song.title)
+            intent.putExtra("singer",song.singer)
+            activityResultLauncher.launch(intent)
+        }
+
+    }
+
+    private fun initBottomNavigation(){
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frm, HomeFragment())
+            .commitAllowingStateLoss()
+
+        binding.mainBnv.setOnItemSelectedListener{ item ->
+            when (item.itemId) {
+
+                R.id.homeFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, HomeFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+
+                R.id.lookFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, LookFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+                R.id.searchFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, SearchFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+                R.id.lockerFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, LockerFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+            }
+            false
+        }
+    }
+}
