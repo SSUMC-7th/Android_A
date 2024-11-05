@@ -1,6 +1,6 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.home
 
-import android.icu.text.UnicodeSetSpanner.CountMethod
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -40,10 +41,13 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.time.LocalDate
+import umc.study.umc_7th.Album
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
+import umc.study.umc_7th.album.AlbumItemActiviy
 
 
 enum class BaseLocationCategory(
@@ -57,12 +61,15 @@ enum class BaseLocationCategory(
 @Composable
 fun LocationMusicContentView(
     title : String,
+    viewModel : SongViewModel,
     contentList : List<Album>,
     baseLocationCategory: BaseLocationCategory,
     viewTitleClick : () -> Unit,
     contentClick : (Album) -> Unit,
+    albumMusicStart :(Album) -> Unit,
     categoryClick : (BaseLocationCategory) -> Unit,
 ){
+    val context = LocalContext.current
     horizontalScrollAlbumContentView(
         contentList = contentList,
         titleBar = {
@@ -88,7 +95,10 @@ fun LocationMusicContentView(
                     Icon(
                         painter = painterResource(id = R.drawable.btn_main_arrow_more),
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(16.dp).clickable{
+                            val intent = Intent(context, AlbumItemActiviy::class.java)
+                            context.startActivity(intent)
+                        }
                     )
                 }
                 Row(
@@ -111,7 +121,7 @@ fun LocationMusicContentView(
                 contentAlignment = Alignment.BottomEnd,
             ){
 
-                    Image(bitmap = content.albumImage,
+                    Image(bitmap = ImageBitmap.imageResource(id = content.albumImage),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -120,10 +130,11 @@ fun LocationMusicContentView(
                     )
 
                 Icon(
+
                     painter = painterResource(id = R.drawable.btn_miniplayer_play),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(48.dp).clickable { albumMusicStart(content) }
                 )
             }
         },
@@ -345,60 +356,61 @@ private fun horizontalScrollContentView(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewLocationMusicContentView(){
-    LocationMusicContentView(
-        title = "오늘 발매 음악",
-        contentList = List(15){
-            Album(
-                albumTitle = "IU 5th Album 'LILAC'",
-                date = LocalDate.parse("2023-03-27"),
-                author = "IU(아이유)",
-                albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
-                titleTrackList = listOf("LILAC", "Flu")
-            )
-        },
-        baseLocationCategory = BaseLocationCategory.GLOABAL ,
-        viewTitleClick = { },
-        contentClick ={}, // 여기에 프래그먼트 전환기능 추가해야됨
-        categoryClick = {}
-    )
-}
-
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewPodcastCollectionView(){
-    PodcastCollectionView(
-        title = "매일 들어도 좋은 팟캐스트" ,
-        contentList = List(15){
-            Content(
-                title = "김시선의 귀책사유 FLO X 윌라",
-                author= "김시선",
-                image = R.drawable.img_potcast_exp,
-                length = 200,
-            )
-        },
-        contentClick = {}
-    )
-}
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewVideoCollectionView(){
-    VideoCollectionView(
-        title ="비디오 콜렉션" ,
-        contentList =List(15){
-            Content(
-                title = "제목",
-                author = "지은이",
-                image = R.drawable.img_video_exp,
-                length = 200,
-            )
-        } ,
-        contentClick = {}
-    )
-}
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewLocationMusicContentView(){
+//    LocationMusicContentView(
+//        title = "오늘 발매 음악",
+//        contentList = List(15){
+//            Album(
+//                albumTitle = "IU 5th Album 'LILAC'",
+//                date = LocalDate.parse("2023-03-27"),
+//                author = "IU(아이유)",
+//                albumImage =  R.drawable.img_album_exp2,
+//                trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
+//                titleTrackList = listOf("LILAC", "Flu")
+//            )
+//        },
+//        baseLocationCategory = BaseLocationCategory.GLOABAL ,
+//        viewTitleClick = { },
+//        contentClick ={}, // 여기에 프래그먼트 전환기능 추가해야됨
+//        categoryClick = {},
+//        albumMusicStart = {}
+//    )
+//}
+//
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewPodcastCollectionView(){
+//    PodcastCollectionView(
+//        title = "매일 들어도 좋은 팟캐스트" ,
+//        contentList = List(15){
+//            Content(
+//                title = "김시선의 귀책사유 FLO X 윌라",
+//                author= "김시선",
+//                image = R.drawable.img_potcast_exp,
+//                length = 200,
+//            )
+//        },
+//        contentClick = {}
+//    )
+//}
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewVideoCollectionView(){
+//    VideoCollectionView(
+//        title ="비디오 콜렉션" ,
+//        contentList =List(15){
+//            Content(
+//                title = "제목",
+//                author = "지은이",
+//                image = R.drawable.img_video_exp,
+//                length = 200,
+//            )
+//        } ,
+//        contentClick = {}
+//    )
+//}

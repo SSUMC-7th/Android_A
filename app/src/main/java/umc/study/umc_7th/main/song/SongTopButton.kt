@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.song
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import umc.study.umc_7th.R
 
 @Composable
 fun SongTopButton(

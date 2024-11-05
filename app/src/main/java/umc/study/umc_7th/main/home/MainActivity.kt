@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.main.home
 
 import android.content.Intent
 import android.os.Build
@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +14,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 //import androidx.compose.foundation.pager.HorizontalPager
 
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
@@ -29,9 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -46,6 +40,19 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
 
 import androidx.compose.foundation.layout.navigationBarsPadding
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.MyApplication
+import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
+import umc.study.umc_7th.album.albumFragment
+import umc.study.umc_7th.albumData
+import umc.study.umc_7th.aroundFragment
+import umc.study.umc_7th.bannerDataList
+import umc.study.umc_7th.locker.LockerFragment
+import umc.study.umc_7th.main.song.MiniPlayer
+import umc.study.umc_7th.main.song.SongActivity
+import umc.study.umc_7th.searchFragment
+import umc.study.umc_7th.startMusicService
 
 
 class MainActivity : ComponentActivity() {
@@ -65,16 +72,8 @@ class MainActivity : ComponentActivity() {
                         ){
                             MainMiniplayer(
                                 viewModel = viewModel,
-                                content = Content(
-                                title = "butter",
-                                author = "bts",
-                                image = R.drawable.img_album_exp2,
-                                length = 200
-                            ),toSongActivity = { content ->
-                                val intent = Intent(this@MainActivity, SongActivity::class.java).apply{
-                                    putExtra("songtitle", content.title)
-                                    putExtra("author", content.author)
-                                }
+                                toSongActivity = { content ->
+                                val intent = Intent(this@MainActivity, SongActivity::class.java)
                                 startActivity(intent)
                             } )
                             BottomNavigationBar(
@@ -90,11 +89,12 @@ class MainActivity : ComponentActivity() {
                         ) {
                         NavHost(navController = navController, startDestination = "homeFragment") {
 
-                            composable("homeFragment") { homeFragment(navController) }
+                            composable("homeFragment") { homeFragment(navController, viewModel) }
                             composable(
-                                "albumFragment/{albumTitle}/{author}/{date}/{trackList}/{titleTrackList}",
+                                "albumFragment/{albumTitle}/{albumImage}/{author}/{date}/{trackList}/{titleTrackList}",
                                 arguments = listOf(
                                     navArgument("albumTitle") { type = NavType.StringType },
+                                    navArgument("albumImage"){ type = NavType.StringType },
                                     navArgument("author") { type = NavType.StringType },
                                     navArgument("date") { type = NavType.StringType },
                                     navArgument("trackList") { type = NavType.StringType },
@@ -102,11 +102,13 @@ class MainActivity : ComponentActivity() {
                                 )
                             ) { backStackEntry ->
                                 val albumTitle = backStackEntry.arguments?.getString("albumTitle") ?: ""
+                                val albumImageString= backStackEntry.arguments?.getString("albumImage")?:"0"
+                                val albumImage = albumImageString.toIntOrNull()?:0
                                 val author = backStackEntry.arguments?.getString("author") ?: ""
                                 val date = backStackEntry.arguments?.getString("date") ?: ""
                                 val trackList = backStackEntry.arguments?.getString("trackList")?.split(",") ?: listOf()
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
-                                albumFragment(navController, albumTitle, author, LocalDate.parse(date), trackList, titleTrackList)
+                                albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
                             }
                             composable("lockerFragment") { LockerFragment(navController) }
                             composable("searchFragment") { searchFragment(navController) }
@@ -120,6 +122,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+        startMusicService(this)
     }
 }
 
@@ -128,7 +131,9 @@ class MainActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun homeFragment(navController: NavController){
+fun homeFragment(navController: NavController,
+                 viewModel: SongViewModel
+){
     Column (
         modifier = Modifier.verticalScroll(rememberScrollState())
     ){
@@ -167,24 +172,28 @@ fun homeFragment(navController: NavController){
             activeColor = Color.Blue,
             inactiveColor = Color.Gray)
 
-
+        val albumList = albumData
         LocationMusicContentView(
             title = "오늘 발매 음악",
-            contentList = List(15){
-                Album(
-                    albumTitle = "IU 5th Album 'LILAC'",
-                    date = LocalDate.parse("2023-03-27"),
-                    author = "IU(아이유)",
-                    albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                    trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
-                    titleTrackList = listOf("LILAC", "Flu")
-                )
-            },
+            contentList = albumList,
             baseLocationCategory = BaseLocationCategory.GLOABAL ,
             viewTitleClick = { },
             contentClick ={ album ->
-                navController.navigate("albumFragment/${album.albumTitle}/${album.author}/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
-            categoryClick = {}
+                navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}" +
+                        "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
+            categoryClick = {},
+            albumMusicStart = {album ->
+                // 첫 번째 트랙을 `currentSong`으로 설정
+                val firstTrackContent = Content(
+                    title = album.trackList.firstOrNull() ?: "Unknown Track",
+                    author = album.author,
+                    image = album.albumImage,
+                    length = 200 // 곡의 길이를 필요에 맞게 설정
+                )
+                viewModel.setCurrentSong(firstTrackContent)
+
+            },
+            viewModel = viewModel
         )
         PodcastCollectionView(
             title = "매일 들어도 좋은 팟캐스트" ,
@@ -216,11 +225,9 @@ fun homeFragment(navController: NavController){
 
 @Composable
 @RequiresApi(Build.VERSION_CODES.P)
-fun MainMiniplayer(viewModel : SongViewModel ,
-    content : Content, toSongActivity : (Content) -> Unit){
+fun MainMiniplayer(viewModel : SongViewModel, toSongActivity : (Content) -> Unit){
     MiniPlayer(
         viewModel = viewModel,
-        content = content,
         beforeSongPlayButtonClick = { /*TODO*/ },
         playSongButtonClick = { /*TODO*/ },
         nextSongPlayButtonClick = { /*TODO*/ },

@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.album
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -33,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.Album
+import umc.study.umc_7th.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -72,8 +74,10 @@ fun AlbumFragmentTop(
                     Icon(bitmap = if(like == true) ImageBitmap.imageResource(id = R.drawable.ic_my_like_on)
                     else ImageBitmap.imageResource(id = R.drawable.ic_my_like_off),
                         contentDescription = null,
-                        modifier = Modifier.size(50.dp)
-                            .clickable { like = !like })
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable { like = !like },
+                        tint = Color.Unspecified)
                 }
 
                 Icon(bitmap = ImageBitmap.imageResource(id = R.drawable.btn_player_more),
@@ -108,7 +112,7 @@ fun AlbumFragmentTop(
             Box(
                 contentAlignment = Alignment.Center
             ){
-                Image(bitmap = album.albumImage,
+                Image(bitmap = ImageBitmap.imageResource(id = album.albumImage),
                     contentDescription =null ,
                     modifier = Modifier
                         .size(210.dp)
@@ -117,7 +121,7 @@ fun AlbumFragmentTop(
                 IconButton(onClick = playAlbumButtonClick,
                     modifier = Modifier.align(Alignment.BottomEnd)) {
                     Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.widget_black_play),
-                        contentDescription =null )
+                        contentDescription =null , tint= Color.Unspecified)
                 }
             }
             Image(painter = painterResource(id = R.drawable.img_album_lp),
@@ -138,7 +142,7 @@ fun priviewalbum1(){
             albumTitle = "IU 5th Album 'LILAC'",
             date = LocalDate.parse("2023-03-27"),
             author = "IU(아이유)",
-            albumImage = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+            albumImage =  R.drawable.img_album_exp2,
             trackList = listOf("LILAC", "Coin", "Flu", "Troll", "Lovesick"),
             titleTrackList = listOf("LILAC", "Flu")
         ),
