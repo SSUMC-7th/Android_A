@@ -16,22 +16,31 @@ import umc.study.umc_7th.network.Server
 
 @RequiresApi(Build.VERSION_CODES.O)
 class MainViewModel: ViewModel() {
+    private val _bannerContents = mutableStateListOf<List<MusicContent>>()
+    private val _albums = mutableStateListOf<Album>()
+    private val _podcasts = mutableStateListOf<PodcastContent>()
+    private val _videos = mutableStateListOf<VideoContent>()
+    private val _savedMusics = mutableStateListOf<MusicContent>()
+
     private val _currentAlbum = mutableStateOf<AlbumContent?>(null)
 
-    val bannerContents = mutableStateListOf<List<MusicContent>>()
-    val albums = mutableStateListOf<Album>()
-    val podcasts = mutableStateListOf<PodcastContent>()
-    val videos = mutableStateListOf<VideoContent>()
+    val bannerContents get() = _bannerContents.toList()
+    val albums get() = _albums.toList()
+    val podcasts get() = _podcasts.toList()
+    val videos get() = _videos.toList()
+    val savedMusics get() = _savedMusics.toList()
+
     var currentAlbum: AlbumContent? get() = _currentAlbum.value
         private set(value) { _currentAlbum.value = value }
 
     init {
         viewModelScope.launch {
             try {
-                repeat(5) { bannerContents.add(Server.getRandomMusics((5..10).random())) }
-                albums.addAll(Server.getRandomAlbums(10))
-                podcasts.addAll(Server.getRandomPodcasts(10))
-                videos.addAll(Server.getRandomVideos(10))
+                repeat(5) { _bannerContents.add(Server.getRandomMusics((5..10).random())) }
+                _albums.addAll(Server.getRandomAlbums(10))
+                _podcasts.addAll(Server.getRandomPodcasts(10))
+                _videos.addAll(Server.getRandomVideos(10))
+                _savedMusics.addAll(Server.getRandomMusics(50))
             }
             catch (e: Exception) {
                 e.printStackTrace()
@@ -51,5 +60,9 @@ class MainViewModel: ViewModel() {
                 onFailed()
             }
         }
+    }
+
+    fun deleteSavedMusic(music: MusicContent) {
+        _savedMusics.remove(music)
     }
 }

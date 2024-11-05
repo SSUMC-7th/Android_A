@@ -33,7 +33,7 @@ fun main() {
             get("/music/random") {
                 val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 10
 
-                if (size !in 1..30) {
+                if (size !in 1..100) {
                     call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
                     return@get
                 }
@@ -44,7 +44,7 @@ fun main() {
 
             get("/album/random") {
                 val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 1
-                if (size !in 1..30) {
+                if (size !in 1..100) {
                     call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
                     return@get
                 }
@@ -71,7 +71,7 @@ fun main() {
 
             get("/podcast/random") {
                 val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 1
-                if (size !in 1..30) {
+                if (size !in 1..100) {
                     call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
                 }
 
@@ -98,7 +98,7 @@ fun main() {
             get("/video/random") {
                 val size = call.request.queryParameters["size"]?.toIntOrNull() ?: 1
 
-                if (size !in 1..30) {
+                if (size !in 1..100) {
                     call.respondText("Invalid size", status = HttpStatusCode.BadRequest)
                     return@get
                 }

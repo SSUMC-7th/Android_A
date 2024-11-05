@@ -1,11 +1,15 @@
 package umc.study.umc_7th
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,6 +20,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ContentPlayerService: Service() {
+    companion object {
+        private const val CHANNEL_ID = "content_player"
+        private const val CHANNEL_NAME = "Content Player"
+        private const val NOTIFICATION_ID = 1
+    }
+
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var timer: Job
 
@@ -38,6 +48,19 @@ class ContentPlayerService: Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("FLO")
+            .setContentText("원하는 음악을 재생하세요.")
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .build()
+        startForeground(NOTIFICATION_ID, notification)
 
         timer = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
@@ -71,6 +94,11 @@ class ContentPlayerService: Service() {
                 mp.start()
                 _currentContent.value = content
                 _isPlaying.value = true
+
+                setNotification(
+                    title = "지금 재생 중",
+                    text = "${content.author} - ${content.title}",
+                )
             }
         }
     }
@@ -80,12 +108,26 @@ class ContentPlayerService: Service() {
             it.pause()
             _isPlaying.value = false
         }
+
+        _currentContent.value?.let { content ->
+            setNotification(
+                title = "일시 정지됨",
+                text = "${content.author} - ${content.title}",
+            )
+        }
     }
 
     fun resume() {
         mediaPlayer?.let{
             it.start()
             _isPlaying.value = true
+        }
+
+        _currentContent.value?.let { content ->
+            setNotification(
+                title = "지금 재생 중",
+                text = "${content.author} - ${content.title}",
+            )
         }
     }
 
@@ -96,6 +138,19 @@ class ContentPlayerService: Service() {
     override fun onDestroy() {
         mediaPlayer?.release()
         mediaPlayer = null
+        timer.cancel()
         super.onDestroy()
+    }
+
+    private fun setNotification(
+        title: String,
+        text: String,
+    ) {
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationBuilder = NotificationCompat.Builder(this@ContentPlayerService, CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
     }
 }

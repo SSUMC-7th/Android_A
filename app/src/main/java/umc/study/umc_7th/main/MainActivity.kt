@@ -46,7 +46,7 @@ class MainActivity : FragmentActivity() {
         setContentView(R.layout.activity_main)
 
         Intent(this, ContentPlayerService::class.java).also {
-            startService(it)
+            startForegroundService(it)
             bindService(it, connection, Context.BIND_AUTO_CREATE)
         }
 
