@@ -20,11 +20,36 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 
 enum class BaseLocationCategory(val mean: String) {
-    GLOABAL(mean = "종합"),
+    GLOBAL(mean = "종합"),
     DOMESTIC(mean = "국내"),
     FOREIGN(mean = "해외"),
+}
+
+@Composable
+fun horizontalScrollContentView(
+    contentList: List<Content>,
+    titleBar: @Composable () -> Unit,
+    thumbnail: @Composable (Content) -> Unit,
+    contentClick: (Content) -> Unit
+) {
+    Column {
+        titleBar()
+        LazyRow {
+            items(contentList) { content ->
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable { contentClick(content) }
+                ) {
+                    thumbnail(content)
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -197,5 +222,8 @@ fun VideoCollectionView(
         contentClick = contentClick
     )
 }
+
+
+
 
 

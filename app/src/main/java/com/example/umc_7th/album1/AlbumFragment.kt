@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import umc.study.umc_7th.Album
-import umc.study.umc_7th.TabLayout
 import java.time.LocalDate
 
-// Album 데이터 클래스 정의 (예시)
-data class Album(
+// AlbumData 데이터 클래스 정의
+data class AlbumData(
     val albumTitle: String,
     val date: LocalDate,
     val author: String,
@@ -40,61 +38,54 @@ fun albumFragment(
     trackList: List<String>,
     titleTrackList: List<String>
 ) {
+    // AlbumData 객체 생성
+    val album = AlbumData(
+        albumTitle = albumTitle,
+        date = date,
+        author = author,
+        albumImage = albumImage,
+        trackList = trackList,
+        titleTrackList = titleTrackList
+    )
+
     Column {
-        // AlbumFragmentTop 호출 부분 수정
+        // AlbumFragmentTop 호출
         AlbumFragmentTop(
-            album = Album(
-                albumTitle = albumTitle,
-                date = date,
-                author = author,
-                albumImage = albumImage,
-                trackList = trackList,
-                titleTrackList = titleTrackList
-            ),
-            date = date,
+            album = album,
             albumFgtoMain = { navController.navigate("homeFragment") },
             likeButtonClick = { /* TODO: 좋아요 버튼 기능 추가 */ },
             playerMoreButtonClick = { /* TODO: 더보기 버튼 기능 추가 */ }
         )
 
-        // TabLayout 호출 부분 수정
-        TabLayout(
-            album = Album(
-                albumTitle = albumTitle,
-                date = date,
-                author = author,
-                albumImage = albumImage,
-                trackList = trackList,
-                titleTrackList = titleTrackList
-            )
-        )
+        // TabLayout 호출
+        TabLayout(album = album)
     }
 }
 
-// AlbumFragmentTop 함수 정의 (예시)
+// AlbumFragmentTop 함수 정의
 @Composable
 fun AlbumFragmentTop(
-    album: Album,
-    date: LocalDate,
+    album: AlbumData,
     albumFgtoMain: () -> Unit,
     likeButtonClick: () -> Unit,
     playerMoreButtonClick: () -> Unit
 ) {
-    // AlbumFragmentTop의 UI 구성
     Column {
         Text(text = "Album Title: ${album.albumTitle}")
         Text(text = "Author: ${album.author}")
         Text(text = "Date: ${album.date}")
-        // 버튼 클릭 이벤트 등 추가
+        // 버튼 클릭 이벤트 추가
     }
 }
 
-// TabLayout 함수 정의 (예시)
+// TabLayout 함수 정의
 @Composable
-fun TabLayout(album: Album) {
-    // TabLayout의 UI 구성
+fun TabLayout(album: AlbumData) {
     Column {
         Text(text = "TabLayout for ${album.albumTitle}")
         // Tab 항목 구성
     }
 }
+
+
+

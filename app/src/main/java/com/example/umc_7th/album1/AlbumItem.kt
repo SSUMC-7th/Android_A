@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -42,8 +41,8 @@ data class Album(
 
 // 샘플 albumData 리스트 생성
 val albumData = listOf(
-    Album("Album 1", "Author 1", R.drawable.sample_image1),
-    Album("Album 2", "Author 2", R.drawable.sample_image2),
+    com.example.umc_7th.etc.Album("Album 1", "Author 1", R.drawable.sample_image1),
+    com.example.umc_7th.etc.Album("Album 2", "Author 2", R.drawable.sample_image2),
     // 필요한 만큼 Album 객체 추가
 )
 
