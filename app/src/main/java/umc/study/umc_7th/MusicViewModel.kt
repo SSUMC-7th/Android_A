@@ -2,11 +2,16 @@ package umc.study.umc_7th
 
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MusicViewModel : ViewModel() {
+
+    var song_title = mutableStateOf("")
+    var song_author = mutableStateOf("")
+
     private val _currentTime = MutableStateFlow(0f)
     val currentTime : StateFlow<Float> = _currentTime
 
@@ -31,6 +36,11 @@ class MusicViewModel : ViewModel() {
             }
         }
         handler.post(updateRunnable!!)
+    }
+
+    fun play(title : String, author : String) {
+        song_title.value = title
+        song_author.value = author
     }
 
     fun togglePlayPause() {

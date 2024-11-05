@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,14 +50,22 @@ enum class GlobeCategory(
     FOREIGN(expression = "해외"),
 }
 
+data class ContentItem(
+    val title: String,
+    val author: String,
+    val image: ImageBitmap,
+    val length: Int,
+)
+
 @Composable
 fun GlobeCategorizedMusicCollectionView(
     title: String,
-    contentList: List<Content>,
+    contentList: List<ContentItem>,
     globeCategory: GlobeCategory,
     onViewTitleClicked: () -> Unit,
-    onContentClicked: (Content) -> Unit,
+    onContentClicked: (ContentItem) -> Unit,
     onCategoryClicked: (GlobeCategory) -> Unit,
+    viewModel: MusicViewModel
 ) {
     ContentCollectionView(
         contentList = contentList,
@@ -113,12 +122,14 @@ fun GlobeCategorizedMusicCollectionView(
                         .size(128.dp)
                         .clip(RoundedCornerShape(8.dp))
                 )
-                Icon(
-                    painter = painterResource(id = R.drawable.btn_miniplayer_play),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
+                IconButton(onClick = { viewModel.play(content.title, content.author) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.btn_miniplayer_play),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
         },
         onContentClicked = onContentClicked,
@@ -128,8 +139,8 @@ fun GlobeCategorizedMusicCollectionView(
 @Composable
 fun PodcastCollectionView(
     title: String,
-    contentList: List<Content>,
-    onContentClicked: (Content) -> Unit,
+    contentList: List<ContentItem>,
+    onContentClicked: (ContentItem) -> Unit,
 ) {
     ContentCollectionView(
         contentList = contentList,
@@ -166,8 +177,8 @@ fun PodcastCollectionView(
 @Composable
 fun VideoCollectionView(
     title: String,
-    contentList: List<Content>,
-    onContentClicked: (Content) -> Unit,
+    contentList: List<ContentItem>,
+    onContentClicked: (ContentItem) -> Unit,
 ) {
     ContentCollectionView(
         contentList = contentList,
@@ -220,10 +231,10 @@ fun VideoCollectionView(
 
 @Composable
 private fun ContentCollectionView(
-    contentList: List<Content>,
+    contentList: List<ContentItem>,
     titleBar: @Composable () -> Unit, // 제목 바에 그려질 컴포저블
-    thumbnail: @Composable (Content) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
-    onContentClicked: (Content) -> Unit
+    thumbnail: @Composable (ContentItem) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
+    onContentClicked: (ContentItem) -> Unit
 ) {
     val density = LocalDensity.current
     var contentWidth by remember { mutableStateOf(0.dp) }
@@ -281,13 +292,28 @@ private fun ContentCollectionView(
 @Preview(showBackground = true)
 @Composable
 fun PreviewGlobeCategorizedMusicCollectionView() {
+    val titles = listOf("LILAC", "Butter", "Drama", "Next Level", "작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)", "BAAM", "Weekend", "해야 (HEYA)", "Love wins all", "Supernova")
+    val authors = listOf("IU", "BTS", "에스파", "에스파", "BTS", "모모랜드", "태연", "IVE", "IU", "에스파")
+    val images = listOf(
+        R.drawable.img_album_exp2,
+        R.drawable.img_album_exp,
+        R.drawable.img_album_drama,
+        R.drawable.img_album_exp3,
+        R.drawable.img_album_exp4,
+        R.drawable.img_album_exp5,
+        R.drawable.img_album_exp6,
+        R.drawable.img_album_heya,
+        R.drawable.img_album_lovewinsall,
+        R.drawable.img_album_supernova
+    )
+
     GlobeCategorizedMusicCollectionView(
         title = "오늘 발매 음악",
-        contentList = List(15) {
-            Content(
-                title = "LILAC",
-                author = "IU",
-                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+        contentList = List(10) { index ->
+            ContentItem(
+                title = titles[index % titles.size],
+                author = authors[index % authors.size],
+                image = ImageBitmap.imageResource(id = images[index % images.size]),
                 length = 200,
             )
         },
@@ -295,16 +321,18 @@ fun PreviewGlobeCategorizedMusicCollectionView() {
         onViewTitleClicked = {},
         onContentClicked = {},
         onCategoryClicked = {},
+        viewModel = MusicViewModel()
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewPodcastCollectionView() {
+
     PodcastCollectionView(
         title = "매일 들어도 좋은 팟캐스트",
-        contentList = List(15) {
-            Content(
+        contentList = List(15) { index ->
+            ContentItem(
                 title = "김시선의 귀책사유 FLO X 윌라",
                 author = "김시선",
                 image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
@@ -320,8 +348,8 @@ fun PreviewPodcastCollectionView() {
 fun PreviewVideoCollectionView() {
     VideoCollectionView(
         title = "비디오 콜렉션",
-        contentList = List(15) {
-            Content(
+        contentList = List(15) { index ->
+            ContentItem(
                 title = "제목",
                 author = "지은이",
                 image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),

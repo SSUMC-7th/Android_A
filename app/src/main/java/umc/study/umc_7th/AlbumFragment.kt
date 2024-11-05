@@ -52,7 +52,7 @@ fun AlbumFragment() {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(viewModel = MusicViewModel(), progress = 0f, songTitle, songAuthor)
+                MiniPlayer(viewModel = MusicViewModel(), progress = 0f)
             }
         }
     ) { innerPadding ->

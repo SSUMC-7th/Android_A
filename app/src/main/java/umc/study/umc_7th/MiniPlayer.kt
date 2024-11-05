@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -32,25 +33,15 @@ import androidx.compose.ui.unit.dp
 fun MiniPlayer (
     viewModel: MusicViewModel,
     progress: Float,
-    songTitle: String?,
-    songAuthor: String?,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
     val isPlaying by viewModel.isPlaying.collectAsState()
-    
 
-    val title: String = if (songTitle != null) {
-        songTitle
-    } else {
-        "제목"
-    }
-    val singer: String = if (songAuthor != null) {
-        songAuthor
-    } else {
-        "가수"
-    }
+    val title by viewModel.song_title
+    val author by viewModel.song_author
+
     NavigationBar(
         modifier = modifier
             .fillMaxWidth()
@@ -76,15 +67,19 @@ fun MiniPlayer (
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(start = 20.dp, top = 3.dp)
+                        modifier = Modifier.padding(start = 20.dp, top = 3.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     // 아티스트
                     Text(
-                        text = singer,
+                        text = author,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(start = 20.dp)
+                        modifier = Modifier.padding(start = 20.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -134,6 +129,5 @@ fun PreviewMiniPlayer() {
     MiniPlayer(
         viewModel = MusicViewModel(),
         progress = 0.5f,
-        songTitle = "라일락",
-        songAuthor = "아이유(IU)")
+        )
 }

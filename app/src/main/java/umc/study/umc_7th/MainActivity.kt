@@ -114,7 +114,7 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(viewModel = viewModel, progress = currentTime, songTitle, songAuthor)
+                MiniPlayer(viewModel = viewModel, progress = currentTime)
             }
         }
     ) { innerPadding ->
@@ -144,13 +144,27 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
                         onSettingButtonClicked = { /*TODO*/ }) {
                     }
                 }
+                val titles = listOf("LILAC", "Butter", "Drama", "Next Level", "작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)", "BAAM", "Weekend", "해야 (HEYA)", "Love wins all", "Supernova")
+                val authors = listOf("IU", "BTS", "에스파", "에스파", "BTS", "모모랜드", "태연", "IVE", "IU", "에스파")
+                val images = listOf(
+                    R.drawable.img_album_exp2,
+                    R.drawable.img_album_exp,
+                    R.drawable.img_album_drama,
+                    R.drawable.img_album_exp3,
+                    R.drawable.img_album_exp4,
+                    R.drawable.img_album_exp5,
+                    R.drawable.img_album_exp6,
+                    R.drawable.img_album_heya,
+                    R.drawable.img_album_lovewinsall,
+                    R.drawable.img_album_supernova
+                )
                 GlobeCategorizedMusicCollectionView(
                     title = "오늘 발매 음악",
-                    contentList = List(15) {
-                        Content(
-                            title = "LILAC",
-                            author = "IU",
-                            image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
+                    contentList = List(10) { index ->
+                        ContentItem(
+                            title = titles[index % titles.size],
+                            author = authors[index % authors.size],
+                            image = ImageBitmap.imageResource(id = images[index % images.size]),
                             length = 200,
                         )
                     },
@@ -158,13 +172,14 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
                     onViewTitleClicked = { /*TODO*/ },
                     onContentClicked = { navController.navigate("Album") },
                     onCategoryClicked = { /*TODO*/ },
+                    viewModel
                 )
                 PromotionImageBanner(image = ImageBitmap.imageResource(id = R.drawable.img_home_viewpager_exp),
                     onClicked = {}
                 )
                 PodcastCollectionView(title = "매일 들어도 좋은 팟캐스트",
-                    contentList = List(15) {
-                        Content(
+                    contentList = List(15) { index ->
+                        ContentItem(
                             title = "김시선의 귀책사유 FLO X 윌라",
                             author = "김시선",
                             image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
@@ -173,8 +188,8 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
                     },
                     onContentClicked = {})
                 VideoCollectionView(title = "비디오 콜렉션",
-                    contentList = List(15) {
-                        Content(
+                    contentList = List(15) { index ->
+                        ContentItem(
                             title = "제목",
                             author = "지은이",
                             image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
