@@ -10,7 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import kotlinx.coroutines.launch
-import umc.study.umc_7th.network.Server
+import umc.study.umc_7th.data.network.Server
 
 object ImageLoader {
     private val imageMap = emptyMap<Long, ImageBitmap>().toMutableMap()

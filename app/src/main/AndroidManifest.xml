@@ -20,7 +20,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".main.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Umc_7th">
             <intent-filter>
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".song.SongActivity"
+            android:name=".ui.song.SongActivity"
             android:exported="true"
             android:theme="@style/Theme.Umc_7th">
             <intent-filter>
