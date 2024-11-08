@@ -118,7 +118,10 @@ fun SavedMusicPage(
             TextButton(
                 onClick = onEditButtonClicked,
             ) {
-                Text(text = "편집")
+                Text(
+                    text = "편집",
+                    style = TextStyle(color = Color.Blue)
+                )
             }
         }
         LazyColumn(modifier = Modifier.weight(1f)) {

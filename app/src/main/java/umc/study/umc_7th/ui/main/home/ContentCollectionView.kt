@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -110,17 +111,21 @@ fun GlobeCategorizedAlbumCollectionView(
                         )
                     }
                 }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
+                Row {
                     GlobeCategory.entries.forEach { category ->
-                        ClickableText(
-                            text = AnnotatedString(category.expression),
+                        TextButton(
                             onClick = { onCategoryClicked(category) },
-                            style = TextStyle(
-                                color = if (category == globeCategory) Color.Blue else Color.Unspecified
+                        ) {
+                            Text(
+                                text = AnnotatedString(category.expression),
+                                style = TextStyle(
+                                    color = if (category == globeCategory)
+                                        Color.Blue
+                                    else
+                                        Color.Gray
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

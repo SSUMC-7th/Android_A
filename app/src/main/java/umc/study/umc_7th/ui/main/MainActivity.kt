@@ -4,11 +4,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,6 +15,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.ContentPlayerService
@@ -25,6 +24,7 @@ import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.song.SongActivity
 import java.util.concurrent.CountDownLatch
 
+@AndroidEntryPoint
 class MainActivity : FragmentActivity() {
     private val viewModel: MainViewModel by viewModels()
     lateinit var contentPlayerService: ContentPlayerService
@@ -40,7 +40,6 @@ class MainActivity : FragmentActivity() {
         override fun onServiceDisconnected(arg0: ComponentName) = Unit
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -87,9 +86,7 @@ class MainActivity : FragmentActivity() {
                             MusicContent::class.java -> SongActivity::class.java
                             else -> return@lambda  // TODO: 다른 콘텐츠 타입에 대한 내비게이팅 구현
                         },
-                    ).apply {
-                        putExtra("content_id", content.id)
-                    }.also {
+                    ).also {
                         startActivity(it)
                     }
                 },

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
@@ -49,18 +48,17 @@ class ContentPlayerService: Service() {
     override fun onCreate() {
         super.onCreate()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannel(channel)
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("FLO")
             .setContentText("원하는 음악을 재생하세요.")
             .setSmallIcon(R.mipmap.ic_launcher_round)
-            .build()
-        startForeground(NOTIFICATION_ID, notification)
+
+        startForeground(NOTIFICATION_ID, notification.build())
 
         timer = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
@@ -101,6 +99,10 @@ class ContentPlayerService: Service() {
                 )
             }
         }
+    }
+
+    fun getContent(): Content? {
+        return _currentContent.value
     }
 
     fun pause() {

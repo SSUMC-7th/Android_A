@@ -1,11 +1,9 @@
 package umc.study.umc_7th.ui.main.locker
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -15,21 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import umc.study.umc_7th.MusicContent
-import umc.study.umc_7th.ui.main.BottomNavigationBar
-import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.R
+import umc.study.umc_7th.previewMusicContentList
+import umc.study.umc_7th.ui.main.BottomNavigationBar
 import umc.study.umc_7th.ui.main.MainActivity
 import umc.study.umc_7th.ui.main.MainViewModel
+import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.main.album.TabItem
-import umc.study.umc_7th.previewMusicContentList
 
 class LockerFragment : Fragment() {
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,7 +37,7 @@ class LockerFragment : Fragment() {
                 LockerScreen(
                     savedMusics = viewModel.savedMusics.toList(),
                     onMusicContentClicked = { contentPlayerService.setContent(it) },
-                    onDeleteContentClicked = { viewModel.deleteSavedMusic(it) },
+                    onDeleteContentClicked = { viewModel.deleteMusic(music = it, onFailed = { /* TODO */ }) },
                 )
             }
         }
@@ -83,7 +80,6 @@ fun LockerScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewLockerScreen() {

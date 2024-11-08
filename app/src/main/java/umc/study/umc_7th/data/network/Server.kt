@@ -1,8 +1,6 @@
 package umc.study.umc_7th.data.network
 
 import android.graphics.BitmapFactory
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.google.gson.GsonBuilder
@@ -15,8 +13,9 @@ import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.VideoContent
 import java.time.LocalDate
+import javax.inject.Inject
 
-val retrofitInstance: ServerEndpoint by lazy {
+private val retrofitInstance: ServerEndpoint by lazy {
     val retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.SERVER_URL)
         .addConverterFactory(
@@ -27,7 +26,7 @@ val retrofitInstance: ServerEndpoint by lazy {
     retrofit.create(ServerEndpoint::class.java)
 }
 
-object Server {
+class Server @Inject constructor() {
     suspend fun getRandomMusics(size: Int): List<MusicContent> {
         val response = retrofitInstance.getRandomMusics(size)
         return response.map {
@@ -42,21 +41,18 @@ object Server {
         }
     }
 
-    suspend fun getMusic(id: Long): MusicContent? {
-        val response = retrofitInstance.getMusics(id = id, albumId = null).firstOrNull()
-        return response?.let {
-            MusicContent(
-                id = it.id,
-                title = response.title,
-                author = response.author,
-                imageId = response.imageId,
-                length = response.length,
-                albumId = response.albumId,
-            )
-        }
+    suspend fun getMusic(id: Long): MusicContent {
+        val response = retrofitInstance.getMusics(id = id, albumId = null).first()
+        return MusicContent(
+            id = response.id,
+            title = response.title,
+            author = response.author,
+            imageId = response.imageId,
+            length = response.length,
+            albumId = response.albumId,
+        )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getRandomAlbums(size: Int): List<Album> {
         val response = retrofitInstance.getRandomAlbums(size)
         return response.map {
@@ -70,7 +66,6 @@ object Server {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getAlbum(id: Long): AlbumContent {
         val albumResponse = retrofitInstance.getAlbum(id)
         val authorResponse = retrofitInstance.getAuthor(albumResponse.authorId)

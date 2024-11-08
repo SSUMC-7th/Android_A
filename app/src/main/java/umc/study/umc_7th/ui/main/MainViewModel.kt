@@ -1,26 +1,28 @@
 package umc.study.umc_7th.ui.main
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.VideoContent
-import umc.study.umc_7th.data.network.Server
+import umc.study.umc_7th.data.ContentRepository
+import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.O)
-class MainViewModel: ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val contentRepository: ContentRepository,
+): ViewModel() {
     private val _bannerContents = mutableStateListOf<List<MusicContent>>()
     private val _albums = mutableStateListOf<Album>()
     private val _podcasts = mutableStateListOf<PodcastContent>()
     private val _videos = mutableStateListOf<VideoContent>()
-    private val _savedMusics = mutableStateListOf<MusicContent>()
+    private val _savedMusics = mutableStateOf<List<MusicContent>>(emptyList())
 
     private val _currentAlbum = mutableStateOf<AlbumContent?>(null)
 
@@ -28,7 +30,7 @@ class MainViewModel: ViewModel() {
     val albums get() = _albums.toList()
     val podcasts get() = _podcasts.toList()
     val videos get() = _videos.toList()
-    val savedMusics get() = _savedMusics.toList()
+    val savedMusics get() = _savedMusics.value
 
     var currentAlbum: AlbumContent? get() = _currentAlbum.value
         private set(value) { _currentAlbum.value = value }
@@ -36,11 +38,12 @@ class MainViewModel: ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                repeat(5) { _bannerContents.add(Server.getRandomMusics((5..10).random())) }
-                _albums.addAll(Server.getRandomAlbums(10))
-                _podcasts.addAll(Server.getRandomPodcasts(10))
-                _videos.addAll(Server.getRandomVideos(10))
-                _savedMusics.addAll(Server.getRandomMusics(50))
+                repeat(5) { _bannerContents.add(contentRepository.getRandomMusics((5..10).random())) }
+                _albums.addAll(contentRepository.getRandomAlbums(10))
+                _podcasts.addAll(contentRepository.getRandomPodcasts(10))
+                _videos.addAll(contentRepository.getRandomVideos(10))
+
+                contentRepository.getAllSavedMusicFlow().collect { musics -> _savedMusics.value = musics }
             }
             catch (e: Exception) {
                 e.printStackTrace()
@@ -48,11 +51,10 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getAlbum(id: Long, onFailed: () -> Unit) {
         viewModelScope.launch {
             try {
-                val album = Server.getAlbum(id)
+                val album = contentRepository.getAlbum(id)
                 currentAlbum = album
             }
             catch (e: Exception) {
@@ -62,7 +64,15 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun deleteSavedMusic(music: MusicContent) {
-        _savedMusics.remove(music)
+    fun deleteMusic(music: MusicContent, onFailed: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                contentRepository.deleteMusic(music)
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+                onFailed()
+            }
+        }
     }
 }

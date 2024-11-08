@@ -1,11 +1,9 @@
 package umc.study.umc_7th.ui.main.home
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -26,22 +24,21 @@ import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.VideoContent
+import umc.study.umc_7th.previewAlbumContent
+import umc.study.umc_7th.previewMusicContentList
+import umc.study.umc_7th.previewPodcastContentList
+import umc.study.umc_7th.previewVideoContentList
 import umc.study.umc_7th.ui.main.BottomNavigationBar
 import umc.study.umc_7th.ui.main.MainActivity
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.main.album.AlbumFragment
-import umc.study.umc_7th.previewAlbumContent
-import umc.study.umc_7th.previewMusicContentList
-import umc.study.umc_7th.previewPodcastContentList
-import umc.study.umc_7th.previewVideoContentList
 import java.time.LocalDate
 
 class HomeFragment : Fragment() {
-    private val viewModel by activityViewModels<MainViewModel>()
+    private val viewModel: MainViewModel by activityViewModels()
     private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,7 +70,6 @@ class HomeFragment : Fragment() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun HomeScreen(
     bannerContents: List<List<MusicContent>>,
@@ -135,7 +131,6 @@ private fun HomeScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewHomeScreen() {

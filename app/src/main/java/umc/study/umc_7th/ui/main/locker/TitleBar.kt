@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,13 +43,14 @@ fun TitleBar(
             // TODO: 로그인되었을 시 화면을 구현
         }
         else {
-            ClickableText(
-                text = AnnotatedString("로그인"),
-                style = TextStyle(
-                    color = Color.Blue,
-                ),
-                onClick = { onLoginClicked() },
-            )
+            TextButton(onClick = onLoginClicked) {
+                Text(
+                    text = AnnotatedString("로그인"),
+                    style = TextStyle(
+                        color = Color.Blue,
+                    ),
+                )
+            }
         }
     }
 }

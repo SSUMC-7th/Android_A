@@ -1,7 +1,5 @@
 package umc.study.umc_7th.ui.main.album
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +36,6 @@ import umc.study.umc_7th.SuspendedImage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlbumFrame(
     title: String,
@@ -125,7 +122,6 @@ fun AlbumFrame(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewAlbumFrame() {

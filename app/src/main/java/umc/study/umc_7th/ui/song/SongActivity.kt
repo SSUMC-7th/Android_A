@@ -4,12 +4,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +27,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.Content
@@ -38,6 +37,7 @@ import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import java.util.concurrent.CountDownLatch
 
+@AndroidEntryPoint
 class SongActivity: ComponentActivity() {
     private val viewModel: SongViewModel by viewModels()
     lateinit var contentPlayerService: ContentPlayerService
@@ -53,7 +53,6 @@ class SongActivity: ComponentActivity() {
         override fun onServiceDisconnected(arg0: ComponentName) = Unit
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_song)
@@ -63,11 +62,12 @@ class SongActivity: ComponentActivity() {
             bindService(it, connection, Context.BIND_AUTO_CREATE)
         }
 
-        val contentId = intent.getLongExtra("contentId", -1)
-        if (contentId != -1L) viewModel.getContent(contentId)
-
         lifecycleScope.launch(Dispatchers.IO) {
             serviceBound.await()
+            viewModel.getMusic(
+                id = contentPlayerService.getContent()?.id ?: -1,
+                onFailed = { /* TODO */ }
+            )
             setScreen()
         }
     }
@@ -77,21 +77,20 @@ class SongActivity: ComponentActivity() {
         unbindService(connection)
     }
     
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setScreen() {
         val composeView = findViewById<ComposeView>(R.id.composeView_song)
         composeView.setContent {
             Umc_7thTheme {
                 Scaffold { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        val content by contentPlayerService.currentContent.collectAsStateWithLifecycle()
                         val isPlaying by contentPlayerService.isPlaying.collectAsStateWithLifecycle()
                         val playingPoint by contentPlayerService.playingPoint.collectAsStateWithLifecycle()
 
                         SongScreen(
-                            content = content,
+                            content = viewModel.content,
                             playingPoint = playingPoint ?: 0,
                             isPlaying = isPlaying,
+                            isLiked = viewModel.isLiked,
                             onMinimizeButtonClicked = { finish() },
                             onPlayButtonClicked = {
                                 contentPlayerService.let { service ->
@@ -102,6 +101,12 @@ class SongActivity: ComponentActivity() {
                             onPlayingPointChanged = {
                                 contentPlayerService.seek(it)
                             },
+                            onLikeButtonClicked = {
+                                viewModel.setLike(it, onFailed = { /* TODO */ })
+                            },
+                            onSaveClicked = {
+                                viewModel.save(onFailed = { /* TODO */ })
+                            }
                         )
                     }
                 }
@@ -110,19 +115,20 @@ class SongActivity: ComponentActivity() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun SongScreen(
     content: Content?,
     playingPoint: Int,
     isPlaying: Boolean,
+    isLiked: Boolean,
     onMinimizeButtonClicked: () -> Unit,
     onPlayButtonClicked: (Boolean) -> Unit,
     onPlayingPointChanged: (Int) -> Unit,
+    onLikeButtonClicked: (Boolean) -> Unit,
+    onSaveClicked: () -> Unit,
 ) {
     var isRepeating by remember { mutableStateOf(false) }
     var isShuffling by remember { mutableStateOf(false) }
-    var isLiked by remember { mutableStateOf(false) }
     var isBlocked by remember { mutableStateOf(false) }
 
     // 이 스크린은 목업용 화면입니다.
@@ -134,21 +140,22 @@ private fun SongScreen(
             .verticalScroll(rememberScrollState())
     ) {
         TopButtonBar(
-            onSettingButtonClicked = {},
-            onEqualizerButtonClicked = {},
+            onSettingButtonClicked = { /* TODO */ },
+            onEqualizerButtonClicked = { /* TODO */ },
             onMinimizeButtonClicked = onMinimizeButtonClicked,
-            onDetailsButtonClicked = {},
+            onDetailsClicked = { /* TODO */ },
+            onSaveClicked = onSaveClicked,
         )
         if (content != null) ContentFrame(
             title = content.title,
             author = content.author,
             imageId = content.imageId,
-            onAuthorNameClicked = {},
+            onAuthorNameClicked = { /* TODO */ },
         )
         LyricsView(
             line1 = "내리는 꽃가루에",
             line2 = "눈이 따끔해 아야",
-            onClicked = {},
+            onClicked = { /* TODO */ },
         )
         if (content != null) PlayProgressControlPanel(
             length = content.length,
@@ -158,7 +165,7 @@ private fun SongScreen(
             isShuffling = isShuffling,
             isLiked = isLiked,
             isBlocked = isBlocked,
-            onLikeButtonClicked = { isLiked = it },
+            onLikeButtonClicked = onLikeButtonClicked,
             onBlockButtonClicked = { isBlocked = it },
             onRepeatButtonClicked = { isRepeating = it },
             onShuffleButtonClicked = { isShuffling = it },
@@ -168,14 +175,13 @@ private fun SongScreen(
             onPlayingPointChanged = onPlayingPointChanged,
         )
         FooterActionBar(
-            onPlaylistButtonClicked = {},
-            onInstagramButtonClicked = {},
-            onSimilarSongButtonClicked = {},
+            onPlaylistButtonClicked = { /* TODO */ },
+            onInstagramButtonClicked = { /* TODO */ },
+            onSimilarSongButtonClicked = { /* TODO */ },
         )
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewSongScreen() {
@@ -187,9 +193,12 @@ fun PreviewSongScreen() {
                 content = content,
                 playingPoint = 20,
                 isPlaying = true,
+                isLiked = true,
                 onMinimizeButtonClicked = {},
                 onPlayButtonClicked = {},
                 onPlayingPointChanged = {},
+                onLikeButtonClicked = {},
+                onSaveClicked = {},
             )
         }
     }

@@ -6,9 +6,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,8 +28,11 @@ fun TopButtonBar(
     onSettingButtonClicked: () -> Unit,
     onEqualizerButtonClicked: () -> Unit,
     onMinimizeButtonClicked: () -> Unit,
-    onDetailsButtonClicked: () -> Unit,
+    onDetailsClicked: () -> Unit,
+    onSaveClicked: () -> Unit,
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -66,13 +76,26 @@ fun TopButtonBar(
                 )
             }
             IconButton(
-                onClick = onDetailsButtonClicked,
+                onClick = { isExpanded = !isExpanded },
                 modifier = Modifier.size(32.dp),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.btn_player_more),
                     contentDescription = null,
                 )
+                DropdownMenu(
+                    onDismissRequest = { isExpanded = false },
+                    expanded = isExpanded,
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "정보") },
+                        onClick = onDetailsClicked,
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "저장") },
+                        onClick = onSaveClicked,
+                    )
+                }
             }
         }
     }
@@ -83,8 +106,9 @@ fun TopButtonBar(
 fun PreviewTopButtonBar() {
     TopButtonBar(
         onSettingButtonClicked = {},
-        onDetailsButtonClicked = {},
+        onDetailsClicked = {},
         onEqualizerButtonClicked = {},
         onMinimizeButtonClicked = {},
+        onSaveClicked = {},
     )
 }
