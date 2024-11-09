@@ -1,21 +1,15 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.content
 
 import android.os.Build
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.Color
 import java.time.LocalDate
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.res.imageResource
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import umc.study.umc_7th.R
 
-@Parcelize
-data class Content(
-    val title: String,
-    val author : String,
-    val image: Int?= null,
-    val length: Int,
-) : Parcelable
+
 
 @Parcelize
 data class Album (
@@ -80,7 +74,8 @@ val bannerDataList = listOf(
                 title = "해야",
                 author = "IVE(아이브)",
                 image = R.drawable.img_album_heya,
-                length= 200)},
+                length= 200)
+        },
         backgroundImage = R.drawable.img_default_4_x_1,
         textColor = 0xFFFFFFFF
     )

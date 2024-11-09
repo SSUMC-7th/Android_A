@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
+import umc.study.umc_7th.content.ContentDao
+import umc.study.umc_7th.content.ContentRepository
 
 @Composable
 fun ContentFrame(
@@ -105,15 +107,17 @@ fun ContentFrame(
 }
 
 
-
-@Composable
-@Preview(showBackground = true)
-fun PreviewContentFrame(){
-    ContentFrame(
-
-        toSingerinfoClick = {},
-        likeClick = {},
-        unLikeButtonClick = {},
-        viewModel = SongViewModel(application = Application())
-    )
-}
+//
+//@Composable
+//@Preview(showBackground = true)
+//fun PreviewContentFrame(){
+//    ContentFrame(
+//
+//        toSingerinfoClick = {},
+//        likeClick = {},
+//        unLikeButtonClick = {},
+//        viewModel = SongViewModel(application = Application(),
+//            ContentRepository(contentDao = )
+//        )
+//    )
+//}

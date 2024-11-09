@@ -37,14 +37,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.compose.rememberNavController
 import umc.study.umc_7th.R
-import umc.study.umc_7th.albumData
+import umc.study.umc_7th.content.albumData
 import umc.study.umc_7th.main.home.BottomNavigationBar
 import umc.study.umc_7th.main.home.MainActivity
-import umc.study.umc_7th.main.home.MainMiniplayer
-import umc.study.umc_7th.main.song.SongActivity
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 
 

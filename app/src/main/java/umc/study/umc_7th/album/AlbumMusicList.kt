@@ -32,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import umc.study.umc_7th.Album
+import umc.study.umc_7th.content.Album
 import umc.study.umc_7th.R
 import java.time.LocalDate
 

@@ -40,14 +40,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
 
 import androidx.compose.foundation.layout.navigationBarsPadding
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.MyApplication
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
 import umc.study.umc_7th.album.albumFragment
-import umc.study.umc_7th.albumData
+import umc.study.umc_7th.content.albumData
 import umc.study.umc_7th.aroundFragment
-import umc.study.umc_7th.bannerDataList
+import umc.study.umc_7th.content.AppDataBase
+import umc.study.umc_7th.content.ContentRepository
+import umc.study.umc_7th.content.bannerDataList
 import umc.study.umc_7th.locker.LockerFragment
 import umc.study.umc_7th.main.song.MiniPlayer
 import umc.study.umc_7th.main.song.SongActivity
@@ -60,6 +62,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = (application as MyApplication).songViewModel
+
         enableEdgeToEdge()
         setContent {
             Umc_7thTheme {

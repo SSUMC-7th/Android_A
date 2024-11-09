@@ -13,7 +13,7 @@ import androidx.compose.material3.Text
 import androidx.navigation.NavController
 //import com.google.accompanist.pager.*
 
-import umc.study.umc_7th.Album
+import umc.study.umc_7th.content.Album
 import umc.study.umc_7th.TabLayout
 
 

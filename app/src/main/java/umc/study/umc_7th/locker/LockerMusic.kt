@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
 
 
@@ -47,7 +47,7 @@ fun LockerMusic(
     playAllButtonClick:()-> Unit,
     contentList : List<Content>,
 
-){
+    ){
     var contentList by remember{ mutableStateOf(contentList.toMutableList())}
 
 

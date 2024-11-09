@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

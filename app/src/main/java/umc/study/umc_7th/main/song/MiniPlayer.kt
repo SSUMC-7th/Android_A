@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Slider
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
 

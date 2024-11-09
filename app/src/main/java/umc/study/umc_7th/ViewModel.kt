@@ -4,13 +4,18 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import umc.study.umc_7th.content.AppDataBase
+import umc.study.umc_7th.content.Content
+import umc.study.umc_7th.content.ContentRepository
 
-open class SongViewModel(application: Application) : AndroidViewModel(application) {
+open class SongViewModel(application: Application,
+    private val repository: ContentRepository) : AndroidViewModel(application) {
+
+
 
     private val _like = MutableLiveData(false)
     open val like : LiveData<Boolean> = _like
@@ -84,43 +89,73 @@ open class SongViewModel(application: Application) : AndroidViewModel(applicatio
         _currentPosition.value = 0f
     }
 
+//    init{
+//        loadAllSongs()
+//    }
+
     private val _currentSong = MutableLiveData<Content?>(null)
     open val currentSong : LiveData<Content?> = _currentSong
 
-    fun setCurrentSong(content:Content){
+    fun loadCurrentSong(id:Int){
+        viewModelScope.launch {
+            _currentSong.value = repository.getContentById(id)
+        }
+    }
+
+    fun addContent(content:Content){
+        viewModelScope.launch {
+            repository.insert(content)
+
+        }
+    }
+
+//    private val _allSongs = MutableLiveData<List<Content>>()
+//    val allSongs : LiveData<List<Content>> = _allSongs
+//
+//    fun loadAllSongs(){
+//        viewModelScope.launch {
+//            _allSongs.value = repository.getAllContents()
+//        }
+//    }
+
+    fun setCurrentSong(content: Content){
         _currentSong.value = content
         resetProgress()
         togglePlayed()
+        viewModelScope.launch{
+            repository.insert(content)
+        }
     }
 
 }
 
 class MyApplication : Application() {
-    val songViewModel : SongViewModel by lazy { SongViewModel(this) }
-
+    val songViewModel : SongViewModel by lazy { SongViewModel(this, repository) }
+    private val database by lazy { AppDataBase.getDatabase(this) }
+    private val repository by lazy { ContentRepository(database.contentDao()) }
 }
 
-//프리뷰 데이터를 위한 가짜 뷰 모델 생성
-class FakeSongViewModel(application: Application) : SongViewModel(application) {
-    override val replay = MutableLiveData(false)
-    override val played = MutableLiveData(true)
-    override val shuffle = MutableLiveData(false)
-    override val currentPosition = MutableLiveData(0f)
-    override val duration = MutableLiveData(200f)
-
-    override fun updatePosition(newPosition: Float) {
-        currentPosition.value = newPosition
-    }
-
-    override fun toggleReplay() {
-        replay.value = replay.value?.not()
-    }
-
-    override fun togglePlayed() {
-        played.value = played.value?.not()
-    }
-
-    override fun toggleShuffle() {
-        shuffle.value = shuffle.value?.not()
-    }
-}
+////프리뷰 데이터를 위한 가짜 뷰 모델 생성
+//class FakeSongViewModel(application: Application) : SongViewModel(application) {
+//    override val replay = MutableLiveData(false)
+//    override val played = MutableLiveData(true)
+//    override val shuffle = MutableLiveData(false)
+//    override val currentPosition = MutableLiveData(0f)
+//    override val duration = MutableLiveData(200f)
+//
+//    override fun updatePosition(newPosition: Float) {
+//        currentPosition.value = newPosition
+//    }
+//
+//    override fun toggleReplay() {
+//        replay.value = replay.value?.not()
+//    }
+//
+//    override fun togglePlayed() {
+//        played.value = played.value?.not()
+//    }
+//
+//    override fun toggleShuffle() {
+//        shuffle.value = shuffle.value?.not()
+//    }
+//}

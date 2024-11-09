@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.rememberScrollState
-import umc.study.umc_7th.FakeSongViewModel
+
 import umc.study.umc_7th.MyApplication
 import umc.study.umc_7th.SongViewModel
 import umc.study.umc_7th.main.home.MainActivity
@@ -108,15 +108,15 @@ fun formatTime(timeInSeconds:Float) : String{
 }
 
 
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewSongPlayerScreen(){
-    val fakeviewModel = FakeSongViewModel(application = Application())
-    SongPlayerScreen(
-        viewModel = fakeviewModel,
-        toMainActivity = {},
-        )
-}
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewSongPlayerScreen(){
+//    val fakeviewModel = FakeSongViewModel(application = Application())
+//    SongPlayerScreen(
+//        viewModel = fakeviewModel,
+//        toMainActivity = {},
+//        )
+//}
 
 
