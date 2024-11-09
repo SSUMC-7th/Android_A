@@ -24,7 +24,16 @@ open class SongViewModel(application: Application,
     open val unLike : LiveData<Boolean> = _unLike
 
     fun toggleLike(){
-        _like.value = _like.value != true
+        val currentContent = _currentSong.value
+        currentContent?.let{ content ->
+            content.islike !=content.islike
+            _currentSong.value = content
+
+            viewModelScope.launch {
+                repository.updateContent(content)
+            }
+        }
+
     }
 
     fun toggleUnLike(){

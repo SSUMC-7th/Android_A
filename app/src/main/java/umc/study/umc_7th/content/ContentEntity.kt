@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "songs")
@@ -36,6 +37,9 @@ interface ContentDao{
 
     @Query("DELETE FROM songs WHERE id = :id")
     suspend fun deleteContentById(id: Int)
+
+    @Update
+    suspend fun updateContent(content:Content)
 
 
 }
