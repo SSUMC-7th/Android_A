@@ -114,45 +114,53 @@ fun LockerTab(){
                         title = "Butter",
                         author = "BTS",
                         image = R.drawable.img_album_exp,
-                        length = 200)
+                        length = 200,
+                        islike = false)
                     , Content(
                         title = "Next Level",
                         author = "aespa",
                         image = R.drawable.img_album_exp3,
-                        length = 212),
+                        length = 212,
+                        islike = false),
                     Content(
                         title = "해야",
                         author = "IVE",
                         image = R.drawable.img_album_heya,
-                        length = 199
+                        length = 199,
+                        islike = false
                         ),
                     Content(
                         title = "LILAC",
                         author = "IU",
                         image = R.drawable.img_album_exp2,
-                        length = 21),
+                        length = 212,
+                        islike = false),
                     Content(
                         title = "Dionysious",
                         author = "BTS",
                         image = R.drawable.img_album_exp4,
-                        length= 229),
+                        length= 229,
+                        islike = false),
                     Content(
                         title = "Drama",
                         author ="aespa",
                         image = R.drawable.img_album_drama,
-                        length = 231
+                        length = 231,
+                        islike = false
                     ),
                     Content(
                         title = "Supernova",
                         author ="aespa",
                         image = R.drawable.img_album_supernova,
-                        length = 192
+                        length = 192,
+                        islike = false
                     ),
                     Content(
                         title = "Love Wins All",
                         author = "IU",
                         image = R.drawable.img_album_lovewinsall,
-                        length = 262)
+                        length = 262,
+                        islike = false)
                 ),
 
             )

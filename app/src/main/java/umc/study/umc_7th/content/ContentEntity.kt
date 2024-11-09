@@ -17,6 +17,7 @@ data class Content(
     val author : String,
     val image: Int?= null,
     val length: Int,
+    var islike : Boolean,
 ) : Parcelable
 
 @Dao
@@ -27,7 +28,10 @@ interface ContentDao{
     @Query("SELECT * FROM songs WHERE id = :id")
     suspend fun getContentById(id: Int): Content
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Query("SELECT * FROM songs WHERE title = :title AND author = :author LIMIT 1")
+    suspend fun getContentByTitleAndAuthor(title: String, author: String): Content?
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(content: Content)
 
     @Query("DELETE FROM songs WHERE id = :id")

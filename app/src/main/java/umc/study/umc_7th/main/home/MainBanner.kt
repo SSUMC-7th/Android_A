@@ -163,6 +163,7 @@ fun PreviewBanner(){
                 author = "BTS",
                 image = R.drawable.img_album_exp,
                 length = 200,
+                islike = false
             )
         },
         backgroundImage = ImageBitmap.imageResource(id = R.drawable.img_default_4_x_1) ,

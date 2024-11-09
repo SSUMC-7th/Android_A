@@ -10,7 +10,12 @@ class ContentRepository(private val contentDao: ContentDao) {
     }
 
     suspend fun insert(content: Content) {
-        contentDao.insert(content)
+        val existingContent = contentDao.getContentByTitleAndAuthor(content.title, content.author)
+
+        // 데이터베이스에 동일한 title과 author가 없을 때만 삽입
+        if (existingContent == null) {
+            contentDao.insert(content)
+        }
     }
 
     suspend fun deleteContentById(id: Int) {

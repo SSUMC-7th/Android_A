@@ -191,7 +191,8 @@ fun homeFragment(navController: NavController,
                     title = album.trackList.firstOrNull() ?: "Unknown Track",
                     author = album.author,
                     image = album.albumImage,
-                    length = 200 // 곡의 길이를 필요에 맞게 설정
+                    length = 200,
+                    islike = false
                 )
                 viewModel.setCurrentSong(firstTrackContent)
 
@@ -206,6 +207,7 @@ fun homeFragment(navController: NavController,
                     author= "김시선",
                     image = R.drawable.img_potcast_exp,
                     length = 200,
+                    islike = false
                 )
             },
             contentClick = {}
@@ -218,6 +220,7 @@ fun homeFragment(navController: NavController,
                     author = "지은이",
                     image = R.drawable.img_video_exp,
                     length = 200,
+                    islike = false
                 )
             } ,
             contentClick = {}

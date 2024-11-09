@@ -41,12 +41,14 @@ val bannerDataList = listOf(
                 title = "Butter",
                 author = "BTS",
                 image = R.drawable.img_album_exp,
-                length = 245)
+                length = 245,
+                islike = false)
             Content(
                 title = "Next Level",
                 author = "aespa",
                 image = R.drawable.img_album_exp3,
-                length = 199)
+                length = 199,
+                islike = false)
         },
         backgroundImage = R.drawable.img_default_4_x_1,
         textColor = 0xFFFFFFFF
@@ -61,6 +63,7 @@ val bannerDataList = listOf(
                 author = "BTS",
                 image = R.drawable.img_album_exp4,
                 length = 220,
+                islike = false
             )
         },
         backgroundImage = R.drawable.img_default_4_x_1,
@@ -74,7 +77,8 @@ val bannerDataList = listOf(
                 title = "해야",
                 author = "IVE(아이브)",
                 image = R.drawable.img_album_heya,
-                length= 200)
+                length= 200,
+                islike = false)
         },
         backgroundImage = R.drawable.img_default_4_x_1,
         textColor = 0xFFFFFFFF
