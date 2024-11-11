@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.platform.LocalContext
 
 import umc.study.umc_7th.MyApplication
 import umc.study.umc_7th.SongViewModel

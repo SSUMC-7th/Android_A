@@ -1,6 +1,7 @@
 package umc.study.umc_7th.main.song
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -79,13 +81,16 @@ fun ContentFrame(
                 horizontalArrangement = Arrangement.Center,
 
                 ){
+                val context = LocalContext.current
                 IconButton(onClick =likeClick ) {
                     Image(bitmap = ImageBitmap.imageResource(id = if(content.islike) R.drawable.ic_my_like_on
                     else R.drawable.ic_my_like_off
                     ),
                         contentDescription = null,
                         contentScale= ContentScale.Crop,
-                        modifier = Modifier.clickable { viewModel.toggleLike(content) }
+                        modifier = Modifier.clickable { viewModel.toggleLike(content)
+                        if(content.islike) Toast.makeText(context, "Unlike", Toast.LENGTH_SHORT).show()
+                        else Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show()}
                     )
                 }
                 Spacer(modifier = Modifier.padding(10.dp))
