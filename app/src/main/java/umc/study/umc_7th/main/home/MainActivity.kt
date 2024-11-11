@@ -189,14 +189,16 @@ fun homeFragment(navController: NavController,
             categoryClick = {},
             albumMusicStart = {album ->
                 // 첫 번째 트랙을 `currentSong`으로 설정
-                val firstTrackContent = Content(
-                    title = album.trackList.firstOrNull() ?: "Unknown Track",
-                    author = album.author,
-                    image = album.albumImage,
-                    length = 200,
-                    islike = false
-                )
-                viewModel.setCurrentSong(firstTrackContent)
+                val albumTracks = album.trackList.map { trackTitle ->
+                    Content(
+                        title = trackTitle,
+                        author = album.author,
+                        image = album.albumImage,
+                        length = 200, // 필요에 맞게 길이 설정
+                        islike = false
+                    )
+                }
+                viewModel.setAlbumTracks(albumTracks)
 
             },
             viewModel = viewModel
