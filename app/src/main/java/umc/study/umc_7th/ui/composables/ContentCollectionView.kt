@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,6 +40,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.R
 
 enum class GlobeCategory(
     val expression: String,

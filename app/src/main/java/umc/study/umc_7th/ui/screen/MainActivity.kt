@@ -1,13 +1,14 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.screen
 
+import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,16 +32,33 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
+import umc.study.umc_7th.ui.composables.BottomNavigationBar
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.ui.composables.NavigationDestination
+import umc.study.umc_7th.R
+import umc.study.umc_7th.ui.composables.Footer
+import umc.study.umc_7th.ui.composables.GlobeCategorizedMusicCollectionView
+import umc.study.umc_7th.ui.composables.GlobeCategory
+import umc.study.umc_7th.ui.composables.MainBanner
+import umc.study.umc_7th.ui.composables.MiniPlayer
+import umc.study.umc_7th.ui.composables.PodcastCollectionView
+import umc.study.umc_7th.ui.composables.PromotionImageBanner
+import umc.study.umc_7th.ui.composables.VideoCollectionView
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
+import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
+import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 import java.time.LocalDate
 
 var songTitle : String? = null
 var songAuthor : String? = null
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     // Toast 메시지를 띄워주는 함수
@@ -48,15 +66,21 @@ class MainActivity : ComponentActivity() {
         Toast.makeText(this@MainActivity, message, duration).show()
     }
 
-    private val viewModel: MusicViewModel by viewModels()
+    private lateinit var musicViewModel: MusicViewModel
+    private lateinit var sharedPreferences: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        musicViewModel = ViewModelProvider(this)[MusicViewModel::class.java]
+        musicViewModel.insertDummySongs()
+        musicViewModel.insertDummyAlbums()
+        sharedPreferences = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+
         enableEdgeToEdge()
         setContent {
             Umc_7thTheme {
-                MyApp(viewModel = viewModel)
+                MyApp(viewModel = musicViewModel)
             }
         }
     }
@@ -194,10 +218,14 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlbumScreen() {
-    AlbumFragment()
+    val mockViewModel = MockMusicViewModel()
+    // ViewModel에서 더미 데이터를 로드
+    mockViewModel.loadAlbum(1)
+    AlbumFragment(viewModel = mockViewModel)
 }
 
 @Composable
@@ -210,6 +238,9 @@ fun LockerScreen() {
 @Composable
 fun MyAppPreview(widthDp: Dp = 412.dp, heightDp: Dp = 915.dp) {
     Umc_7thTheme {
-        MyApp(viewModel = MusicViewModel())
+        val mockViewModel = MockMusicViewModel()
+        // ViewModel에서 더미 데이터를 로드
+        mockViewModel.loadAlbum(1)
+        MyApp(viewModel = mockViewModel)
     }
 }

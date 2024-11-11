@@ -5,6 +5,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
     id("org.jetbrains.kotlin.kapt")
+    id("kotlin-kapt")
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,14 +81,16 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation (libs.google.accompanist.pager)
-    implementation (libs.accompanist.pager.indicators)
-    implementation (libs.circleindicator)
+    implementation(libs.google.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
+    implementation(libs.circleindicator)
 
 
     // Hilt Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.49")
-    kapt("com.google.dagger:hilt-compiler:2.49")
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
     //gson
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")

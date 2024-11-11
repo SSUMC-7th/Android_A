@@ -1,5 +1,6 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.composables
 
+import android.app.Application
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import umc.study.umc_7th.R
+import umc.study.umc_7th.ui.screen.SongActivity
+import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
+import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 
 @Composable
 fun MiniPlayer (
@@ -131,8 +136,11 @@ fun MiniPlayer (
 @Preview(showBackground = true)
 @Composable
 fun PreviewMiniPlayer() {
+    val mockViewModel = MockMusicViewModel()
+    // ViewModel에서 더미 데이터를 로드
+    mockViewModel.loadAlbum(1)
     MiniPlayer(
-        viewModel = MusicViewModel(),
+        viewModel = mockViewModel,
         progress = 0.5f,
         songTitle = "라일락",
         songAuthor = "아이유(IU)")

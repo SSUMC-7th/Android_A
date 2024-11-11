@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.screen
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,21 +39,38 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-data class Song(
-    val number: String,
-    val title: String,
-    val artist: String,
-    val isTitle: Boolean
-)
+import androidx.compose.runtime.livedata.observeAsState
+import umc.study.umc_7th.R
+import umc.study.umc_7th.ui.composables.MiniPlayer
+import umc.study.umc_7th.ui.composables.TabItem
+import umc.study.umc_7th.ui.composables.TabLayout
+import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
+import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 
 @Composable
-fun AlbumFragment() {
+fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
+
+    val context = LocalContext.current
+    var isColorful_like by remember { mutableStateOf(false) }
+
+    val album by viewModel.album.observeAsState(initial = emptyList())
+    val albumTitle = album.firstOrNull()?.title ?: "No Album Title"
+    val albumSinger = album.firstOrNull()?.singer ?: "No Album Singer"
+    val songList by viewModel.songList.observeAsState(initial = emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModel.loadSong(1)
+        viewModel.loadAlbum(1) // 특정 앨범 ID로 데이터 로드
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(viewModel = MusicViewModel(), progress = 0f, songTitle, songAuthor)
+                MiniPlayer(
+                    viewModel = viewModel,
+                    progress = 0f, songTitle, songAuthor
+                )
             }
         }
     ) { innerPadding ->
@@ -60,9 +78,6 @@ fun AlbumFragment() {
             modifier = Modifier.padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val context = LocalContext.current
-            var isColorful_like by remember { mutableStateOf(false) }
-
             Row {
                 IconButton(onClick = {
                     val intent = Intent(context, MainActivity::class.java)
@@ -92,13 +107,13 @@ fun AlbumFragment() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "IU 5th Album \"LILAC\"",
+                    text = albumTitle,
                     style = MaterialTheme.typography.titleLarge
                 )
                 Text(
-                    text = "아이유 (IU)",
+                    text = albumSinger,
                     style = MaterialTheme.typography.bodyMedium
-                )
+                    )
                 Text(
                     text = "2021.03.25 | 정규 | 댄스 팝",
                     style = MaterialTheme.typography.bodyMedium
@@ -226,16 +241,10 @@ fun AlbumFragment() {
                     Spacer(modifier = Modifier.width(4.dp))
                 }
             }
-            val songs = listOf(
-                Song("01", "라일락", "아이유 (IU)", true),
-                Song("02", "Flu", "아이유 (IU)", false),
-                Song("03", "Coin", "아이유 (IU)", true),
-                Song("04", "봄 안녕", "아이유 (IU)", false)
-            )
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(songs) { song ->
+                itemsIndexed(songList) { index, song ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -248,14 +257,16 @@ fun AlbumFragment() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = song.number,
+                                text = "0$index",
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(bottom = 20.dp, end = 8.dp)
                             )
                             Column {
                                 Row {
                                     // 제목에 'Title' 표시
-                                    if (song.isTitle) {
+                                    // 일단 라일락의 경우만 구현
+                                    // db에 이 곡이 앨범의 타이틀인지 아닌지 구현해야함
+                                    if (song.title == "LILAC") {
                                         Text(
                                             text = "TITLE",
                                             color = Color.White,
@@ -273,7 +284,7 @@ fun AlbumFragment() {
                                     )
                                 }
                                 Text(
-                                    text = song.artist,
+                                    text = song.singer,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = Color.Gray
                                 )
@@ -302,8 +313,12 @@ fun AlbumFragment() {
     }
 }
 
-@Preview
+@Preview(apiLevel = 34)
 @Composable
 fun AlbumFragmentPreview() {
-    AlbumFragment()
+
+    val mockViewModel = MockMusicViewModel()
+    mockViewModel.loadSong(1)
+    mockViewModel.loadAlbum(1)
+    AlbumFragment(viewModel = mockViewModel)
 }

@@ -1,5 +1,6 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.screen
 
+import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,18 +26,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import umc.study.umc_7th.ui.composables.MiniPlayer
 import umc.study.umc_7th.ui.theme.Purple40
+import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
+import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 
 @Composable
 fun LockerFragment() {
 
     var selectedTabIndex by remember { mutableStateOf(0) }
 
+    val mockViewModel = MockMusicViewModel()
+    // ViewModel에서 더미 데이터를 로드
+    mockViewModel.loadAlbum(1)
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(viewModel = MusicViewModel(), progress = 0f, songTitle, songAuthor)
+                MiniPlayer(viewModel = mockViewModel, progress = 0f, songTitle, songAuthor)
             }
         }
     ) { innerPadding ->

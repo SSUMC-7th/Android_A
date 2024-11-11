@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

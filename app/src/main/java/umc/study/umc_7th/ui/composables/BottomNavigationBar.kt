@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.R
 
 // items in bottom navigation bar
 enum class NavigationDestination(

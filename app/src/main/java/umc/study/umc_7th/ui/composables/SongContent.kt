@@ -1,5 +1,6 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.ui.composables
 
+import android.app.Application
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import umc.study.umc_7th.ui.screen.MainActivity
+import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.theme.Purple40
+import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
+import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 
 @Composable
 fun TopButtonsView() {
@@ -297,7 +302,10 @@ fun PreviewTopButtonsView() {
 @Preview
 @Composable
 fun PreviewAlbum() {
-    Album(viewModel = MusicViewModel())
+    val mockViewModel = MockMusicViewModel()
+    // ViewModel에서 더미 데이터를 로드
+    mockViewModel.loadAlbum(1)
+    Album(viewModel = mockViewModel)
 }
 
 @Preview
