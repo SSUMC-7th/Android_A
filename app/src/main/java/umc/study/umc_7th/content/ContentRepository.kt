@@ -9,6 +9,9 @@ class ContentRepository(private val contentDao: ContentDao) {
         return contentDao.getContentById(id)
     }
 
+    suspend fun getContentByTitleAndAuthor(title: String, author: String): Content? {
+        return contentDao.getContentByTitleAndAuthor(title, author)
+    }
     suspend fun insert(content: Content) {
         val existingContent = contentDao.getContentByTitleAndAuthor(content.title, content.author)
 
@@ -25,4 +28,12 @@ class ContentRepository(private val contentDao: ContentDao) {
     suspend fun deleteContentById(id: Int) {
         contentDao.deleteContentById(id)
     }
+    suspend fun getPreviousContent(currentSongId: Int): Content? {
+        return contentDao.getPreviousContent(currentSongId)
+    }
+    suspend fun getNextContent(currentSongId: Int): Content? {
+        return contentDao.getNextContent(currentSongId)
+    }
+
+
 }

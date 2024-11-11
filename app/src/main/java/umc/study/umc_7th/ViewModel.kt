@@ -1,6 +1,7 @@
 package umc.study.umc_7th
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.content.AppDataBase
 import umc.study.umc_7th.content.Content
+import umc.study.umc_7th.content.ContentDao
 import umc.study.umc_7th.content.ContentRepository
 
 open class SongViewModel(application: Application,
@@ -17,8 +19,8 @@ open class SongViewModel(application: Application,
 
 
 
-    private val _like = MutableLiveData(false)
-    open val like : LiveData<Boolean> = _like
+//    private val _like = MutableLiveData(false)
+//    open val like : LiveData<Boolean> = _like
 
     private val _unLike = MutableLiveData(false)
     open val unLike : LiveData<Boolean> = _unLike
@@ -98,9 +100,6 @@ open class SongViewModel(application: Application,
         _currentPosition.value = 0f
     }
 
-//    init{
-//        loadAllSongs()
-//    }
 
     private val _currentSong = MutableLiveData<Content?>(null)
     open val currentSong : LiveData<Content?> = _currentSong
@@ -117,15 +116,18 @@ open class SongViewModel(application: Application,
 
         }
     }
-
-//    private val _allSongs = MutableLiveData<List<Content>>()
-//    val allSongs : LiveData<List<Content>> = _allSongs
-//
-//    fun loadAllSongs(){
-//        viewModelScope.launch {
-//            _allSongs.value = repository.getAllContents()
-//        }
+//    init {
+//        loadAllSongs()
 //    }
+
+    private val _allSongs = MutableLiveData<List<Content>>().apply { value = emptyList() }
+    val allSongs : LiveData<List<Content>> = _allSongs
+
+    fun loadAllSongs(){
+        viewModelScope.launch {
+            _allSongs.value = repository.getAllContents()
+        }
+    }
 
     fun setCurrentSong(content: Content){
         _currentSong.value = content
@@ -133,16 +135,62 @@ open class SongViewModel(application: Application,
         togglePlayed()
         viewModelScope.launch{
             repository.insert(content)
+            val updatedContent = repository.getContentByTitleAndAuthor(content.title, content.author)
+
+            // `updatedContent`를 `_currentSong`에 설정하여 자동 증가된 ID 반영
+            if (updatedContent != null) {
+                _currentSong.value = updatedContent
+                resetProgress()
+                togglePlayed()
+                Log.d("SongViewModel", "Set current song with ID: ${updatedContent.id}, Title: ${updatedContent.title}")
+            }
         }
     }
 
+    fun playPreviousSong() {
+        val currentSongId = _currentSong.value?.id ?: return  // 현재 곡 ID가 없으면 함수 종료
+        Log.d("SongViewModel", "Current song ID: $currentSongId")
+        viewModelScope.launch {
+            // 데이터베이스에서 이전 곡을 조회
+            val previousSong = repository.getPreviousContent(currentSongId)
+
+            // 이전 곡이 있으면 설정
+            if (previousSong != null) {
+                setCurrentSong(previousSong)
+            }else {
+                Log.d("SongViewModel", "No previous song available.")
+            }
+        }
+    }
+    fun playNextSong() {
+        val currentSongId = _currentSong.value?.id ?: return
+
+        viewModelScope.launch {
+            val nextSong = repository.getNextContent(currentSongId)
+            if (nextSong != null) {
+                setCurrentSong(nextSong)
+            }
+        }
+
+    }
 }
+
+
+
+
+
+
+
 
 class MyApplication : Application() {
     val songViewModel : SongViewModel by lazy { SongViewModel(this, repository) }
     private val database by lazy { AppDataBase.getDatabase(this) }
     private val repository by lazy { ContentRepository(database.contentDao()) }
 }
+
+
+
+
 
 ////프리뷰 데이터를 위한 가짜 뷰 모델 생성
 //class FakeSongViewModel(application: Application) : SongViewModel(application) {

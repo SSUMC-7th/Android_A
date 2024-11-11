@@ -45,7 +45,7 @@ fun ContentFrame(
 
 ){
     val currentSong by viewModel.currentSong.observeAsState()
-    val like by viewModel.like.observeAsState(false)
+
     val unLike by viewModel.unLike.observeAsState(false)
 
     currentSong?.let{ content ->
@@ -80,7 +80,7 @@ fun ContentFrame(
 
                 ){
                 IconButton(onClick =likeClick ) {
-                    Image(bitmap = ImageBitmap.imageResource(id = if(like) R.drawable.ic_my_like_on
+                    Image(bitmap = ImageBitmap.imageResource(id = if(content.islike) R.drawable.ic_my_like_on
                     else R.drawable.ic_my_like_off
                     ),
                         contentDescription = null,

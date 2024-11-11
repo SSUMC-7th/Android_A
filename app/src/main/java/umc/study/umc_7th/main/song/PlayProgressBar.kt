@@ -103,6 +103,7 @@ import umc.study.umc_7th.SongViewModel
                 .size(65.dp)
                 .padding(10.dp)
                 .clickable { beforeSongPlayClick()
+                    viewModel.playPreviousSong()
                 }
 
         )
@@ -127,7 +128,8 @@ import umc.study.umc_7th.SongViewModel
             modifier = Modifier
                 .size(65.dp)
                 .padding(10.dp)
-                .clickable { nextSongPlayClick() }
+                .clickable { nextSongPlayClick()
+                viewModel.playNextSong()}
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Icon(

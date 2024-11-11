@@ -23,6 +23,12 @@ data class Content(
 
 @Dao
 interface ContentDao{
+    @Query("SELECT * FROM songs WHERE id < :currentSongId ORDER BY id DESC LIMIT 1")
+    suspend fun getPreviousContent(currentSongId: Int): Content?
+
+    @Query("SELECT * FROM songs WHERE id > :currentSongId ORDER BY id ASC LIMIT 1")
+    suspend fun getNextContent(currentSongId: Int): Content?
+
     @Query("SELECT * FROM songs")
     suspend fun getAllContents(): List<Content>
 
@@ -32,7 +38,7 @@ interface ContentDao{
     @Query("SELECT * FROM songs WHERE title = :title AND author = :author LIMIT 1")
     suspend fun getContentByTitleAndAuthor(title: String, author: String): Content?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(content: Content)
 
     @Query("DELETE FROM songs WHERE id = :id")
