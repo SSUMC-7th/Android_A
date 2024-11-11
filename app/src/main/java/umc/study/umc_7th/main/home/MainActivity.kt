@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.navigationBarsPadding(),
                     bottomBar = {
                         if(showLockerBottomBar){
-                            LockerBottomBar()
+                            LockerBottomBar(viewModel, hideBottomBar = { showLockerBottomBar = false})
                         }else{
                             homeBottomNavigation(viewModel = viewModel, navController = navController)
                         }

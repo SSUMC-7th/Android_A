@@ -190,6 +190,18 @@ open class SongViewModel(application: Application,
         _selectAll.value = _selectAll.value != true
     }
 
+    //한꺼번에 islike = false로 바꾸기
+    fun unlikeAllSongs(){
+        viewModelScope.launch {
+            val likeSongs = repository.getLikedContents()
+            likeSongs.forEach { song ->
+                val updatedSong = song.copy(islike = false)
+                repository.updateContent(updatedSong)
+            }
+            loadLikedSongs()
+        }
+    }
+
 }
 
 

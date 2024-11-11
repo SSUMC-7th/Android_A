@@ -25,6 +25,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 enum class DestinationClass(
     val route : String,
@@ -94,7 +95,8 @@ fun BottomNavigationBar(
 }
 
 @Composable
-fun LockerBottomBar(){
+fun LockerBottomBar(viewModel : SongViewModel,
+                    hideBottomBar : () -> Unit){
     Row(
         modifier = Modifier.background(Color.Blue).fillMaxWidth()
             .padding(vertical = 12.dp, horizontal = 24.dp),
@@ -134,7 +136,10 @@ fun LockerBottomBar(){
             Text(text = "내 리스트",
                 color = Color.White)
         }
-        Column(){
+        Column(
+            modifier = Modifier.clickable { viewModel.unlikeAllSongs()
+            hideBottomBar()}
+        ){
             Icon(bitmap= ImageBitmap.imageResource(id =R.drawable.btn_editbar_delete ),
                 contentDescription =null,
                 modifier = Modifier.size(28.dp),
@@ -147,9 +152,3 @@ fun LockerBottomBar(){
     }
 }
 
-@Composable
-@Preview
-fun lockerBpreview(){
-    LockerBottomBar()
-
-}

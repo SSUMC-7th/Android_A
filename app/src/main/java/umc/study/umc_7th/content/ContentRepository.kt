@@ -44,5 +44,8 @@ class ContentRepository(private val contentDao: ContentDao) {
         return contentDao.getLikedContents()
     }
 
+    //한꺼번에 islike = false로 바꾸기
+
+
 
 }
