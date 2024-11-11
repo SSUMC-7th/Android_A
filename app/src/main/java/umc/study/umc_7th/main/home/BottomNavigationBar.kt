@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import umc.study.umc_7th.R
 
@@ -92,3 +93,63 @@ fun BottomNavigationBar(
     }
 }
 
+@Composable
+fun LockerBottomBar(){
+    Row(
+        modifier = Modifier.background(Color.Blue).fillMaxWidth()
+            .padding(vertical = 12.dp, horizontal = 24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+
+    ){
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Icon(bitmap= ImageBitmap.imageResource(id =R.drawable.btn_editbar_play ),
+                contentDescription =null,
+                modifier = Modifier.size(28.dp),
+                tint = Color.Unspecified)
+
+            Text(text = "듣기",
+                color = Color.White)
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Icon(bitmap= ImageBitmap.imageResource(id =R.drawable.btn_editbar_addplaylist ),
+                contentDescription =null,
+                modifier = Modifier.size(28.dp),
+                tint = Color.Unspecified)
+
+            Text(text = "재생목록",
+                color = Color.White)
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Icon(bitmap= ImageBitmap.imageResource(id =R.drawable.btn_editbar_mylist ),
+                contentDescription =null,
+                modifier = Modifier.size(28.dp),
+                tint = Color.Unspecified)
+
+            Text(text = "내 리스트",
+                color = Color.White)
+        }
+        Column(){
+            Icon(bitmap= ImageBitmap.imageResource(id =R.drawable.btn_editbar_delete ),
+                contentDescription =null,
+                modifier = Modifier.size(28.dp),
+                tint = Color.Unspecified)
+
+            Text(text = "삭제",
+                color = Color.White)
+        }
+
+    }
+}
+
+@Composable
+@Preview
+fun lockerBpreview(){
+    LockerBottomBar()
+
+}

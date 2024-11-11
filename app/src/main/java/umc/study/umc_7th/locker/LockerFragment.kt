@@ -68,7 +68,9 @@ fun LockerFragment1(){
 
 //@Preview(showBackground = true)
 @Composable
-fun LockerTab(viewModel: SongViewModel){
+fun LockerTab(viewModel: SongViewModel,
+              showBottomBar: () -> Unit,
+              hideBottomBar: () -> Unit){
     val pages= listOf("저장한 곡", "음악파일")
     val pagerState= rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
@@ -115,6 +117,8 @@ fun LockerTab(viewModel: SongViewModel){
         ) { page ->
         when (page){
             0 -> LockerMusic(
+                showBottomBar =showBottomBar,
+                hideBottomBar = hideBottomBar,
                 selectAllButtonClick = {},
                 playAllButtonClick = {},
                 contentList = likeSongs,
@@ -144,13 +148,17 @@ fun LockerMusicFile() {
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LockerFragment(viewModel : SongViewModel){
+fun LockerFragment(viewModel : SongViewModel,
+                   showBottomBar: () -> Unit,
+                   hideBottomBar: () -> Unit){
 
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             LockerFragment1()
-            LockerTab(viewModel = viewModel)
+            LockerTab(viewModel = viewModel,
+                showBottomBar = showBottomBar,
+                hideBottomBar = hideBottomBar)
         }
 
 

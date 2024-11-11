@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.content.AppDataBase
 import umc.study.umc_7th.content.Content
@@ -182,18 +184,13 @@ open class SongViewModel(application: Application,
             _likedSongs.value = repository.getLikedContents()
         }
     }
-
-    fun deleteLikeSongs(content : Content){
-
-        val updatedContent = content.copy(islike = !content.islike )
-        viewModelScope.launch {
-                repository.updateContent(updatedContent)
-        }
+    private val _selectAll = MutableLiveData(false)
+    open val selectAll : LiveData<Boolean> = _selectAll
+    fun SelectAll(){
+        _selectAll.value = _selectAll.value != true
     }
 
 }
-
-
 
 
 

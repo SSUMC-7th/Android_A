@@ -40,6 +40,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
 
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.MyApplication
 import umc.study.umc_7th.R
@@ -63,26 +68,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val viewModel = (application as MyApplication).songViewModel
 
+
         enableEdgeToEdge()
         setContent {
             Umc_7thTheme {
                 val navController = rememberNavController()
+
+                var showLockerBottomBar by remember{ mutableStateOf(false)}
                 Scaffold(
                     modifier = Modifier.navigationBarsPadding(),
                     bottomBar = {
-                        Column (modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(0.dp)
-                        ){
-                            MainMiniplayer(
-                                viewModel = viewModel,
-                                toSongActivity = { content ->
-                                val intent = Intent(this@MainActivity, SongActivity::class.java)
-                                startActivity(intent)
-                            } )
-                            BottomNavigationBar(
-                                navController ,
-                                onClick = {destination -> navController.navigate(destination.route)},
-                            )
+                        if(showLockerBottomBar){
+                            LockerBottomBar()
+                        }else{
+                            homeBottomNavigation(viewModel = viewModel, navController = navController)
                         }
 
                     }
@@ -113,7 +112,10 @@ class MainActivity : ComponentActivity() {
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
                                 albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
                             }
-                            composable("lockerFragment") { LockerFragment(viewModel) }
+                            composable("lockerFragment") { LockerFragment(viewModel,
+                                showBottomBar = { showLockerBottomBar = true},
+                                hideBottomBar = { showLockerBottomBar = false})
+                            }
                             composable("searchFragment") { searchFragment(navController) }
                             composable("aroundFragment") { aroundFragment(navController) }
                         }
@@ -226,6 +228,36 @@ fun homeFragment(navController: NavController,
             contentClick = {}
         )
     }
+
+}
+
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Composable
+//fun bottomNavigationNav(type:String, viewModel: SongViewModel, navController: NavController){
+//    when(type){
+//        "home" -> homeBottomNavigation(viewModel = viewModel, navController =navController )
+//    }
+//}
+
+@RequiresApi(Build.VERSION_CODES.P)
+@Composable
+fun homeBottomNavigation(viewModel: SongViewModel, navController: NavController){
+    val context= LocalContext.current
+    Column (modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
+    ){
+        MainMiniplayer(
+            viewModel = viewModel,
+            toSongActivity = { content ->
+                val intent = Intent(context, SongActivity::class.java)
+                context.startActivity(intent)
+            } )
+        BottomNavigationBar(
+            navController ,
+            onClick = {destination -> navController.navigate(destination.route)},
+        )
+    }
+
 
 }
 
