@@ -20,6 +20,7 @@ import androidx.compose.material3.ScrollableTabRow
 
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +33,10 @@ import androidx.navigation.NavController
 //import com.google.accompanist.pager.*
 
 import kotlinx.coroutines.launch
+import umc.study.umc_7th.MyApplication
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 
 @Composable
@@ -65,10 +68,15 @@ fun LockerFragment1(){
 
 //@Preview(showBackground = true)
 @Composable
-fun LockerTab(){
+fun LockerTab(viewModel: SongViewModel){
     val pages= listOf("저장한 곡", "음악파일")
     val pagerState= rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
+    val likeSongs by viewModel.likedSongs.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModel.loadLikedSongs()
+    }
     Column {
         ScrollableTabRow(selectedTabIndex = pagerState.currentPage,
             containerColor = Color.White,
@@ -109,59 +117,7 @@ fun LockerTab(){
             0 -> LockerMusic(
                 selectAllButtonClick = {},
                 playAllButtonClick = {},
-                contentList = listOf(
-                    Content(
-                        title = "Butter",
-                        author = "BTS",
-                        image = R.drawable.img_album_exp,
-                        length = 200,
-                        islike = false)
-                    , Content(
-                        title = "Next Level",
-                        author = "aespa",
-                        image = R.drawable.img_album_exp3,
-                        length = 212,
-                        islike = false),
-                    Content(
-                        title = "해야",
-                        author = "IVE",
-                        image = R.drawable.img_album_heya,
-                        length = 199,
-                        islike = false
-                        ),
-                    Content(
-                        title = "LILAC",
-                        author = "IU",
-                        image = R.drawable.img_album_exp2,
-                        length = 212,
-                        islike = false),
-                    Content(
-                        title = "Dionysious",
-                        author = "BTS",
-                        image = R.drawable.img_album_exp4,
-                        length= 229,
-                        islike = false),
-                    Content(
-                        title = "Drama",
-                        author ="aespa",
-                        image = R.drawable.img_album_drama,
-                        length = 231,
-                        islike = false
-                    ),
-                    Content(
-                        title = "Supernova",
-                        author ="aespa",
-                        image = R.drawable.img_album_supernova,
-                        length = 192,
-                        islike = false
-                    ),
-                    Content(
-                        title = "Love Wins All",
-                        author = "IU",
-                        image = R.drawable.img_album_lovewinsall,
-                        length = 262,
-                        islike = false)
-                ),
+                contentList = likeSongs
 
             )
             1 -> LockerMusicFile()
@@ -187,32 +143,32 @@ fun LockerMusicFile() {
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LockerFragment(navController: NavController){
+fun LockerFragment(viewModel : SongViewModel){
 
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             LockerFragment1()
-            LockerTab()
+            LockerTab(viewModel = viewModel)
         }
 
 
 
 }
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview(showBackground = true)
-@Composable
-fun PreviewLockerFragment(){
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            LockerFragment1()
-            LockerTab()
-        }
-    }
-
-
-}
+//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewLockerFragment(){
+//    Scaffold { innerPadding ->
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(innerPadding)
+//        ) {
+//            LockerFragment1()
+//            LockerTab()
+//        }
+//    }
+//
+//
+//}

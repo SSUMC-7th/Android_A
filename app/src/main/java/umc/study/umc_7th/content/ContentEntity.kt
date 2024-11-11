@@ -47,5 +47,8 @@ interface ContentDao{
     @Update
     suspend fun updateContent(content:Content)
 
+    @Query("SELECT * FROM songs WHERE islike =1")
+    suspend fun getLikedContents(): List<Content>
+
 
 }

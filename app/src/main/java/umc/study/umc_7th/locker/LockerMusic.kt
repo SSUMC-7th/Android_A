@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -46,6 +47,7 @@ fun LockerMusic(
     selectAllButtonClick:()-> Unit,
     playAllButtonClick:()-> Unit,
     contentList : List<Content>,
+
 
     ){
     var contentList by remember{ mutableStateOf(contentList.toMutableList())}

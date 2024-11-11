@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
                                 albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
                             }
-                            composable("lockerFragment") { LockerFragment(navController) }
+                            composable("lockerFragment") { LockerFragment(viewModel) }
                             composable("searchFragment") { searchFragment(navController) }
                             composable("aroundFragment") { aroundFragment(navController) }
                         }

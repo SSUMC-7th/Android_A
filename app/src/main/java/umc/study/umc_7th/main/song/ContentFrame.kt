@@ -85,7 +85,7 @@ fun ContentFrame(
                     ),
                         contentDescription = null,
                         contentScale= ContentScale.Crop,
-                        modifier = Modifier.clickable { viewModel.toggleLike() }
+
                     )
                 }
                 Spacer(modifier = Modifier.padding(10.dp))

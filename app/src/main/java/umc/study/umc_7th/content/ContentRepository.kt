@@ -18,6 +18,9 @@ class ContentRepository(private val contentDao: ContentDao) {
         // 데이터베이스에 동일한 title과 author가 없을 때만 삽입
         if (existingContent == null) {
             contentDao.insert(content)
+            contentDao.getContentByTitleAndAuthor(content.title, content.author)!!
+        } else {
+            existingContent
         }
     }
 
@@ -33,6 +36,12 @@ class ContentRepository(private val contentDao: ContentDao) {
     }
     suspend fun getNextContent(currentSongId: Int): Content? {
         return contentDao.getNextContent(currentSongId)
+    }
+
+
+    // locker와 관련된 것들
+    suspend fun getLikedContents(): List<Content>{
+        return contentDao.getLikedContents()
     }
 
 

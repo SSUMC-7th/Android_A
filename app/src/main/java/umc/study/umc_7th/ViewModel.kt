@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,11 +29,12 @@ open class SongViewModel(application: Application,
     fun toggleLike(){
         val currentContent = _currentSong.value
         currentContent?.let{ content ->
-            content.islike !=content.islike
-            _currentSong.value = content
+            val updatedContent = content.copy(islike = !content.islike )
+
+            _currentSong.value = updatedContent
 
             viewModelScope.launch {
-                repository.updateContent(content)
+                repository.updateContent(updatedContent)
             }
         }
 
@@ -129,6 +131,8 @@ open class SongViewModel(application: Application,
         }
     }
 
+
+    // 곡 넘김과 관련된 것들
     fun setCurrentSong(content: Content){
         _currentSong.value = content
         resetProgress()
@@ -172,6 +176,17 @@ open class SongViewModel(application: Application,
             }
         }
 
+    }
+
+    //locker와 관련된 것들
+
+    private val _likedSongs= MutableLiveData<List<Content>>()
+    val likedSongs: LiveData<List<Content>> = _likedSongs
+
+    fun loadLikedSongs(){
+        viewModelScope.launch {
+            _likedSongs.value = repository.getLikedContents()
+        }
     }
 }
 
