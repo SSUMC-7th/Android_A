@@ -74,7 +74,7 @@ fun LockerTab(viewModel: SongViewModel){
     val coroutineScope = rememberCoroutineScope()
     val likeSongs by viewModel.likedSongs.observeAsState(emptyList())
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(likeSongs) {
         viewModel.loadLikedSongs()
     }
     Column {
@@ -117,7 +117,8 @@ fun LockerTab(viewModel: SongViewModel){
             0 -> LockerMusic(
                 selectAllButtonClick = {},
                 playAllButtonClick = {},
-                contentList = likeSongs
+                contentList = likeSongs,
+                viewModel= viewModel
 
             )
             1 -> LockerMusicFile()

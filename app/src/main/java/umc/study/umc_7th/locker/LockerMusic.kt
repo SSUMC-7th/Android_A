@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
@@ -47,7 +48,7 @@ fun LockerMusic(
     selectAllButtonClick:()-> Unit,
     playAllButtonClick:()-> Unit,
     contentList : List<Content>,
-
+    viewModel: SongViewModel
 
     ){
     var contentList by remember{ mutableStateOf(contentList.toMutableList())}
@@ -124,7 +125,8 @@ fun LockerMusic(
             items(contentList){ content ->
                 val isSelected = itemStates[content]?:false
                 Box(
-                    modifier= Modifier.fillMaxWidth()
+                    modifier= Modifier
+                        .fillMaxWidth()
                         .background(if (!isSelected) Color.Unspecified else Color.Blue.copy(0.05f))
                         .clickable { itemStates[content] = !isSelected }
 
@@ -155,7 +157,9 @@ fun LockerMusic(
 
                     }
                     Row(
-                        modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp)
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(8.dp)
                     ){
                         Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.btn_player_play),
                             contentDescription = null,
@@ -164,8 +168,10 @@ fun LockerMusic(
                         )
                         Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.btn_player_more),
                             contentDescription = null,
-                            modifier= Modifier.size(30.dp)
-                                .clickable { contentList = contentList.filter { it != content }.toMutableList() })
+                            modifier= Modifier
+                                .size(30.dp)
+                                .clickable { viewModel.toggleLike(content)
+                                })
                     }
                 }
                 Spacer(modifier = Modifier.padding(5.dp))

@@ -79,7 +79,7 @@ fun SongPlayerScreen(
         ContentFrame(
 
             toSingerinfoClick={},
-            likeClick ={viewModel.toggleLike()},
+            likeClick ={},
             unLikeButtonClick={},
             viewModel = viewModel
         )

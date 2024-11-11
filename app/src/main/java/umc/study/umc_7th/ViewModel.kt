@@ -26,18 +26,12 @@ open class SongViewModel(application: Application,
     private val _unLike = MutableLiveData(false)
     open val unLike : LiveData<Boolean> = _unLike
 
-    fun toggleLike(){
-        val currentContent = _currentSong.value
-        currentContent?.let{ content ->
-            val updatedContent = content.copy(islike = !content.islike )
-
-            _currentSong.value = updatedContent
-
-            viewModelScope.launch {
-                repository.updateContent(updatedContent)
-            }
+    fun toggleLike(content:Content){
+        val updatedContent = content.copy(islike = !content.islike)
+        viewModelScope.launch {
+            repository.updateContent(updatedContent)
+            loadLikedSongs()
         }
-
     }
 
     fun toggleUnLike(){
@@ -188,6 +182,15 @@ open class SongViewModel(application: Application,
             _likedSongs.value = repository.getLikedContents()
         }
     }
+
+    fun deleteLikeSongs(content : Content){
+
+        val updatedContent = content.copy(islike = !content.islike )
+        viewModelScope.launch {
+                repository.updateContent(updatedContent)
+        }
+    }
+
 }
 
 
