@@ -82,15 +82,16 @@ fun ContentFrame(
 
                 ){
                 val context = LocalContext.current
-                IconButton(onClick =likeClick ) {
+                IconButton(onClick = {
+                    viewModel.toggleLike(content)
+                    if(content.islike) Toast.makeText(context, "Unlike", Toast.LENGTH_SHORT).show()
+                    else Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show()
+                } ) {
                     Image(bitmap = ImageBitmap.imageResource(id = if(content.islike) R.drawable.ic_my_like_on
                     else R.drawable.ic_my_like_off
                     ),
                         contentDescription = null,
                         contentScale= ContentScale.Crop,
-                        modifier = Modifier.clickable { viewModel.toggleLike(content)
-                        if(content.islike) Toast.makeText(context, "Unlike", Toast.LENGTH_SHORT).show()
-                        else Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show()}
                     )
                 }
                 Spacer(modifier = Modifier.padding(10.dp))

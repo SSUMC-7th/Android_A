@@ -20,27 +20,12 @@ import umc.study.umc_7th.content.ContentRepository
 open class SongViewModel(application: Application,
     private val repository: ContentRepository) : AndroidViewModel(application) {
 
-
-
-//    private val _like = MutableLiveData(false)
-//    open val like : LiveData<Boolean> = _like
-
     private val _unLike = MutableLiveData(false)
     open val unLike : LiveData<Boolean> = _unLike
-
-    fun toggleLike(content:Content){
-        val updatedContent = content.copy(islike = !content.islike)
-        viewModelScope.launch {
-            repository.updateContent(updatedContent)
-            loadLikedSongs()
-        }
-    }
 
     fun toggleUnLike(){
         _unLike.value = _unLike.value != true
     }
-
-
 
     private val _replay = MutableLiveData(false)
     open val replay : LiveData<Boolean> = _replay
@@ -97,59 +82,28 @@ open class SongViewModel(application: Application,
     fun resetProgress(){ // 그 .. beforeSongPlayClick() 에 넣어줄 것
         _currentPosition.value = 0f
     }
+    fun toggleLike(content:Content){
+        val updatedContent = content.copy(islike = !content.islike)
+        _currentSong.value = updatedContent
+        viewModelScope.launch {
+            repository.updateContent(updatedContent)
+            loadLikedSongs()
+        }
+    }
 
+    // 재생 순서 관리
+    private val playbackHistory = mutableListOf<Content>()
+    private var historyIndex = -1
+
+    //현재 앨범 재생 리스트
+    private var currentAlbumTracks : List<Content> = emptyList()
+    private var albumTrackIndex = 0
 
     private val _currentSong = MutableLiveData<Content?>(null)
     open val currentSong : LiveData<Content?> = _currentSong
 
-    fun loadCurrentSong(id:Int){
-        viewModelScope.launch {
-            _currentSong.value = repository.getContentById(id)
-        }
-    }
-
-    fun addContent(content:Content){
-        viewModelScope.launch {
-            repository.insert(content)
-
-        }
-    }
-    private val _allSongs = MutableLiveData<List<Content>>().apply { value = emptyList() }
-    val allSongs : LiveData<List<Content>> = _allSongs
-
-    fun loadAllSongs(){
-        viewModelScope.launch {
-            _allSongs.value = repository.getAllContents()
-        }
-    }
-
-
-    // 곡 넘김과 관련된 것들
-//    fun setCurrentSong1(content: Content, isNewHistory : Boolean = true){
-//        if(isNewHistory){
-//            playbackHistory.add(content)
-//            historyIndex = playbackHistory.size - 1
-//        }
-//
-//        _currentSong.value = content
-//        resetProgress()
-//        togglePlayed()
-//        viewModelScope.launch{
-//            repository.insert(content)
-//            val updatedContent = repository.getContentByTitleAndAuthor(content.title, content.author)
-//
-//            // `updatedContent`를 `_currentSong`에 설정하여 자동 증가된 ID 반영
-//            if (updatedContent != null) {
-//                _currentSong.value = updatedContent
-//                resetProgress()
-//                togglePlayed()
-//                Log.d("SongViewModel", "Set current song with ID: ${updatedContent.id}, Title: ${updatedContent.title}")
-//            }
-//        }
-//    }
     fun setCurrentSong(content: Content, isNewHistory: Boolean = true) {
         viewModelScope.launch {
-            // 비동기 작업 내에서 히스토리 추가 및 currentSong 업데이트
             val existingContent = repository.getContentByTitleAndAuthor(content.title, content.author)
 
             val contentToSet = if (existingContent == null) {
@@ -159,67 +113,52 @@ open class SongViewModel(application: Application,
                 existingContent
             }
 
-            // 재생 히스토리에 추가
+
             if (isNewHistory) {
                 playbackHistory.add(contentToSet)
                 historyIndex = playbackHistory.size - 1
             }
 
-            // 업데이트된 곡을 currentSong에 설정
             _currentSong.value = contentToSet
             resetProgress()
-            togglePlayed()
+
 
             Log.d("SongViewModel", "Set current song with ID: ${contentToSet.id}, Title: ${contentToSet.title}")
         }
     }
-
-
-//    fun playPreviousSong() {
-//        val currentSongId = _currentSong.value?.id ?: return  // 현재 곡 ID가 없으면 함수 종료
-//        Log.d("SongViewModel", "Current song ID: $currentSongId")
-//        viewModelScope.launch {
-//            val previousSong = repository.getPreviousContent(currentSongId)
-//            if (previousSong != null) {
-//                setCurrentSong(previousSong)
-//            }else {
-//                Log.d("SongViewModel", "No previous song available.")
-//            }
-//        }
-//    }
-fun playPreviousSong() {
-    if (historyIndex > 0) {
-        historyIndex--
-        _currentSong.value = playbackHistory[historyIndex]
-    } else {
-        Log.d("SongViewModel", "No previous song available.")
+    // 이전 곡 재생
+    fun playPreviousSong() {
+        if (currentAlbumTracks.isNotEmpty() && albumTrackIndex > 0) {
+            albumTrackIndex--
+            setCurrentSong(currentAlbumTracks[albumTrackIndex], isNewHistory = false)
+        } else if (historyIndex > 0) {
+            historyIndex--
+            setCurrentSong(playbackHistory[historyIndex], isNewHistory = false)
+        } else {
+            Log.d("SongViewModel", "No previous song available.")
+        }
     }
-}
-//    fun playNextSong() {
-//        val currentSongId = _currentSong.value?.id ?: return
-//
-//        viewModelScope.launch {
-//            val nextSong = repository.getNextContent(currentSongId)
-//            if (nextSong != null) {
-//                setCurrentSong(nextSong)
-//            }
-//        }
-//
-//    }
-fun playNextSong() {
-    if (currentAlbumTracks.isNotEmpty() && albumTrackIndex < currentAlbumTracks.size - 1) {
-        albumTrackIndex++
-        setCurrentSong(currentAlbumTracks[albumTrackIndex], isNewHistory = false)
-    } else {
-        Log.d("SongViewModel", "No next song available in album.")
+
+    // 다음 곡 재생
+    fun playNextSong() {
+        if (currentAlbumTracks.isNotEmpty() && albumTrackIndex < currentAlbumTracks.size - 1) {
+            albumTrackIndex++
+            setCurrentSong(currentAlbumTracks[albumTrackIndex], isNewHistory = false)
+        } else if (historyIndex < playbackHistory.size - 1) {
+            historyIndex++
+            setCurrentSong(playbackHistory[historyIndex], isNewHistory = false)
+        } else {
+            Log.d("SongViewModel", "No next song available.")
+        }
     }
-}
+
+    // 앨범 트랙 설정
     fun setAlbumTracks(tracks: List<Content>) {
         currentAlbumTracks = tracks
         albumTrackIndex = 0
-        if (tracks.isNotEmpty()) {
-            setCurrentSong(tracks[albumTrackIndex], isNewHistory = true)
-        }
+        playbackHistory.addAll(tracks)
+        historyIndex = playbackHistory.size - 1
+        setCurrentSong(tracks[albumTrackIndex], isNewHistory = true)
     }
 
     //locker와 관련된 것들
@@ -250,13 +189,7 @@ fun playNextSong() {
         }
     }
 
-    // 재생 순서 관리
-    private val playbackHistory = mutableListOf<Content>()
-    private var historyIndex = -1
 
-    //현재 앨범 재생 리스트
-    private var currentAlbumTracks : List<Content> = emptyList()
-    private var albumTrackIndex = 0
 
 
 
