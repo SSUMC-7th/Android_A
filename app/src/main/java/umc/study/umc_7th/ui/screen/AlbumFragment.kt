@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.livedata.observeAsState
+import umc.study.umc_7th.MainActivity
 import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.composables.MiniPlayer
 import umc.study.umc_7th.ui.composables.TabItem
@@ -53,15 +54,16 @@ fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
     val context = LocalContext.current
     var isColorful_like by remember { mutableStateOf(false) }
 
-    val album by viewModel.album.observeAsState(initial = emptyList())
-    val albumTitle = album.firstOrNull()?.title ?: "No Album Title"
-    val albumSinger = album.firstOrNull()?.singer ?: "No Album Singer"
+    val album by viewModel.album.observeAsState(initial = null)
     val songList by viewModel.songList.observeAsState(initial = emptyList())
 
     LaunchedEffect(Unit) {
+        viewModel.loadAlbum(1)
         viewModel.loadSong(1)
-        viewModel.loadAlbum(1) // 특정 앨범 ID로 데이터 로드
     }
+
+    val albumTitle = album?.firstOrNull()?.title ?: "No Album Title"
+    val albumSinger = album?.firstOrNull()?.singer ?: "No Album Singer"
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -69,7 +71,7 @@ fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
             Column {
                 MiniPlayer(
                     viewModel = viewModel,
-                    progress = 0f, songTitle, songAuthor
+                    progress = 0f
                 )
             }
         }
@@ -318,7 +320,8 @@ fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
 fun AlbumFragmentPreview() {
 
     val mockViewModel = MockMusicViewModel()
-    mockViewModel.loadSong(1)
-    mockViewModel.loadAlbum(1)
+    LaunchedEffect(Unit) {
+        mockViewModel.insertDummyAlbums() // Ensure albums are inserted
+    }
     AlbumFragment(viewModel = mockViewModel)
 }

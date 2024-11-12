@@ -1,5 +1,7 @@
 package umc.study.umc_7th.ui.viewmodel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -23,6 +25,40 @@ class MockMusicViewModel : MusicViewModel(
             _songList.value = songRepository.getSongsByAlbumId(AlbumId)
         }
     }
+
+    private val _currentSongIndex = MutableLiveData<Int>(0)
+    override val currentSongIndex: LiveData<Int> get() = _currentSongIndex
+
+    // 다음 곡
+    override fun nextSong() {
+        _songList.value?.let { songs ->
+            val nextIndex = (_currentSongIndex.value ?: 0) + 1
+            if (nextIndex < songs.size) {
+                _currentSongIndex.value = nextIndex
+            }
+        }
+    }
+
+    // 이전 곡
+    override fun previousSong() {
+        _songList.value?.let { songs ->
+            val prevIndex = (_currentSongIndex.value ?: 0) - 1
+            if (prevIndex >= 0) {
+                _currentSongIndex.value = prevIndex
+            }
+        }
+    }
+
+    // 현재 곡 가져오기
+    override fun getCurrentSong(): Song? {
+        val index = _currentSongIndex.value ?: 0
+        return _songList.value?.getOrNull(index)
+    }
+
+    override fun getFirstSong(): Song? {
+        return _songList.value?.getOrNull(0)
+    }
+
 
     override val _album = MutableLiveData<List<Album>>()
     override val album: LiveData<List<Album>> get() = _album

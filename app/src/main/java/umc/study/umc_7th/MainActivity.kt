@@ -1,7 +1,7 @@
-package umc.study.umc_7th.ui.screen
+package umc.study.umc_7th
 
-import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -32,6 +32,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -39,9 +40,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import umc.study.umc_7th.ui.composables.BottomNavigationBar
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.data.model.Content
 import umc.study.umc_7th.ui.composables.NavigationDestination
-import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.composables.Footer
 import umc.study.umc_7th.ui.composables.GlobeCategorizedMusicCollectionView
 import umc.study.umc_7th.ui.composables.GlobeCategory
@@ -50,13 +50,12 @@ import umc.study.umc_7th.ui.composables.MiniPlayer
 import umc.study.umc_7th.ui.composables.PodcastCollectionView
 import umc.study.umc_7th.ui.composables.PromotionImageBanner
 import umc.study.umc_7th.ui.composables.VideoCollectionView
+import umc.study.umc_7th.ui.screen.AlbumFragment
+import umc.study.umc_7th.ui.screen.LockerFragment
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
 import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 import java.time.LocalDate
-
-var songTitle : String? = null
-var songAuthor : String? = null
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -73,9 +72,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         musicViewModel = ViewModelProvider(this)[MusicViewModel::class.java]
-        musicViewModel.insertDummySongs()
         musicViewModel.insertDummyAlbums()
-        sharedPreferences = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        musicViewModel.insertDummySongs()
+        sharedPreferences = getSharedPreferences("song_pref", Context.MODE_PRIVATE)
+        val songId = sharedPreferences.getInt("id", 0)
 
         enableEdgeToEdge()
         setContent {
@@ -88,12 +88,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        songTitle = intent.getStringExtra("songTitle")
-        songAuthor = intent.getStringExtra("songAuthor")
-        if (songTitle != null && songAuthor != null) {
-            showToast(songTitle)
-            showToast(songAuthor)
-        }
+        val songId = intent.getIntExtra("song_id", -1)
     }
 }
 
@@ -138,7 +133,7 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(viewModel = viewModel, progress = currentTime, songTitle, songAuthor)
+                MiniPlayer(viewModel = viewModel, progress = currentTime)
             }
         }
     ) { innerPadding ->
@@ -156,7 +151,7 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
                         contentList = List(15) {
                             Content(
                                 title = "Butter",
-                                author = "BTS",
+                                singer = "BTS",
                                 image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
                                 length = 200,
                             )
@@ -170,14 +165,7 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
                 }
                 GlobeCategorizedMusicCollectionView(
                     title = "오늘 발매 음악",
-                    contentList = List(15) {
-                        Content(
-                            title = "LILAC",
-                            author = "IU",
-                            image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                            length = 200,
-                        )
-                    },
+                    viewModel = MockMusicViewModel(),
                     globeCategory = GlobeCategory.GLOBAL,
                     onViewTitleClicked = { /*TODO*/ },
                     onContentClicked = { navController.navigate("Album") },
@@ -190,7 +178,7 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
                     contentList = List(15) {
                         Content(
                             title = "김시선의 귀책사유 FLO X 윌라",
-                            author = "김시선",
+                            singer = "김시선",
                             image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
                             length = 200,
                         )
@@ -200,7 +188,7 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
                     contentList = List(15) {
                         Content(
                             title = "제목",
-                            author = "지은이",
+                            singer = "지은이",
                             image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
                             length = 200,
                         )
@@ -223,8 +211,6 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
 @Composable
 fun AlbumScreen() {
     val mockViewModel = MockMusicViewModel()
-    // ViewModel에서 더미 데이터를 로드
-    mockViewModel.loadAlbum(1)
     AlbumFragment(viewModel = mockViewModel)
 }
 
@@ -239,8 +225,6 @@ fun LockerScreen() {
 fun MyAppPreview(widthDp: Dp = 412.dp, heightDp: Dp = 915.dp) {
     Umc_7thTheme {
         val mockViewModel = MockMusicViewModel()
-        // ViewModel에서 더미 데이터를 로드
-        mockViewModel.loadAlbum(1)
         MyApp(viewModel = mockViewModel)
     }
 }

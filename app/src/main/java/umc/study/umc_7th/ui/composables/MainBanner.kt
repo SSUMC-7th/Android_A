@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.data.model.Content
 import umc.study.umc_7th.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -166,7 +166,7 @@ fun MainBanner(
                                         verticalArrangement = Arrangement.spacedBy(4.dp),
                                     ) {
                                         Text(text = content.title, color = textColor)
-                                        Text(text = content.author, color = textColor)
+                                        Text(text = content.singer, color = textColor)
                                     }
                                 }
                             }
@@ -218,7 +218,7 @@ fun PreviewBanner() {
         contentList = List(15) {
             Content(
                 title = "Butter",
-                author = "BTS",
+                singer = "BTS",
                 image = ImageBitmap.imageResource(id = R.drawable.img_album_exp),
                 length = 200,
             )

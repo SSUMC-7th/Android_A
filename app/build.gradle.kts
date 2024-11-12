@@ -85,7 +85,6 @@ dependencies {
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.circleindicator)
 
-
     // Hilt Dependency Injection
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

@@ -6,47 +6,55 @@ import umc.study.umc_7th.R
 class MockSongDao : SongDao {
     private val dummySongs = listOf(
         Song(
+            id = 1,
             title = "LILAC",
             singer = "아이유",
             playTime = 200,
             coverImg = R.drawable.img_album_exp2,
-            albumidx = 1
+            albumIdx = 1
         ),
         Song(
+            id = 2,
             title = "Flu",
             singer = "아이유",
             playTime = 180,
             coverImg = R.drawable.img_album_exp2,
-            albumidx = 1
+            albumIdx = 1
         ),
         Song(
+            id = 3,
             title = "Butter",
             singer = "방탄소년단",
             playTime = 210,
             coverImg = R.drawable.img_album_exp,
-            albumidx = 2
+            albumIdx = 2
         ),
-        Song(),
         Song(
+            id = 4
+        ),
+        Song(
+            id = 5,
             title = "",
             singer = "에스파",
             playTime = 220,
             coverImg = R.drawable.img_album_exp3,
-            albumidx = 3
+            albumIdx = 3
         ),
         Song(
+            id = 7,
             title = "Next Level",
             singer = "에스파",
             playTime = 210,
             coverImg = R.drawable.img_album_exp3,
-            albumidx = 3
+            albumIdx = 3
         ),
         Song(
+            id = 8,
             title = "Bboom Bboom",
             singer = "모모랜드",
             playTime = 190,
             coverImg = R.drawable.img_album_exp5,
-            albumidx = 5
+            albumIdx = 5
         )
     )
 
@@ -71,6 +79,6 @@ class MockSongDao : SongDao {
     }
 
     override suspend fun getSongsByAlbumId(albumIdx: Int): List<Song> {
-        return dummySongs.filter { it.albumidx == albumIdx }
+        return dummySongs.filter { it.albumIdx == albumIdx }
     }
 }

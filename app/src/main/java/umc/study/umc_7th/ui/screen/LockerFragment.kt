@@ -1,6 +1,5 @@
 package umc.study.umc_7th.ui.screen
 
-import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import umc.study.umc_7th.ui.composables.MiniPlayer
 import umc.study.umc_7th.ui.theme.Purple40
 import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
-import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 
 @Composable
 fun LockerFragment() {
@@ -44,7 +42,7 @@ fun LockerFragment() {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-                MiniPlayer(viewModel = mockViewModel, progress = 0f, songTitle, songAuthor)
+                MiniPlayer(viewModel = mockViewModel, progress = 0f)
             }
         }
     ) { innerPadding ->

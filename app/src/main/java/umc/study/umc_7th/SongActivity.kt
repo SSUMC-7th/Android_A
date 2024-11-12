@@ -1,6 +1,5 @@
-package umc.study.umc_7th.ui.screen
+package umc.study.umc_7th
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 
@@ -24,20 +23,21 @@ class SongActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val songId = intent?.getIntExtra("song_id", 0)
         setContent {
-            SongScreen(viewModel = viewModel)
+            SongScreen(viewModel = viewModel, songId = songId)
         }
     }
 }
 
 @Composable
-fun SongScreen(viewModel: MusicViewModel) {
+fun SongScreen(viewModel: MusicViewModel, songId: Int?) {
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         TopButtonsView()
-        Album(viewModel = viewModel)
+        Album(viewModel = viewModel, songId = songId)
         BottomBar()
     }
 }
@@ -46,7 +46,5 @@ fun SongScreen(viewModel: MusicViewModel) {
 @Composable
 fun PreviewSongscreen() {
     val mockViewModel = MockMusicViewModel()
-    // ViewModel에서 더미 데이터를 로드
-    mockViewModel.loadAlbum(1)
-    SongScreen(viewModel = mockViewModel)
+    SongScreen(viewModel = mockViewModel, songId = 1)
 }

@@ -17,9 +17,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,8 +43,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import umc.study.umc_7th.Content
+import androidx.lifecycle.viewmodel.compose.viewModel
+import umc.study.umc_7th.data.model.Content
 import umc.study.umc_7th.R
+import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
+import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 
 enum class GlobeCategory(
     val expression: String,
@@ -54,14 +60,31 @@ enum class GlobeCategory(
 @Composable
 fun GlobeCategorizedMusicCollectionView(
     title: String,
-    contentList: List<Content>,
+    viewModel: MusicViewModel,
     globeCategory: GlobeCategory,
     onViewTitleClicked: () -> Unit,
     onContentClicked: (Content) -> Unit,
-    onCategoryClicked: (GlobeCategory) -> Unit,
+    onCategoryClicked: (GlobeCategory) -> Unit
 ) {
+
+    // LiveData를 observe하여 Album과 Song 데이터 가져오기
+    val album by viewModel.album.observeAsState(emptyList())
+    val currentSongIndex by viewModel.currentSongIndex.observeAsState(0)
+
+    LaunchedEffect(Unit) {
+        // 전체 Album 데이터를 로드
+        viewModel.loadAllAlbums()
+    }
+
     ContentCollectionView(
-        contentList = contentList,
+        contentList = album.map { album ->
+            Content(
+                title = album.title,
+                singer = album.singer,
+                image = ImageBitmap.imageResource(id = album.coverImg),
+                length = 0
+            )
+        },
         titleBar = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -115,12 +138,14 @@ fun GlobeCategorizedMusicCollectionView(
                         .size(128.dp)
                         .clip(RoundedCornerShape(8.dp))
                 )
-                Icon(
-                    painter = painterResource(id = R.drawable.btn_miniplayer_play),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
+                IconButton(onClick = { viewModel.getFirstSong() }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.btn_miniplayer_play),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
         },
         onContentClicked = onContentClicked,
@@ -265,7 +290,7 @@ private fun ContentCollectionView(
                             overflow = TextOverflow.Ellipsis,
                         )
                         Text(
-                            text = content.author,
+                            text = content.singer,
                             style = TextStyle(
                                 color = TextStyle.Default.color.copy(alpha = 0.5f)
                             ),
@@ -285,18 +310,11 @@ private fun ContentCollectionView(
 fun PreviewGlobeCategorizedMusicCollectionView() {
     GlobeCategorizedMusicCollectionView(
         title = "오늘 발매 음악",
-        contentList = List(15) {
-            Content(
-                title = "LILAC",
-                author = "IU",
-                image = ImageBitmap.imageResource(id = R.drawable.img_album_exp2),
-                length = 200,
-            )
-        },
+        viewModel = MockMusicViewModel(),
         globeCategory = GlobeCategory.GLOBAL,
         onViewTitleClicked = {},
         onContentClicked = {},
-        onCategoryClicked = {},
+        onCategoryClicked = {}
     )
 }
 
@@ -308,7 +326,7 @@ fun PreviewPodcastCollectionView() {
         contentList = List(15) {
             Content(
                 title = "김시선의 귀책사유 FLO X 윌라",
-                author = "김시선",
+                singer = "김시선",
                 image = ImageBitmap.imageResource(id = R.drawable.img_potcast_exp),
                 length = 200,
             )
@@ -325,7 +343,7 @@ fun PreviewVideoCollectionView() {
         contentList = List(15) {
             Content(
                 title = "제목",
-                author = "지은이",
+                singer = "지은이",
                 image = ImageBitmap.imageResource(id = R.drawable.img_video_exp),
                 length = 200,
             )

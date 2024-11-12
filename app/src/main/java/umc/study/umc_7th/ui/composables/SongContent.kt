@@ -1,7 +1,7 @@
 package umc.study.umc_7th.ui.composables
 
-import android.app.Application
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import umc.study.umc_7th.ui.screen.MainActivity
+import umc.study.umc_7th.MainActivity
 import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.theme.Purple40
 import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
@@ -87,10 +88,12 @@ fun TopButtonsView() {
 }
 
 @Composable
-fun Album(viewModel: MusicViewModel) {
+fun Album(viewModel: MusicViewModel, songId: Int?) {
 
     var isColorful_like by remember { mutableStateOf(false) }
     var isColorful_unlike by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val toastMessage = if (isColorful_like) "좋아요 취소" else "좋아요"
 
     var currentTime by remember { mutableStateOf(0f) } // 현재 시간 상태
     val totalTime = 60f // 전체 시간
@@ -105,23 +108,31 @@ fun Album(viewModel: MusicViewModel) {
         }
     }
 
+
+    songId?.let { viewModel.loadSong(it) }
+    val currentSong = viewModel.getCurrentSong()
+
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "라일락",
-            style = MaterialTheme.typography.titleLarge
-        )
-
+        currentSong?.let {
+            Text(
+                text = it.title,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
         Row(
             modifier = Modifier.padding(start = 45.dp),
         ) {
-            Text(
-                text = "아이유 (IU)",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 12.dp)
-            )
+            currentSong?.let {
+                Text(
+                    text = it.singer,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+            }
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
                     painter = painterResource(id = R.drawable.btn_arrow_more),
@@ -150,7 +161,11 @@ fun Album(viewModel: MusicViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { isColorful_like = !isColorful_like }
+                onClick = {
+                    isColorful_like = !isColorful_like
+                    // Toast 메시지 표시
+                    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                }
             ) {
                 Icon(
                     painter = painterResource(id = if (isColorful_like) R.drawable.ic_my_like_on else R.drawable.ic_my_like_off),
@@ -219,7 +234,7 @@ fun Album(viewModel: MusicViewModel) {
             }
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.previousSong() },
                 modifier = Modifier.padding(end = 15.dp)
             ) {
                 Icon(
@@ -238,7 +253,7 @@ fun Album(viewModel: MusicViewModel) {
                 )
             }
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.nextSong() },
                 modifier = Modifier.padding(start = 15.dp)
             ) {
                 Icon(
@@ -285,7 +300,6 @@ fun BottomBar() {
     }
 }
 
-
 fun formatTime(seconds: Float): String {
     val totalSeconds = seconds.toInt()
     val minutes = totalSeconds / 60
@@ -303,9 +317,7 @@ fun PreviewTopButtonsView() {
 @Composable
 fun PreviewAlbum() {
     val mockViewModel = MockMusicViewModel()
-    // ViewModel에서 더미 데이터를 로드
-    mockViewModel.loadAlbum(1)
-    Album(viewModel = mockViewModel)
+    Album(viewModel = mockViewModel, songId = 1)
 }
 
 @Preview
