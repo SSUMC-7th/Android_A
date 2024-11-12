@@ -43,7 +43,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import umc.study.umc_7th.data.model.Content
 import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
