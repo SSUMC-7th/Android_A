@@ -12,13 +12,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import umc.study.umc_7th.content.Album
+import umc.study.umc_7th.content.AlbumContent
+import umc.study.umc_7th.content.AlbumRepository
 import umc.study.umc_7th.content.AppDataBase
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.content.ContentDao
 import umc.study.umc_7th.content.ContentRepository
 
 open class SongViewModel(application: Application,
-    private val repository: ContentRepository) : AndroidViewModel(application) {
+    private val repository: ContentRepository,
+    private val albumrepository: AlbumRepository) : AndroidViewModel(application) {
 
     private val _unLike = MutableLiveData(false)
     open val unLike : LiveData<Boolean> = _unLike
@@ -90,6 +94,7 @@ open class SongViewModel(application: Application,
             loadLikedSongs()
         }
     }
+
 
     // 재생 순서 관리
     private val playbackHistory = mutableListOf<Content>()
@@ -171,6 +176,7 @@ open class SongViewModel(application: Application,
             _likedSongs.value = repository.getLikedContents()
         }
     }
+
     private val _selectAll = MutableLiveData(false)
     open val selectAll : LiveData<Boolean> = _selectAll
     fun SelectAll(){
@@ -189,7 +195,47 @@ open class SongViewModel(application: Application,
         }
     }
 
+    //AlbumContent와 관련된 것
+    private val _albumContents = MutableLiveData<AlbumContent>()
+    val albumContents : LiveData<AlbumContent> = _albumContents
 
+//    fun toggleLikeAlbum(album:AlbumContent){
+//
+//        val updatedContent = album.copy(isLike = !album.isLike)
+//        _albumContents.value = updatedContent
+//        viewModelScope.launch {
+//            albumrepository.updateAlbum(updatedContent)
+//            loadLikedAlbums()
+//        }
+//    }
+    fun toggleLikeAlbum(albumTitle : String){
+        viewModelScope.launch {
+            val albumContent = albumrepository.getAlbumByTitle(albumTitle)
+
+            albumContent?.let{
+                val updatedContent = it.copy(isLike = !it.isLike)
+                albumrepository.updateAlbum(updatedContent)
+                _albumContents.value = updatedContent
+                loadLikedAlbums()
+            }
+        }
+    }
+    fun getAlbumContent(album : AlbumContent) {
+        viewModelScope.launch {
+            albumrepository.insertAlbum(album = AlbumContent(albumTitle = album.albumTitle, author = album.author, isLike = false))
+            _albumContents.value = albumrepository.getAlbumByTitle(album.albumTitle)
+        }
+
+    }
+
+    private val _likedAlbums = MutableLiveData<List<AlbumContent>>()
+    val likeAlbums : LiveData<List<AlbumContent>> = _likedAlbums
+
+    fun loadLikedAlbums(){
+        viewModelScope.launch {
+            _likedAlbums.value = albumrepository.getAllLikedAlbums()
+        }
+    }
 
 
 
@@ -201,9 +247,10 @@ open class SongViewModel(application: Application,
 
 
 class MyApplication : Application() {
-    val songViewModel : SongViewModel by lazy { SongViewModel(this, repository) }
+    val songViewModel : SongViewModel by lazy { SongViewModel(this, repository, albumRepository) }
     private val database by lazy { AppDataBase.getDatabase(this) }
     private val repository by lazy { ContentRepository(database.contentDao()) }
+    private val albumRepository by lazy { AlbumRepository(database.albumDao())}
 }
 
 

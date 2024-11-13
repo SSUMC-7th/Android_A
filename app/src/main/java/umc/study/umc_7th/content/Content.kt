@@ -18,7 +18,8 @@ data class Album (
     val author : String,
     val albumImage: Int,
     val trackList : List<String> ,
-    val titleTrackList : List<String>
+    val titleTrackList : List<String>,
+    val isLike : Boolean = false
 ) : Parcelable
 
 

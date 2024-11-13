@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 
 
 import androidx.navigation.NavController
+import umc.study.umc_7th.SongViewModel
 //import com.google.accompanist.pager.*
 
 import umc.study.umc_7th.content.Album
@@ -40,7 +41,9 @@ fun albumFragment(
     author: String,
     date: LocalDate,
     trackList: List<String>,
-    titleTrackList: List<String>
+    titleTrackList: List<String>,
+    viewModel: SongViewModel,
+    isLike : Boolean
 ){
     Column() {
         AlbumFragmentTop(
@@ -52,13 +55,12 @@ fun albumFragment(
                 trackList = trackList,
                 titleTrackList = titleTrackList
             ),
-//            album= Album,
             date = date,
             albumFgtoMain = { navController.navigate("homeFragment") },
             likeButtonClick = { /*TODO*/ },
-            playerMoreButtonClick = { /*TODO*/ }) {
-
-        }
+            playerMoreButtonClick = { /*TODO*/ },
+            playAlbumButtonClick = {},
+            viewModel = viewModel)
         TabLayout(album =
         Album(
             albumTitle = albumTitle,

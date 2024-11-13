@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 import timer.App
 
 
-@Database(entities = [Content::class], version = 2)
+@Database(entities = [Content::class, AlbumContent::class], version = 3)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun contentDao(): ContentDao
+    abstract fun albumDao():AlbumDao
 
     companion object {
         @Volatile

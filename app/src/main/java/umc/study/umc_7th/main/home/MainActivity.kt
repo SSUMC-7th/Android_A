@@ -52,6 +52,7 @@ import umc.study.umc_7th.SongViewModel
 import umc.study.umc_7th.album.albumFragment
 import umc.study.umc_7th.content.albumData
 import umc.study.umc_7th.aroundFragment
+import umc.study.umc_7th.content.AlbumContent
 import umc.study.umc_7th.content.AppDataBase
 import umc.study.umc_7th.content.ContentRepository
 import umc.study.umc_7th.content.bannerDataList
@@ -93,14 +94,15 @@ class MainActivity : ComponentActivity() {
 
                             composable("homeFragment") { homeFragment(navController, viewModel) }
                             composable(
-                                "albumFragment/{albumTitle}/{albumImage}/{author}/{date}/{trackList}/{titleTrackList}",
+                                "albumFragment/{albumTitle}/{albumImage}/{author}/{date}/{trackList}/{titleTrackList}/{isLike}",
                                 arguments = listOf(
                                     navArgument("albumTitle") { type = NavType.StringType },
                                     navArgument("albumImage"){ type = NavType.StringType },
                                     navArgument("author") { type = NavType.StringType },
                                     navArgument("date") { type = NavType.StringType },
                                     navArgument("trackList") { type = NavType.StringType },
-                                    navArgument("titleTrackList") { type = NavType.StringType }
+                                    navArgument("titleTrackList") { type = NavType.StringType },
+                                    navArgument("isLike"){ type = NavType.BoolType }
                                 )
                             ) { backStackEntry ->
                                 val albumTitle = backStackEntry.arguments?.getString("albumTitle") ?: ""
@@ -110,7 +112,8 @@ class MainActivity : ComponentActivity() {
                                 val date = backStackEntry.arguments?.getString("date") ?: ""
                                 val trackList = backStackEntry.arguments?.getString("trackList")?.split(",") ?: listOf()
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
-                                albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
+                                val isLike = backStackEntry.arguments?.getBoolean("isLike") ?: false
+                                albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList, viewModel, isLike)
                             }
                             composable("lockerFragment") { LockerFragment(viewModel,
                                 showBottomBar = { showLockerBottomBar = true},
@@ -184,8 +187,9 @@ fun homeFragment(navController: NavController,
             baseLocationCategory = BaseLocationCategory.GLOABAL ,
             viewTitleClick = { },
             contentClick ={ album ->
+                viewModel.getAlbumContent(AlbumContent(albumTitle = album.albumTitle, author = album.author, isLike = false))
                 navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}" +
-                        "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
+                        "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}/${album.isLike}")},
             categoryClick = {},
             albumMusicStart = {album ->
                 // 첫 번째 트랙을 `currentSong`으로 설정
