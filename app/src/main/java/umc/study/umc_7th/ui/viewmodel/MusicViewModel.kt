@@ -5,6 +5,7 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,6 +65,22 @@ open class MusicViewModel @Inject constructor(
 
     open fun getFirstSong(): Song? {
         return _songList.value?.getOrNull(0)
+    }
+
+    // Get only liked songs
+    open fun getLikedSongs(): LiveData<List<Song>> {
+        return _songList.map { songs -> songs.filter { it.isLike } }
+    }
+
+    // Toggle like status of a song
+    open fun toggleLikeStatus(song: Song) {
+        viewModelScope.launch {
+            val updatedSong = song.copy(isLike = !song.isLike)
+            songRepository.updateSong(updatedSong)
+
+            // Update local list after modification
+            _songList.value = _songList.value?.map { if (it.id == song.id) updatedSong else it }
+        }
     }
 
     fun insertDummySongs() {

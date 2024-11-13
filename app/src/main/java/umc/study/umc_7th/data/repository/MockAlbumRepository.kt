@@ -9,7 +9,7 @@ class MockAlbumRepository(private val mockAlbumDao: MockAlbumDao) : AlbumReposit
         return mockAlbumDao.getAllAlbums()
     }
 
-    override suspend fun getAlbumById(albumId: Int): List<Album>? {
+    override suspend fun getAlbumById(albumId: Int): List<Album> {
         return mockAlbumDao.getAlbumById(albumId)
     }
 }

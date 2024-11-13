@@ -2,6 +2,7 @@ package umc.study.umc_7th.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.data.repository.MockAlbumRepository
@@ -55,6 +56,22 @@ class MockMusicViewModel : MusicViewModel(
 
     override fun getFirstSong(): Song? {
         return _songList.value?.getOrNull(0)
+    }
+
+    // Get only liked songs
+    override fun getLikedSongs(): LiveData<List<Song>> {
+        return _songList.map { songs -> songs.filter { it.isLike } }
+    }
+
+    // Toggle like status of a song
+    override fun toggleLikeStatus(song: Song) {
+        viewModelScope.launch {
+            val updatedSong = song.copy(isLike = !song.isLike)
+            songRepository.updateSong(updatedSong)
+
+            // Update local list after modification
+            _songList.value = _songList.value?.map { if (it.id == song.id) updatedSong else it }
+        }
     }
 
 
