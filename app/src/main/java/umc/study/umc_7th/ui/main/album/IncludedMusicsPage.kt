@@ -203,7 +203,8 @@ private fun MusicItem(
                 .fillMaxWidth()
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.weight(1f)
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -218,7 +219,7 @@ private fun MusicItem(
                         )
                     )
                 }
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -247,6 +248,7 @@ private fun MusicItem(
                             text = music.title,
                             maxLines = 1,
                             overflow = TextOverflow.Clip,
+                            modifier = Modifier.weight(1f),
                         )
                     }
                     Row(

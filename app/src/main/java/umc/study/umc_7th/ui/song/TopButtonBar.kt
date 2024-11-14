@@ -89,11 +89,11 @@ fun TopButtonBar(
                 ) {
                     DropdownMenuItem(
                         text = { Text(text = "정보") },
-                        onClick = onDetailsClicked,
+                        onClick = { onDetailsClicked(); isExpanded = false },
                     )
                     DropdownMenuItem(
                         text = { Text(text = "저장") },
-                        onClick = onSaveClicked,
+                        onClick = { onSaveClicked(); isExpanded = false },
                     )
                 }
             }

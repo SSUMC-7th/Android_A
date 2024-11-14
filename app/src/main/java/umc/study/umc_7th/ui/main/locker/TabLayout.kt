@@ -22,7 +22,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import umc.study.umc_7th.ui.main.album.TabItem
+
+data class TabItem(
+    val label: String,
+    val page: @Composable () -> Unit,
+)
 
 @Composable
 fun TabLayout(

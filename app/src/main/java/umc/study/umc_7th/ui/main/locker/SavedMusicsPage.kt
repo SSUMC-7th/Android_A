@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,15 +42,16 @@ import umc.study.umc_7th.SuspendedImage
 import umc.study.umc_7th.previewMusicContentList
 
 @Composable
-fun SavedMusicPage(
+fun SavedMusicsPage(
     musics: List<MusicContent>,
     onPlayAllButtonClicked: () -> Unit,
-    onEditButtonClicked: () -> Unit,
     onPlayButtonClicked: (MusicContent) -> Unit,
     onDeleteClicked: (MusicContent) -> Unit,
     onDetailsClicked: (MusicContent) -> Unit,
+    onDeleteMusics: (List<MusicContent>) -> Unit,
 ) {
     val selected = remember(musics) { List(musics.size) { false }.toMutableStateList() }
+    var isEditExpanded by remember { mutableStateOf(false) }
     var expandedIndex by remember(musics) { mutableStateOf<Int?>(null) }
 
     if (musics.isEmpty()) Box(
@@ -71,57 +73,74 @@ fun SavedMusicPage(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.clickable {
-                        if (selected.any { !it })
-                            selected.replaceAll { true }
-                        else
-                            selected.replaceAll { false }
-                    }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                TextButton(
+                    onClick = {
+                        val select = selected.any { !it }
+                        selected.replaceAll { select }
+                    },
+                    contentPadding = PaddingValues(4.dp),
                 ) {
-                    Image(
+                    val color = if (selected.any { !it })
+                        Color.Black
+                    else
+                        Color.Blue
+
+                    Icon(
                         modifier = Modifier.size(16.dp),
-                        painter = painterResource(
-                            id = if (selected.any { !it })
-                                R.drawable.btn_playlist_select_off
-                            else
-                                R.drawable.btn_playlist_select_on
-                        ),
+                        painter = painterResource(id = R.drawable.btn_playlist_select_off),
                         contentDescription = null,
+                        tint = color
                     )
                     Text(
                         text = "전체선택",
                         style = TextStyle(
-                            color = if (selected.any { !it })
-                                Color.Black
-                            else
-                                Color.Blue
+                            color = color,
+                            fontSize = 12.sp,
                         )
                     )
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.clickable { onPlayAllButtonClicked() }
+                TextButton(
+                    onClick = onPlayAllButtonClicked,
+                    contentPadding = PaddingValues(4.dp),
                 ) {
                     Icon(
                         modifier = Modifier.size(16.dp),
                         painter = painterResource(id = R.drawable.btn_editbar_play),
                         contentDescription = null,
+                        tint = Color.Black
                     )
-                    Text(text = "전체듣기")
+                    Text(
+                        text = "전체듣기",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = Color.Black,
+                        )
+                    )
                 }
             }
             TextButton(
-                onClick = onEditButtonClicked,
+                onClick = { isEditExpanded = !isEditExpanded },
             ) {
                 Text(
                     text = "편집",
                     style = TextStyle(color = Color.Blue)
                 )
+                DropdownMenu(
+                    onDismissRequest = { isEditExpanded = false },
+                    expanded = isEditExpanded,
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "삭제") },
+                        onClick = {
+                            onDeleteMusics(musics.filterIndexed { index, _ -> selected[index] })
+                            isEditExpanded = false
+                        },
+                    )
+                }
             }
         }
         LazyColumn(modifier = Modifier.weight(1f)) {
@@ -228,11 +247,11 @@ private fun MusicItem(
                     ) {
                         DropdownMenuItem(
                             text = { Text(text = "정보") },
-                            onClick = onDetailsClicked,
+                            onClick = { onDetailsClicked(); onExpandButtonClicked(false) },
                         )
                         DropdownMenuItem(
                             text = { Text(text = "삭제") },
-                            onClick = onDeleteClicked,
+                            onClick = { onDeleteClicked(); ; onExpandButtonClicked(false) },
                         )
                     }
                 }
@@ -244,12 +263,12 @@ private fun MusicItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewSavedMusicPage() {
-    SavedMusicPage(
+    SavedMusicsPage(
         musics = previewMusicContentList,
-        onEditButtonClicked = {},
         onPlayAllButtonClicked = {},
         onPlayButtonClicked = {},
         onDeleteClicked = {},
         onDetailsClicked = {},
+        onDeleteMusics = {},
     )
 }
