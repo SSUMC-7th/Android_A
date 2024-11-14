@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,33 @@ open class MusicViewModel @Inject constructor(
     val songRepository: SongRepository,
     val albumRepository: AlbumRepository
 ) : ViewModel() {
+
+    /* Firebase
+    private val database = FirebaseDatabase.getInstance()
+    private val likesRef = database.getReference("likes")
+
+    open fun saveLike(songId: String, userId: String) {
+        val likeData = mapOf("songId" to songId, "userId" to userId, "isLiked" to true)
+        likesRef.child(userId).child(songId).setValue(likeData)
+            .addOnSuccessListener {
+
+            }
+            .addOnFailureListener { error ->
+                // Handle failure
+            }
+    }
+
+    open fun getLikedSongs(userId: String, onComplete: (List<Song>) -> Unit) {
+        likesRef.child(userId).get()
+            .addOnSuccessListener { snapshot ->
+                val likedSongs = snapshot.children.mapNotNull { it.getValue(Song::class.java) }
+                onComplete(likedSongs)
+            }
+            .addOnFailureListener { error ->
+                // Handle failure
+            }
+    }
+    Firebase */
 
     protected open val _songList = MutableLiveData<List<Song>>()
     open val songList: LiveData<List<Song>> get() = _songList

@@ -6,6 +6,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("org.jetbrains.kotlin.kapt")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -66,6 +67,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,6 +87,10 @@ dependencies {
     implementation(libs.google.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.circleindicator)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     // Hilt Dependency Injection
     implementation(libs.androidx.hilt.navigation.compose)

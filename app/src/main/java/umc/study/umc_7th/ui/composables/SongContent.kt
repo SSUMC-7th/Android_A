@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,13 +42,14 @@ import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.theme.Purple40
 import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
 import umc.study.umc_7th.ui.viewmodel.MusicViewModel
+import java.util.Locale
 
 @Composable
 fun TopButtonsView() {
 
     val context = LocalContext.current
 
-    Row() {
+    Row {
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
                 painter = painterResource(id = R.drawable.btn_player_setting),
@@ -62,7 +64,7 @@ fun TopButtonsView() {
             )
         }
         Spacer(modifier = Modifier.weight(1f))
-        Column() {
+        Column {
             IconButton(onClick = {
                 val intent = Intent(context, MainActivity::class.java).apply {
                 putExtra("songTitle", "라일락")
@@ -89,12 +91,12 @@ fun TopButtonsView() {
 @Composable
 fun Album(viewModel: MusicViewModel, songId: Int?) {
 
-    var isColorful_like by remember { mutableStateOf(false) }
-    var isColorful_unlike by remember { mutableStateOf(false) }
+    var isColorfulLike by remember { mutableStateOf(false) }
+    var isColorfulUnlike by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val toastMessage = if (isColorful_like) "좋아요 취소" else "좋아요"
+    val toastMessage = if (isColorfulLike) "좋아요 취소" else "좋아요"
 
-    var currentTime by remember { mutableStateOf(0f) } // 현재 시간 상태
+    var currentTime by remember { mutableFloatStateOf(0f) } // 현재 시간 상태
     val totalTime = 60f // 전체 시간
     var isPlay by remember { mutableStateOf(false) }
 
@@ -107,10 +109,8 @@ fun Album(viewModel: MusicViewModel, songId: Int?) {
         }
     }
 
-
     songId?.let { viewModel.loadSong(it) }
     val currentSong = viewModel.getCurrentSong()
-
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -161,26 +161,29 @@ fun Album(viewModel: MusicViewModel, songId: Int?) {
         ) {
             IconButton(
                 onClick = {
-                    isColorful_like = !isColorful_like
+                    isColorfulLike = !isColorfulLike
                     // Toast 메시지 표시
                     Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                    /*currentSong?.let {
+                        viewModel.saveLike(currentSong.id.toString(), "Tom")
+                    }*/
                 }
             ) {
                 Icon(
-                    painter = painterResource(id = if (isColorful_like) R.drawable.ic_my_like_on else R.drawable.ic_my_like_off),
+                    painter = painterResource(id = if (isColorfulLike) R.drawable.ic_my_like_on else R.drawable.ic_my_like_off),
                     contentDescription = "like",
-                    tint = if (isColorful_like) Color.Blue else Color.Black
+                    tint = if (isColorfulLike) Color.Blue else Color.Black
                 )
             }
             Spacer(modifier = Modifier.padding(10.dp))
             IconButton(
-                onClick = { isColorful_unlike = !isColorful_unlike }
+                onClick = { isColorfulUnlike = !isColorfulUnlike }
             ) {
                 Icon(
-                    painter = painterResource(id = if (isColorful_unlike) R.drawable.btn_player_unlike_on else R.drawable.btn_player_unlike_off),
+                    painter = painterResource(id = if (isColorfulUnlike) R.drawable.btn_player_unlike_on else R.drawable.btn_player_unlike_off),
                     contentDescription = "unlike",
                     modifier = Modifier.size(40.dp),
-                    tint = if (isColorful_unlike) Color.Blue else Color.Black
+                    tint = if (isColorfulUnlike) Color.Blue else Color.Black
                 )
             }
         }
@@ -224,8 +227,8 @@ fun Album(viewModel: MusicViewModel, songId: Int?) {
             }
         }
         
-        Row() {
-            IconButton(onClick = { /*TODO*/ }) {
+        Row {
+            IconButton(onClick = {  }) {
                 Icon(
                     painter = painterResource(id = R.drawable.nugu_btn_repeat_inactive),
                     contentDescription = "repeat"
@@ -303,7 +306,7 @@ fun formatTime(seconds: Float): String {
     val totalSeconds = seconds.toInt()
     val minutes = totalSeconds / 60
     val secondsRemainder = totalSeconds % 60
-    return String.format("%02d:%02d", minutes, secondsRemainder)
+    return String.format(Locale.US, "%02d:%02d", minutes, secondsRemainder)
 }
 
 @Preview

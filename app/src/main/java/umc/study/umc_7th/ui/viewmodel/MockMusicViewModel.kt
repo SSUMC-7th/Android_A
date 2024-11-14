@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.data.repository.MockAlbumRepository
 import umc.study.umc_7th.data.repository.MockSongRepository
@@ -15,6 +16,33 @@ import umc.study.umc_7th.data.source.local.Song
 class MockMusicViewModel : MusicViewModel(
     MockSongRepository(MockSongDao()), MockAlbumRepository(MockAlbumDao())
 ) {
+
+    /* Firebase
+    private val database = FirebaseDatabase.getInstance()
+    private val likesRef = database.getReference("likes")
+
+    override fun saveLike(songId: String, userId: String) {
+        val likeData = mapOf("songId" to songId, "userId" to userId, "isLiked" to true)
+        likesRef.child(userId).child(songId).setValue(likeData)
+            .addOnSuccessListener {
+
+            }
+            .addOnFailureListener { error ->
+                // Handle failure
+            }
+    }
+
+    override fun getLikedSongs(userId: String, onComplete: (List<Song>) -> Unit) {
+        likesRef.child(userId).get()
+            .addOnSuccessListener { snapshot ->
+                val likedSongs = snapshot.children.mapNotNull { it.getValue(Song::class.java) }
+                onComplete(likedSongs)
+            }
+            .addOnFailureListener { error ->
+                // Handle failure
+            }
+    }
+    Firebase */
 
     override val _songList = MutableLiveData<List<Song>>()
     override val songList: LiveData<List<Song>> get() = _songList
