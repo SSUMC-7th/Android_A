@@ -1,7 +1,6 @@
 package umc.study.umc_7th.ui.song
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
@@ -12,16 +11,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.databinding.ActivitySongBinding
 import umc.study.umc_7th.previewMusicContentList
@@ -31,6 +35,7 @@ import umc.study.umc_7th.ui.theme.Umc_7thTheme
 class SongActivity: ComponentActivity() {
     private val viewModel: SongViewModel by viewModels()
     private lateinit var binding: ActivitySongBinding
+    private val snackBarHost = SnackbarHostState()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +44,9 @@ class SongActivity: ComponentActivity() {
 
         binding.composeViewSong.setContent {
             Umc_7thTheme {
-                Scaffold { innerPadding ->
+                Scaffold(
+                    snackbarHost = { SnackbarHost(snackBarHost) }
+                ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         Screen()
                     }
@@ -54,6 +61,8 @@ class SongActivity: ComponentActivity() {
         val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
         val playingPoint by viewModel.playingPoint.collectAsStateWithLifecycle()
 
+        val scope = rememberCoroutineScope()
+
         SongScreen(
             content = content,
             playingPoint = playingPoint ?: 0,
@@ -62,7 +71,17 @@ class SongActivity: ComponentActivity() {
             onMinimizeButtonClicked = { finish() },
             onPlayButtonClicked = { viewModel.setPlay(it) },
             onPlayingPointChanged = { viewModel.seek(it) },
-            onLikeButtonClicked = { viewModel.setLike(it, onFailed = { /* TODO */ }) },
+            onLikeButtonClicked = {
+                viewModel.setLike(it, onFailed = { /* TODO */ })
+                scope.launch {
+                    snackBarHost.currentSnackbarData?.dismiss()
+                    snackBarHost.showSnackbar(
+                        message = if (it) "좋아요를 눌렀습니다" else "좋아요를 취소했습니다",
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            },
             onPreviousButtonClicked = { viewModel.playPrevious() },
             onNextButtonClicked = { viewModel.playNext() },
             onSaveClicked = { viewModel.save(onFailed = { /* TODO */ }) }
