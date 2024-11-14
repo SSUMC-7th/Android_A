@@ -161,23 +161,25 @@ private fun SongScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewSongScreen() {
-    Scaffold { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            val content = previewMusicContentList.random()
+    Umc_7thTheme {
+        Scaffold { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                val content = previewMusicContentList.random()
 
-            SongScreen(
-                content = content,
-                playingPoint = 20,
-                isPlaying = true,
-                isLiked = true,
-                onMinimizeButtonClicked = {},
-                onPlayButtonClicked = {},
-                onPlayingPointChanged = {},
-                onLikeButtonClicked = {},
-                onPreviousButtonClicked = {},
-                onNextButtonClicked = {},
-                onSaveClicked = {},
-            )
+                SongScreen(
+                    content = content,
+                    playingPoint = 20,
+                    isPlaying = true,
+                    isLiked = true,
+                    onMinimizeButtonClicked = {},
+                    onPlayButtonClicked = {},
+                    onPlayingPointChanged = {},
+                    onLikeButtonClicked = {},
+                    onPreviousButtonClicked = {},
+                    onNextButtonClicked = {},
+                    onSaveClicked = {},
+                )
+            }
         }
     }
 }

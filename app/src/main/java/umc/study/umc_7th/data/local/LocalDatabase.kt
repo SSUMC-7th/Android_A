@@ -16,8 +16,8 @@ import java.time.ZoneOffset
 
 @Database(
     entities = [
-        SavedMusicEntity::class,
         LikedContentEntity::class,
+        SavedMusicEntity::class,
     ],
     version = 1,
     exportSchema = false,
@@ -27,8 +27,12 @@ abstract class LocalDatabase: RoomDatabase() {
     abstract fun getSavedMusicDao(): SavedMusicDao
     abstract fun getLikedContentDao(): LikedContentDao
 
-    fun getAllSavedMusicFlow(): Flow<List<MusicContent>> {
+    fun getAllSavedMusicsFlow(): Flow<List<MusicContent>> {
         return getSavedMusicDao().getFlow().map { it.map { entity -> entity.toContent() } }
+    }
+
+    fun getAllLikedContentsFlow(): Flow<List<Pair<Long, LocalDateTime>>> {
+        return getLikedContentDao().getFlow().map { it.map { entity -> entity.id to entity.date } }
     }
 
     suspend fun getSavedMusic(id: Long): MusicContent? {

@@ -33,6 +33,7 @@ import umc.study.umc_7th.ui.main.BottomNavigationBar
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.main.album.AlbumFragment
+import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import java.time.LocalDate
 
 class HomeFragment : Fragment() {
@@ -45,7 +46,17 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        binding.composeViewHome.setContent { Screen() }
+
+        binding.composeViewHome.setContent {
+            Umc_7thTheme {
+                Scaffold { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        Screen()
+                    }
+                }
+            }
+        }
+
         return binding.root
     }
 
@@ -143,32 +154,34 @@ private fun HomeScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewHomeScreen() {
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(
-                onPlaylistButtonClicked = {},
-                onDestinationClicked = {},
-                onPreviousButtonClicked = {},
-                onNextButtonClicked = {},
-                onPlayButtonClicked = {},
-                onContentClicked = {},
-                currentDestination = NavigationDestination.HOME,
-                currentContent = null,
-                isPlaying = false,
-                playingPoint = 50,
-            )
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            HomeScreen(
-                bannerContents = List(3) { previewMusicContentList },
-                albums = List(10) { previewAlbumContent.toAlbum() },
-                podcasts = previewPodcastContentList,
-                videos = previewVideoContentList,
-                onAlbumContentClicked = {},
-                onAlbumPlayClicked = {},
-                onMusicContentClicked = {},
-            )
+    Umc_7thTheme {
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(
+                    onPlaylistButtonClicked = {},
+                    onDestinationClicked = {},
+                    onPreviousButtonClicked = {},
+                    onNextButtonClicked = {},
+                    onPlayButtonClicked = {},
+                    onContentClicked = {},
+                    currentDestination = NavigationDestination.HOME,
+                    currentContent = null,
+                    isPlaying = false,
+                    playingPoint = 50,
+                )
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                HomeScreen(
+                    bannerContents = List(3) { previewMusicContentList },
+                    albums = List(10) { previewAlbumContent.toAlbum() },
+                    podcasts = previewPodcastContentList,
+                    videos = previewVideoContentList,
+                    onAlbumContentClicked = {},
+                    onAlbumPlayClicked = {},
+                    onMusicContentClicked = {},
+                )
+            }
         }
     }
 }

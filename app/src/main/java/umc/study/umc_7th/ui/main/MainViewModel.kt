@@ -1,5 +1,6 @@
 package umc.study.umc_7th.ui.main
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -25,7 +26,9 @@ class MainViewModel @Inject constructor(
     private val _albums = mutableStateListOf<Album>()
     private val _podcasts = mutableStateListOf<PodcastContent>()
     private val _videos = mutableStateListOf<VideoContent>()
+
     private val _savedMusics = mutableStateOf<List<MusicContent>>(emptyList())
+    private val _likedContents = mutableStateOf<List<Content>>(emptyList())
 
     val isServiceConnected get() = serviceHandler.isServiceConnected
 
@@ -33,7 +36,9 @@ class MainViewModel @Inject constructor(
     val albums get() = _albums.toList()
     val podcasts get() = _podcasts.toList()
     val videos get() = _videos.toList()
+
     val savedMusics get() = _savedMusics.value
+    val likedContents get() = _likedContents.value
 
     val isPlaying get() = serviceHandler.isPlaying
     val playingPoint get() = serviceHandler.playingPoint
@@ -41,16 +46,43 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            try {
-                repeat(5) { _bannerContents.add(contentRepository.getRandomMusics((5..10).random())) }
-                _albums.addAll(contentRepository.getRandomAlbums(10))
-                _podcasts.addAll(contentRepository.getRandomPodcasts(10))
-                _videos.addAll(contentRepository.getRandomVideos(10))
-
-                contentRepository.getAllSavedMusicFlow().collect { musics -> _savedMusics.value = musics }
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
+            listOf<suspend () -> Unit>(
+                {
+                    repeat(5) {
+                        val rand = (0..9).random()
+                        _bannerContents.add(contentRepository.getRandomMusics(rand))
+                    }
+                },
+                { _albums.addAll(contentRepository.getRandomAlbums(10)) },
+                { _podcasts.addAll(contentRepository.getRandomPodcasts(10)) },
+                { _videos.addAll(contentRepository.getRandomVideos(10)) },
+                {
+                    contentRepository.getAllSavedMusicsFlow()
+                        .collect { musics -> _savedMusics.value = musics }
+                },
+                {
+                    contentRepository.getAllLikedContentsFlow().collect { likes ->
+                        val newLikedContent = mutableListOf<Content>()
+                        likes.sortedByDescending { it.second }.forEach {
+                            // TODO: 음악 콘텐츠 의외의 유형에도 작동하도록 할 것
+                            try {
+                                contentRepository.getMusic(it.first)
+                                    .let { music -> newLikedContent.add(music) }
+                            }
+                            catch (_: Exception) {}
+                        }
+                        _likedContents.value = newLikedContent.toList()
+                    }
+                },
+            ).forEach {
+                launch {
+                    try{
+                        it()
+                    }
+                    catch(e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
         }
     }
@@ -60,6 +92,19 @@ class MainViewModel @Inject constructor(
             try {
                 val album = contentRepository.getAlbum(id)
                 onSuccess(album)
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+                onFailed()
+            }
+        }
+    }
+
+    fun setLike(id: Long, like: Boolean, onFailed: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                if (like) contentRepository.like(id)
+                else contentRepository.unlike(id)
             }
             catch (e: Exception) {
                 e.printStackTrace()

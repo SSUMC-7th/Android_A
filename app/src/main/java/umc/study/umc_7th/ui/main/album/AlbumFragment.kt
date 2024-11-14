@@ -25,13 +25,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.MutableStateFlow
 import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.MusicContent
-import umc.study.umc_7th.R
 import umc.study.umc_7th.databinding.FragmentAlbumBinding
 import umc.study.umc_7th.previewAlbumContent
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.main.BottomNavigationBar
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
+import umc.study.umc_7th.ui.theme.Umc_7thTheme
 
 class AlbumFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -42,7 +42,7 @@ class AlbumFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAlbumBinding.inflate(inflater, container, false)
 
         val albumId = arguments?.getLong("album_id")
@@ -52,7 +52,16 @@ class AlbumFragment : Fragment() {
             onFailed = { /* TODO */ },
         )
 
-        binding.composeViewAlbum.setContent { Screen() }
+        binding.composeViewAlbum.setContent {
+            Umc_7thTheme {
+                Scaffold { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        Screen()
+                    }
+                }
+            }
+        }
+
         return binding.root
     }
 
@@ -130,28 +139,30 @@ private fun AlbumScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewAlbumScreen() {
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(
-                onPlaylistButtonClicked = {},
-                onDestinationClicked = {},
-                onPreviousButtonClicked = {},
-                onNextButtonClicked = {},
-                onPlayButtonClicked = {},
-                onContentClicked = {},
-                currentDestination = NavigationDestination.HOME,
-                currentContent = previewMusicContentList.random(),
-                isPlaying = false,
-                playingPoint = 50,
-            )
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            AlbumScreen(
-                album = previewAlbumContent,
-                onBackButtonClicked = {},
-                onPlayContentClicked = {},
-            )
+    Umc_7thTheme {
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(
+                    onPlaylistButtonClicked = {},
+                    onDestinationClicked = {},
+                    onPreviousButtonClicked = {},
+                    onNextButtonClicked = {},
+                    onPlayButtonClicked = {},
+                    onContentClicked = {},
+                    currentDestination = NavigationDestination.HOME,
+                    currentContent = previewMusicContentList.random(),
+                    isPlaying = false,
+                    playingPoint = 50,
+                )
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                AlbumScreen(
+                    album = previewAlbumContent,
+                    onBackButtonClicked = {},
+                    onPlayContentClicked = {},
+                )
+            }
         }
     }
 }
