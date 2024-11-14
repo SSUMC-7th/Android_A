@@ -57,10 +57,9 @@ fun SuspendedImage(
     var image by remember { mutableStateOf<ImageBitmap?>(null) }
     val scope = rememberCoroutineScope()
 
-    val imageLoader = EntryPointAccessors.fromApplication(
-        LocalContext.current,
-        ImageLoaderEntryPoint::class.java,
-    ).getImageLoader()
+    val imageLoader = EntryPointAccessors
+        .fromApplication<ImageLoaderEntryPoint>(LocalContext.current)
+        .getImageLoader()
 
     LaunchedEffect(key1 = id) {
         scope.launch {

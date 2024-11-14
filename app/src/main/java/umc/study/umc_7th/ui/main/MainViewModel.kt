@@ -8,15 +8,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.AlbumContent
+import umc.study.umc_7th.Content
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.VideoContent
 import umc.study.umc_7th.data.ContentRepository
+import umc.study.umc_7th.service.ServiceHandler
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val contentRepository: ContentRepository,
+    private val serviceHandler: ServiceHandler,
 ): ViewModel() {
     private val _bannerContents = mutableStateListOf<List<MusicContent>>()
     private val _albums = mutableStateListOf<Album>()
@@ -24,7 +27,7 @@ class MainViewModel @Inject constructor(
     private val _videos = mutableStateListOf<VideoContent>()
     private val _savedMusics = mutableStateOf<List<MusicContent>>(emptyList())
 
-    private val _currentAlbum = mutableStateOf<AlbumContent?>(null)
+    val isServiceConnected get() = serviceHandler.isServiceConnected
 
     val bannerContents get() = _bannerContents.toList()
     val albums get() = _albums.toList()
@@ -32,8 +35,9 @@ class MainViewModel @Inject constructor(
     val videos get() = _videos.toList()
     val savedMusics get() = _savedMusics.value
 
-    var currentAlbum: AlbumContent? get() = _currentAlbum.value
-        private set(value) { _currentAlbum.value = value }
+    val isPlaying get() = serviceHandler.isPlaying
+    val playingPoint get() = serviceHandler.playingPoint
+    val currentContent get() = serviceHandler.currentContent
 
     init {
         viewModelScope.launch {
@@ -51,11 +55,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getAlbum(id: Long, onFailed: () -> Unit) {
+    fun getAlbum(id: Long, onSuccess: (AlbumContent) -> Unit, onFailed: () -> Unit) {
         viewModelScope.launch {
             try {
                 val album = contentRepository.getAlbum(id)
-                currentAlbum = album
+                onSuccess(album)
             }
             catch (e: Exception) {
                 e.printStackTrace()
@@ -74,5 +78,16 @@ class MainViewModel @Inject constructor(
                 onFailed()
             }
         }
+    }
+
+    fun play(content: Content) = serviceHandler.play(content)
+    fun setPlaylist(playlist: List<MusicContent>) = serviceHandler.setPlaylist(playlist)
+    fun playNext() = serviceHandler.next()
+    fun playPrevious() = serviceHandler.previous()
+    fun append(music: MusicContent) = serviceHandler.append(music)
+
+    fun setPlay(play: Boolean) {
+        if (play) serviceHandler.resume()
+        else serviceHandler.pause()
     }
 }

@@ -1,7 +1,5 @@
 package umc.study.umc_7th.ui.main.home
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -70,6 +68,7 @@ fun GlobeCategorizedAlbumCollectionView(
     globeCategory: GlobeCategory,
     onViewTitleClicked: () -> Unit,
     onAlbumClicked: (Album) -> Unit,
+    onAlbumPlayClicked: (Album) -> Unit,
     onCategoryClicked: (GlobeCategory) -> Unit,
 ) {
     ContentCollectionView(
@@ -144,12 +143,14 @@ fun GlobeCategorizedAlbumCollectionView(
                             .clip(RoundedCornerShape(8.dp))
                     )
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.btn_miniplayer_play),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
+                IconButton(onClick = { onAlbumPlayClicked(content) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.btn_miniplayer_play),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
         },
         onContentClicked = onAlbumClicked,
@@ -254,7 +255,7 @@ fun VideoCollectionView(
 }
 
 @Composable
-private fun <T>ContentCollectionView(
+private fun <T> ContentCollectionView(
     contentList: List<T>,
     titleBar: @Composable () -> Unit, // 제목 바에 그려질 컴포저블
     thumbnail: @Composable (T) -> Unit, // 컨텐츠 미리보기 사진 컴포저블
@@ -332,7 +333,6 @@ private fun <T>ContentCollectionView(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewGlobeCategorizedMusicCollectionView() {
@@ -351,6 +351,7 @@ fun PreviewGlobeCategorizedMusicCollectionView() {
         globeCategory = GlobeCategory.GLOBAL,
         onViewTitleClicked = {},
         onAlbumClicked = {},
+        onAlbumPlayClicked = {},
         onCategoryClicked = {},
     )
 }

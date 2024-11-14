@@ -17,49 +17,59 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
 import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.R
+import umc.study.umc_7th.databinding.FragmentAlbumBinding
 import umc.study.umc_7th.previewAlbumContent
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.main.BottomNavigationBar
-import umc.study.umc_7th.ui.main.MainActivity
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
 
 class AlbumFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
-    private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
+    private lateinit var binding: FragmentAlbumBinding
+    private val album = MutableStateFlow<AlbumContent?>(null)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val albumId = arguments?.getLong("album_id")
-        if (albumId != null) viewModel.getAlbum(albumId) {}
+        binding = FragmentAlbumBinding.inflate(inflater, container, false)
 
-        return inflater.inflate(R.layout.fragment_album, container, false).apply {
-            findViewById<ComposeView>(R.id.composeView_album).setContent {
-                AlbumScreen(
-                    album = viewModel.currentAlbum,
-                    onPlayContentClicked = {
-                        contentPlayerService.setContent(it)
-                    },
-                    onBackButtonClicked = {
-                        activity?.supportFragmentManager?.beginTransaction()
-                            ?.remove(this@AlbumFragment)
-                            ?.commit()
-                        activity?.supportFragmentManager?.popBackStack()
-                    }
-                )
+        val albumId = arguments?.getLong("album_id")
+        if (albumId != null) viewModel.getAlbum(
+            id = albumId,
+            onSuccess = { album.value = it },
+            onFailed = { /* TODO */ },
+        )
+
+        binding.composeViewAlbum.setContent { Screen() }
+        return binding.root
+    }
+
+    @Composable
+    private fun Screen() {
+        val album by this@AlbumFragment.album.collectAsStateWithLifecycle()
+
+        AlbumScreen(
+            album = album,
+            onPlayContentClicked = { viewModel.play(it) },
+            onBackButtonClicked = {
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.remove(this@AlbumFragment)
+                    ?.commit()
+                activity?.supportFragmentManager?.popBackStack()
             }
-        }
+        )
     }
 }
 
@@ -71,7 +81,6 @@ private fun AlbumScreen(
 ) {
     var isMixed by remember { mutableStateOf(false) }
 
-    // 이 화면은 목업입니다.
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.verticalScroll(rememberScrollState())

@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.Umc_7th" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Umc_7th.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="postSplashScreenTheme">@style/Theme.Umc_7th</item>
+    </style>
 </resources>

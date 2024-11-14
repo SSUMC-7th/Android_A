@@ -23,7 +23,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Umc_7th">
+            android:theme="@style/Theme.Umc_7th.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".ContentPlayerService"
+            android:name=".service.ContentPlayerService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />

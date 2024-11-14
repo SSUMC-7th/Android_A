@@ -253,7 +253,6 @@ fun BottomNavigationBar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewBottomNavigationBar() {

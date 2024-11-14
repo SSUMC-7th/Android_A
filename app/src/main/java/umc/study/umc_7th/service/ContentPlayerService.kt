@@ -1,4 +1,4 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,7 +8,11 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,6 +21,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import umc.study.umc_7th.BuildConfig
+import umc.study.umc_7th.Content
+import umc.study.umc_7th.MusicContent
+import umc.study.umc_7th.R
 
 class ContentPlayerService: Service() {
     companion object {
@@ -29,12 +37,16 @@ class ContentPlayerService: Service() {
     private lateinit var timer: Job
 
     private val _currentContent = MutableStateFlow<Content?>(null)
+    private val _playlist = MutableStateFlow<List<MusicContent>>(emptyList())
+    private val _playIndex = MutableStateFlow(0)
     private val _isPlaying = MutableStateFlow(false)
     private val _playingPoint = MutableStateFlow<Int?>(0)
 
-    val currentContent: StateFlow<Content?> = _currentContent.asStateFlow()
-    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
-    val playingPoint: StateFlow<Int?> = _playingPoint.asStateFlow()
+    val currentContent = _currentContent.asStateFlow()
+    val playlist = _playlist.asStateFlow()
+    val playIndex = _playIndex.asStateFlow()
+    val isPlaying = _isPlaying.asStateFlow()
+    val playingPoint = _playingPoint.asStateFlow()
 
     private val binder = LocalBinder()
     inner class LocalBinder: Binder() {
@@ -72,11 +84,13 @@ class ContentPlayerService: Service() {
         return START_NOT_STICKY
     }
 
-    fun setContent(content: Content, startPoint: Int = 0  /* 단위: 초 */) {
-        val url = "${BuildConfig.SERVER_URL}/stream/sound/${content.id}"
-
-        _currentContent.value = null
+    fun play(content: Content) {
         mediaPlayer?.release()
+        _currentContent.value = content
+        _isPlaying.value = false
+        _playingPoint.value = 0
+
+        val url = "${BuildConfig.SERVER_URL}/stream/sound/${content.id}"
 
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
@@ -88,9 +102,7 @@ class ContentPlayerService: Service() {
             setDataSource(url)
             prepareAsync()
             setOnPreparedListener { mp ->
-                mp.seekTo(startPoint * 1000)
                 mp.start()
-                _currentContent.value = content
                 _isPlaying.value = true
 
                 setNotification(
@@ -98,11 +110,19 @@ class ContentPlayerService: Service() {
                     text = "${content.author} - ${content.title}",
                 )
             }
+            setOnCompletionListener {
+                if (!next()) {
+                    _isPlaying.value = false
+                    _playingPoint.value = 0
+                }
+            }
         }
     }
 
-    fun getContent(): Content? {
-        return _currentContent.value
+    fun setPlaylist(playlist: List<MusicContent>) {
+        _playlist.value = playlist
+        _playIndex.value = 0
+        play(playlist[0])
     }
 
     fun pause() {
@@ -133,8 +153,30 @@ class ContentPlayerService: Service() {
         }
     }
 
-    fun seek(position: Int /* 단위: 초 */) {
+    fun seek(position: Int) {
         mediaPlayer?.seekTo(position * 1000)
+    }
+
+    fun append(music: MusicContent) {
+        _playlist.value = _playlist.value.plus(music)
+    }
+
+    fun next(): Boolean {
+        val index = _playIndex.value
+        val list = _playlist.value
+        if (index + 1 == list.size) return false
+        play(list[index + 1])
+        _playIndex.value = index + 1
+        return true
+    }
+
+    fun previous(): Boolean {
+        val index = _playIndex.value
+        val list = _playlist.value
+        if (index == 0) return false
+        play(list[index - 1])
+        _playIndex.value = index - 1
+        return true
     }
 
     override fun onDestroy() {

@@ -1,11 +1,7 @@
 package umc.study.umc_7th.ui.song
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
@@ -23,95 +19,54 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import umc.study.umc_7th.Content
-import umc.study.umc_7th.ContentPlayerService
-import umc.study.umc_7th.R
+import umc.study.umc_7th.databinding.ActivitySongBinding
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
-import java.util.concurrent.CountDownLatch
 
 @AndroidEntryPoint
 class SongActivity: ComponentActivity() {
     private val viewModel: SongViewModel by viewModels()
-    lateinit var contentPlayerService: ContentPlayerService
-    private val serviceBound = CountDownLatch(1)
-
-    private val connection = object: ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as ContentPlayerService.LocalBinder
-            contentPlayerService = binder.getService()
-            serviceBound.countDown()
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) = Unit
-    }
+    private lateinit var binding: ActivitySongBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_song)
+        binding = ActivitySongBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        Intent(this, ContentPlayerService::class.java).also {
-            startService(it)
-            bindService(it, connection, Context.BIND_AUTO_CREATE)
-        }
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            serviceBound.await()
-            viewModel.getMusic(
-                id = contentPlayerService.getContent()?.id ?: -1,
-                onFailed = { /* TODO */ }
-            )
-            setScreen()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unbindService(connection)
-    }
-    
-    private fun setScreen() {
-        val composeView = findViewById<ComposeView>(R.id.composeView_song)
-        composeView.setContent {
+        binding.composeViewSong.setContent {
             Umc_7thTheme {
                 Scaffold { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        val isPlaying by contentPlayerService.isPlaying.collectAsStateWithLifecycle()
-                        val playingPoint by contentPlayerService.playingPoint.collectAsStateWithLifecycle()
-
-                        SongScreen(
-                            content = viewModel.content,
-                            playingPoint = playingPoint ?: 0,
-                            isPlaying = isPlaying,
-                            isLiked = viewModel.isLiked,
-                            onMinimizeButtonClicked = { finish() },
-                            onPlayButtonClicked = {
-                                contentPlayerService.let { service ->
-                                    if (it) service.resume()
-                                    else service.pause()
-                                }
-                            },
-                            onPlayingPointChanged = {
-                                contentPlayerService.seek(it)
-                            },
-                            onLikeButtonClicked = {
-                                viewModel.setLike(it, onFailed = { /* TODO */ })
-                            },
-                            onSaveClicked = {
-                                viewModel.save(onFailed = { /* TODO */ })
-                            }
-                        )
+                        Screen()
                     }
                 }
             }
         }
+    }
+
+    @Composable
+    private fun Screen() {
+        val content by viewModel.currentContent.collectAsStateWithLifecycle()
+        val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
+        val playingPoint by viewModel.playingPoint.collectAsStateWithLifecycle()
+
+        SongScreen(
+            content = content,
+            playingPoint = playingPoint ?: 0,
+            isPlaying = isPlaying,
+            isLiked = viewModel.isLiked,
+            onMinimizeButtonClicked = { finish() },
+            onPlayButtonClicked = { viewModel.setPlay(it) },
+            onPlayingPointChanged = { viewModel.seek(it) },
+            onLikeButtonClicked = { viewModel.setLike(it, onFailed = { /* TODO */ }) },
+            onPreviousButtonClicked = { viewModel.playPrevious() },
+            onNextButtonClicked = { viewModel.playNext() },
+            onSaveClicked = { viewModel.save(onFailed = { /* TODO */ }) }
+        )
     }
 }
 
@@ -125,6 +80,8 @@ private fun SongScreen(
     onPlayButtonClicked: (Boolean) -> Unit,
     onPlayingPointChanged: (Int) -> Unit,
     onLikeButtonClicked: (Boolean) -> Unit,
+    onPreviousButtonClicked: () -> Unit,
+    onNextButtonClicked: () -> Unit,
     onSaveClicked: () -> Unit,
 ) {
     var isRepeating by remember { mutableStateOf(false) }
@@ -169,8 +126,8 @@ private fun SongScreen(
             onBlockButtonClicked = { isBlocked = it },
             onRepeatButtonClicked = { isRepeating = it },
             onShuffleButtonClicked = { isShuffling = it },
-            onPreviousButtonClicked = { /* TODO */ },
-            onNextButtonClicked = { /* TODO */ },
+            onPreviousButtonClicked = onPreviousButtonClicked,
+            onNextButtonClicked = onNextButtonClicked,
             onPlayButtonClicked = onPlayButtonClicked,
             onPlayingPointChanged = onPlayingPointChanged,
         )
@@ -198,6 +155,8 @@ fun PreviewSongScreen() {
                 onPlayButtonClicked = {},
                 onPlayingPointChanged = {},
                 onLikeButtonClicked = {},
+                onPreviousButtonClicked = {},
+                onNextButtonClicked = {},
                 onSaveClicked = {},
             )
         }

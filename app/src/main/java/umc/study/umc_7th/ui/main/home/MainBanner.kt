@@ -60,7 +60,6 @@ data class MainBannerProps(
     val onPlayButtonClicked: () -> Unit,
 )
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainBanner(
     date: LocalDate,
@@ -142,7 +141,6 @@ fun MainBanner(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun MainBannerPage(
     date: LocalDate,
@@ -244,7 +242,6 @@ private fun MainBannerPage(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewBanner() {

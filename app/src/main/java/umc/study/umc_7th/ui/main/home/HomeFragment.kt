@@ -24,12 +24,12 @@ import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.R
 import umc.study.umc_7th.VideoContent
+import umc.study.umc_7th.databinding.FragmentHomeBinding
 import umc.study.umc_7th.previewAlbumContent
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.previewPodcastContentList
 import umc.study.umc_7th.previewVideoContentList
 import umc.study.umc_7th.ui.main.BottomNavigationBar
-import umc.study.umc_7th.ui.main.MainActivity
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.main.album.AlbumFragment
@@ -37,36 +37,44 @@ import java.time.LocalDate
 
 class HomeFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
-    private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false).apply {
-            findViewById<ComposeView>(R.id.composeView_home).setContent {
-                HomeScreen(
-                    bannerContents = viewModel.bannerContents,
-                    albums = viewModel.albums,
-                    podcasts = viewModel.podcasts,
-                    videos = viewModel.videos,
-                    onAlbumContentClicked = { album ->
-                        val albumFragment = AlbumFragment().also {
-                            it.arguments = Bundle().apply { putLong("album_id", album.id) }
-                        }
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding.composeViewHome.setContent { Screen() }
+        return binding.root
+    }
 
-                        activity?.supportFragmentManager?.beginTransaction()
-                            ?.replace(R.id.fragmentContainerView_main, albumFragment)
-                            ?.addToBackStack(null)
-                            ?.commit()
-                    },
-                    onMusicContentClicked = lambda@ { content ->
-                        contentPlayerService.setContent(content)
-                    }
+    @Composable
+    private fun Screen() {
+        HomeScreen(
+            bannerContents = viewModel.bannerContents,
+            albums = viewModel.albums,
+            podcasts = viewModel.podcasts,
+            videos = viewModel.videos,
+            onAlbumContentClicked = { album ->
+                val albumFragment = AlbumFragment().also {
+                    it.arguments = Bundle().apply { putLong("album_id", album.id) }
+                }
+
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragmentContainerView_main, albumFragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
+            },
+            onAlbumPlayClicked = { album ->
+                viewModel.getAlbum(
+                    id = album.id,
+                    onSuccess = { viewModel.setPlaylist(it.contentList) },
+                    onFailed = { /* TODO */ }
                 )
-            }
-        }
+            },
+            onMusicContentClicked = { viewModel.play(it) }
+        )
     }
 }
 
@@ -77,9 +85,9 @@ private fun HomeScreen(
     podcasts: List<PodcastContent>,
     videos: List<VideoContent>,
     onAlbumContentClicked: (Album) -> Unit,
+    onAlbumPlayClicked: (Album) -> Unit,
     onMusicContentClicked: (MusicContent) -> Unit,
 ) {
-    // 이 스크린은 목업용 화면입니다.
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         MainBanner(
             date = LocalDate.parse("2019-11-11"),
@@ -102,6 +110,7 @@ private fun HomeScreen(
             globeCategory = GlobeCategory.GLOBAL,
             onViewTitleClicked = { /* TODO */ },
             onAlbumClicked = onAlbumContentClicked,
+            onAlbumPlayClicked = onAlbumPlayClicked,
             onCategoryClicked = { /* TODO */ },
         )
         PromotionImageBanner(
@@ -157,6 +166,7 @@ fun PreviewHomeScreen() {
                 podcasts = previewPodcastContentList,
                 videos = previewVideoContentList,
                 onAlbumContentClicked = {},
+                onAlbumPlayClicked = {},
                 onMusicContentClicked = {},
             )
         }

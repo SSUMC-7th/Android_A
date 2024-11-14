@@ -10,37 +10,43 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import umc.study.umc_7th.MusicContent
-import umc.study.umc_7th.R
+import umc.study.umc_7th.databinding.FragmentLockerBinding
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.main.BottomNavigationBar
-import umc.study.umc_7th.ui.main.MainActivity
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.main.album.TabItem
 
 class LockerFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
-    private val contentPlayerService get() = (requireActivity() as MainActivity).contentPlayerService
+    private lateinit var binding: FragmentLockerBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false).apply {
-            findViewById<ComposeView>(R.id.composeView_home).setContent {
-                LockerScreen(
-                    savedMusics = viewModel.savedMusics.toList(),
-                    onMusicContentClicked = { contentPlayerService.setContent(it) },
-                    onDeleteContentClicked = { viewModel.deleteMusic(music = it, onFailed = { /* TODO */ }) },
+    ): View {
+        binding = FragmentLockerBinding.inflate(inflater, container, false)
+        binding.composeViewLocker.setContent { Screen() }
+        return binding.root
+    }
+
+    @Composable
+    private fun Screen() {
+        LockerScreen(
+            savedMusics = viewModel.savedMusics.toList(),
+            onMusicContentClicked = { viewModel.play(it) },
+            onDeleteContentClicked = {
+                viewModel.deleteMusic(
+                    music = it,
+                    onFailed = { /* TODO */ }
                 )
-            }
-        }
+            },
+        )
     }
 }
 

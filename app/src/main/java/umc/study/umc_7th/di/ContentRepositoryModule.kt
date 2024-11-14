@@ -11,12 +11,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
+object ContentRepositoryModule {
     @Provides
     @Singleton
     fun provideContentRepository(
         server: Server,
-        database: LocalDatabase
+        database: LocalDatabase,
     ): ContentRepository {
         return ContentRepository(server, database)
     }
