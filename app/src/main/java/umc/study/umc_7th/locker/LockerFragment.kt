@@ -71,7 +71,7 @@ fun LockerFragment1(){
 fun LockerTab(viewModel: SongViewModel,
               showBottomBar: () -> Unit,
               hideBottomBar: () -> Unit){
-    val pages= listOf("저장한 곡", "음악파일")
+    val pages= listOf("저장한 곡", "음악파일","앨범 like") // 이제 8장 ====
     val pagerState= rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
     val likeSongs by viewModel.likedSongs.observeAsState(emptyList())
@@ -126,6 +126,7 @@ fun LockerTab(viewModel: SongViewModel,
 
             )
             1 -> LockerMusicFile()
+            2 -> LockerAlbumLike()
         }
     }
     }
@@ -133,7 +134,10 @@ fun LockerTab(viewModel: SongViewModel,
 
 }
 
+@Composable
+fun LockerAlbumLike(){
 
+}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
