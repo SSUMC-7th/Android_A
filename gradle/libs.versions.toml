@@ -1,22 +1,24 @@
 [versions]
-agp = "8.5.1"
+agp = "8.6.0"
 kotlin = "1.9.0"
-coreKtx = "1.13.1"
+coreKtx = "1.10.1"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+lifecycleRuntimeKtx = "2.6.1"
+activityCompose = "1.8.0"
 composeBom = "2024.04.01"
-appcompat = "1.7.0"
-material = "1.12.0"
-constraintlayout = "2.1.4"
-lifecycleLivedataKtx = "2.8.3"
-lifecycleViewmodelKtx = "2.8.3"
-navigationFragmentKtx = "2.7.7"
-navigationUiKtx = "2.7.7"
-activity = "1.8.0"
-constraintlayoutCompose = "1.0.1"
+appcompat = "1.6.1"  # 추가: appcompat 버전
+material = "1.9.0"   # 추가: material 버전
+constraintlayout = "2.1.4"  # 추가: constraintlayout 버전
+lifecycleLivedataKtx = "2.6.1"  # 추가: lifecycle-livedata-ktx 버전
+lifecycleViewmodelKtx = "2.6.1"  # 추가: lifecycle-viewmodel-ktx 버전
+navigationFragmentKtx = "2.7.2"  # 추가: navigation-fragment-ktx 버전
+navigationUiKtx = "2.7.2"        # 추가: navigation-ui-ktx 버전
+activity = "1.8.0"                 # 추가: activity 버전
+constraintlayoutCompose = "1.0.1"  # 추가: constraintlayout-compose 버전
+navigationCompose = "2.7.2"        # 추가: navigation-compose 버전
+runtimeLivedata = "2.6.1"          # 추가: runtime-livedata 버전
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,8 +44,10 @@ androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navi
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
