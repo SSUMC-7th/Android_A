@@ -40,14 +40,22 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
 
 import androidx.compose.foundation.layout.navigationBarsPadding
-import umc.study.umc_7th.Content
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.MyApplication
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
 import umc.study.umc_7th.album.albumFragment
-import umc.study.umc_7th.albumData
+import umc.study.umc_7th.content.albumData
 import umc.study.umc_7th.aroundFragment
-import umc.study.umc_7th.bannerDataList
+import umc.study.umc_7th.content.AlbumContent
+import umc.study.umc_7th.content.AppDataBase
+import umc.study.umc_7th.content.ContentRepository
+import umc.study.umc_7th.content.bannerDataList
 import umc.study.umc_7th.locker.LockerFragment
 import umc.study.umc_7th.main.song.MiniPlayer
 import umc.study.umc_7th.main.song.SongActivity
@@ -60,26 +68,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = (application as MyApplication).songViewModel
+
+
         enableEdgeToEdge()
         setContent {
             Umc_7thTheme {
                 val navController = rememberNavController()
+
+                var showLockerBottomBar by remember{ mutableStateOf(false)}
                 Scaffold(
                     modifier = Modifier.navigationBarsPadding(),
                     bottomBar = {
-                        Column (modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(0.dp)
-                        ){
-                            MainMiniplayer(
-                                viewModel = viewModel,
-                                toSongActivity = { content ->
-                                val intent = Intent(this@MainActivity, SongActivity::class.java)
-                                startActivity(intent)
-                            } )
-                            BottomNavigationBar(
-                                navController ,
-                                onClick = {destination -> navController.navigate(destination.route)},
-                            )
+                        if(showLockerBottomBar){
+                            LockerBottomBar(viewModel, hideBottomBar = { showLockerBottomBar = false})
+                        }else{
+                            homeBottomNavigation(viewModel = viewModel, navController = navController)
                         }
 
                     }
@@ -91,14 +94,15 @@ class MainActivity : ComponentActivity() {
 
                             composable("homeFragment") { homeFragment(navController, viewModel) }
                             composable(
-                                "albumFragment/{albumTitle}/{albumImage}/{author}/{date}/{trackList}/{titleTrackList}",
+                                "albumFragment/{albumTitle}/{albumImage}/{author}/{date}/{trackList}/{titleTrackList}/{isLike}",
                                 arguments = listOf(
                                     navArgument("albumTitle") { type = NavType.StringType },
                                     navArgument("albumImage"){ type = NavType.StringType },
                                     navArgument("author") { type = NavType.StringType },
                                     navArgument("date") { type = NavType.StringType },
                                     navArgument("trackList") { type = NavType.StringType },
-                                    navArgument("titleTrackList") { type = NavType.StringType }
+                                    navArgument("titleTrackList") { type = NavType.StringType },
+                                    navArgument("isLike"){ type = NavType.BoolType }
                                 )
                             ) { backStackEntry ->
                                 val albumTitle = backStackEntry.arguments?.getString("albumTitle") ?: ""
@@ -108,9 +112,13 @@ class MainActivity : ComponentActivity() {
                                 val date = backStackEntry.arguments?.getString("date") ?: ""
                                 val trackList = backStackEntry.arguments?.getString("trackList")?.split(",") ?: listOf()
                                 val titleTrackList = backStackEntry.arguments?.getString("titleTrackList")?.split(",") ?: listOf()
-                                albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList)
+                                val isLike = backStackEntry.arguments?.getBoolean("isLike") ?: false
+                                albumFragment(navController, albumTitle, albumImage, author, LocalDate.parse(date), trackList, titleTrackList, viewModel, isLike)
                             }
-                            composable("lockerFragment") { LockerFragment(navController) }
+                            composable("lockerFragment") { LockerFragment(viewModel,
+                                showBottomBar = { showLockerBottomBar = true},
+                                hideBottomBar = { showLockerBottomBar = false})
+                            }
                             composable("searchFragment") { searchFragment(navController) }
                             composable("aroundFragment") { aroundFragment(navController) }
                         }
@@ -179,18 +187,22 @@ fun homeFragment(navController: NavController,
             baseLocationCategory = BaseLocationCategory.GLOABAL ,
             viewTitleClick = { },
             contentClick ={ album ->
+                viewModel.getAlbumContent(AlbumContent(albumTitle = album.albumTitle, author = album.author, isLike = false))
                 navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}" +
-                        "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}")},
+                        "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}/${album.isLike}")},
             categoryClick = {},
             albumMusicStart = {album ->
                 // 첫 번째 트랙을 `currentSong`으로 설정
-                val firstTrackContent = Content(
-                    title = album.trackList.firstOrNull() ?: "Unknown Track",
-                    author = album.author,
-                    image = album.albumImage,
-                    length = 200 // 곡의 길이를 필요에 맞게 설정
-                )
-                viewModel.setCurrentSong(firstTrackContent)
+                val albumTracks = album.trackList.map { trackTitle ->
+                    Content(
+                        title = trackTitle,
+                        author = album.author,
+                        image = album.albumImage,
+                        length = 200, // 필요에 맞게 길이 설정
+                        islike = false
+                    )
+                }
+                viewModel.setAlbumTracks(albumTracks)
 
             },
             viewModel = viewModel
@@ -203,6 +215,7 @@ fun homeFragment(navController: NavController,
                     author= "김시선",
                     image = R.drawable.img_potcast_exp,
                     length = 200,
+                    islike = false
                 )
             },
             contentClick = {}
@@ -215,11 +228,42 @@ fun homeFragment(navController: NavController,
                     author = "지은이",
                     image = R.drawable.img_video_exp,
                     length = 200,
+                    islike = false
                 )
             } ,
             contentClick = {}
         )
     }
+
+}
+
+//@RequiresApi(Build.VERSION_CODES.P)
+//@Composable
+//fun bottomNavigationNav(type:String, viewModel: SongViewModel, navController: NavController){
+//    when(type){
+//        "home" -> homeBottomNavigation(viewModel = viewModel, navController =navController )
+//    }
+//}
+
+@RequiresApi(Build.VERSION_CODES.P)
+@Composable
+fun homeBottomNavigation(viewModel: SongViewModel, navController: NavController){
+    val context= LocalContext.current
+    Column (modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
+    ){
+        MainMiniplayer(
+            viewModel = viewModel,
+            toSongActivity = { content ->
+                val intent = Intent(context, SongActivity::class.java)
+                context.startActivity(intent)
+            } )
+        BottomNavigationBar(
+            navController ,
+            onClick = {destination -> navController.navigate(destination.route)},
+        )
+    }
+
 
 }
 

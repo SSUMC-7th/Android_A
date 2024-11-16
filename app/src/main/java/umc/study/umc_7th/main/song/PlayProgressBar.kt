@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import umc.study.umc_7th.FakeSongViewModel
+
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
 
@@ -103,6 +103,7 @@ import umc.study.umc_7th.SongViewModel
                 .size(65.dp)
                 .padding(10.dp)
                 .clickable { beforeSongPlayClick()
+                    viewModel.playPreviousSong()
                 }
 
         )
@@ -127,7 +128,8 @@ import umc.study.umc_7th.SongViewModel
             modifier = Modifier
                 .size(65.dp)
                 .padding(10.dp)
-                .clickable { nextSongPlayClick() }
+                .clickable { nextSongPlayClick()
+                viewModel.playNextSong()}
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Icon(
@@ -143,14 +145,14 @@ import umc.study.umc_7th.SongViewModel
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewPlayProgressBar(){
-    val fakeSongViewModel = FakeSongViewModel(application = Application())
-    PlayProgressBar(
-        viewModel = fakeSongViewModel,
-        beforeSongPlayClick = { /*TODO*/ },
-        songPlayButtonClick = { /*TODO*/ },
-        nextSongPlayClick = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewPlayProgressBar(){
+//    val fakeSongViewModel = FakeSongViewModel(application = Application())
+//    PlayProgressBar(
+//        viewModel = fakeSongViewModel,
+//        beforeSongPlayClick = { /*TODO*/ },
+//        songPlayButtonClick = { /*TODO*/ },
+//        nextSongPlayClick = {}
+//    )
+//}

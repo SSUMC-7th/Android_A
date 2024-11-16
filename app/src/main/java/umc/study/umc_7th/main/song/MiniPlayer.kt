@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Slider
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
 
@@ -98,7 +98,8 @@ fun MiniPlayer(
                             contentDescription = null,
                             modifier = Modifier
                                 .size(50.dp)
-                                .clickable { beforeSongPlayButtonClick() })
+                                .clickable { beforeSongPlayButtonClick()
+                                viewModel.playPreviousSong()})
                         Icon(painter = painterResource(id = if(played) R.drawable.btn_miniplay_pause
                         else R.drawable.btn_miniplayer_play
                         ),
@@ -113,7 +114,8 @@ fun MiniPlayer(
                             contentDescription = null,
                             modifier = Modifier
                                 .size(50.dp)
-                                .clickable { nextSongPlayButtonClick() })
+                                .clickable { nextSongPlayButtonClick()
+                                viewModel.playNextSong()})
                         Icon(painter = painterResource(id = R.drawable.btn_miniplayer_go_list),
                             contentDescription = null,
                             modifier = Modifier
@@ -132,11 +134,6 @@ fun MiniPlayer(
                 modifier = Modifier.align(Alignment.Center))
         }
     }
-
-
-
-
-
 }
 
 //@RequiresApi(Build.VERSION_CODES.P)

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.album.AlbumMusicList
+import umc.study.umc_7th.content.Album
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -86,7 +87,7 @@ fun TabLayout(
 @Preview(showBackground = true)
 @Composable
 fun PreviewTabLayout(){
-    TabLayout(album =Album(
+    TabLayout(album = Album(
         albumTitle = "IU 5th Album 'LILAC'",
         date = LocalDate.parse("2023-03-27"),
         author = "IU(아이유)",

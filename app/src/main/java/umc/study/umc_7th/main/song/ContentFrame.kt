@@ -1,6 +1,7 @@
 package umc.study.umc_7th.main.song
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.R
 import umc.study.umc_7th.SongViewModel
+import umc.study.umc_7th.content.ContentDao
+import umc.study.umc_7th.content.ContentRepository
 
 @Composable
 fun ContentFrame(
@@ -43,7 +47,7 @@ fun ContentFrame(
 
 ){
     val currentSong by viewModel.currentSong.observeAsState()
-    val like by viewModel.like.observeAsState(false)
+
     val unLike by viewModel.unLike.observeAsState(false)
 
     currentSong?.let{ content ->
@@ -77,13 +81,17 @@ fun ContentFrame(
                 horizontalArrangement = Arrangement.Center,
 
                 ){
-                IconButton(onClick =likeClick ) {
-                    Image(bitmap = ImageBitmap.imageResource(id = if(like) R.drawable.ic_my_like_on
+                val context = LocalContext.current
+                IconButton(onClick = {
+                    viewModel.toggleLike(content)
+                    if(content.islike) Toast.makeText(context, "Unlike", Toast.LENGTH_SHORT).show()
+                    else Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show()
+                } ) {
+                    Image(bitmap = ImageBitmap.imageResource(id = if(content.islike) R.drawable.ic_my_like_on
                     else R.drawable.ic_my_like_off
                     ),
                         contentDescription = null,
                         contentScale= ContentScale.Crop,
-                        modifier = Modifier.clickable { viewModel.toggleLike() }
                     )
                 }
                 Spacer(modifier = Modifier.padding(10.dp))
@@ -105,15 +113,17 @@ fun ContentFrame(
 }
 
 
-
-@Composable
-@Preview(showBackground = true)
-fun PreviewContentFrame(){
-    ContentFrame(
-
-        toSingerinfoClick = {},
-        likeClick = {},
-        unLikeButtonClick = {},
-        viewModel = SongViewModel(application = Application())
-    )
-}
+//
+//@Composable
+//@Preview(showBackground = true)
+//fun PreviewContentFrame(){
+//    ContentFrame(
+//
+//        toSingerinfoClick = {},
+//        likeClick = {},
+//        unLikeButtonClick = {},
+//        viewModel = SongViewModel(application = Application(),
+//            ContentRepository(contentDao = )
+//        )
+//    )
+//}

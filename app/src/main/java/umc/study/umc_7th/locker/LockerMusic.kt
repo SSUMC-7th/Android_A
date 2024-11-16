@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,22 +36,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
-import umc.study.umc_7th.Content
+import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.R
+import umc.study.umc_7th.SongViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LockerMusic(
+    showBottomBar: () -> Unit,
+    hideBottomBar: () -> Unit,
     selectAllButtonClick:()-> Unit,
     playAllButtonClick:()-> Unit,
     contentList : List<Content>,
+    viewModel: SongViewModel
 
-){
+    ){
+//    var songLike by viewModel.likedSongs.observeAsState()
     var contentList by remember{ mutableStateOf(contentList.toMutableList())}
-
-
+    val allSelect by viewModel.selectAll.observeAsState(initial = false)
+    val itemStates = remember { mutableStateMapOf<Content, Boolean>().apply { contentList.forEach { put(it, false) } } }
 
     Column (
         modifier = Modifier
@@ -61,27 +68,36 @@ fun LockerMusic(
             .fillMaxWidth()
             .padding(8.dp, vertical = 12.dp)) {
 
-            var selected by remember { mutableStateOf(false) }
+
             Row(){
                 Row(
                     modifier = Modifier
-                        .clickable { selectAllButtonClick() }
+                        .clickable { viewModel.SelectAll()
+                            if (allSelect) {
+                                contentList.forEach { itemStates[it] = true }
+                                showBottomBar()
+                            } else {
+                                contentList.forEach { itemStates[it] = false }
+                                hideBottomBar()
+                            }
 
+                        }
 
                 ) {
 
                     Icon(
                         painter = painterResource(
-                            id = if (selected == false) R.drawable.btn_playlist_select_off
+                            id = if (allSelect == false) R.drawable.btn_playlist_select_off
                             else R.drawable.btn_playlist_select_on
                         ),
                         contentDescription = null,
+                        tint = Color.Unspecified,
                         modifier = Modifier.size(23.dp)
                     )
                     Text(
                         text = "전체 선택",
                         fontSize = 16.sp,
-                        color = if (selected == false) Color.Black.copy(0.5f) else Color.Blue
+                        color = if (allSelect == false) Color.Black.copy(0.5f) else Color.Blue
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
@@ -113,18 +129,20 @@ fun LockerMusic(
 
         }
 
-        val itemStates = remember { mutableStateMapOf<Content, Boolean>().apply { contentList.forEach { put(it, false) } } }
+
 
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+
             modifier = Modifier.fillMaxWidth()
         ) {
             items(contentList){ content ->
                 val isSelected = itemStates[content]?:false
                 Box(
-                    modifier= Modifier.fillMaxWidth()
-                        .background(if (!isSelected) Color.Unspecified else Color.Blue.copy(0.05f))
+                    modifier= Modifier
+                        .fillMaxWidth()
+                        .background(if (!isSelected) Color.Unspecified else Color.Black.copy(0.05f))
                         .clickable { itemStates[content] = !isSelected }
+                        .padding(vertical = 8.dp)
 
                 ){
                     Row(
@@ -153,7 +171,9 @@ fun LockerMusic(
 
                     }
                     Row(
-                        modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp)
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(8.dp)
                     ){
                         Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.btn_player_play),
                             contentDescription = null,
@@ -162,8 +182,11 @@ fun LockerMusic(
                         )
                         Icon(bitmap= ImageBitmap.imageResource(id = R.drawable.btn_player_more),
                             contentDescription = null,
-                            modifier= Modifier.size(30.dp)
-                                .clickable { contentList = contentList.filter { it != content }.toMutableList() })
+                            modifier= Modifier
+                                .size(30.dp)
+                                .clickable {
+                                    viewModel.toggleLike(content)
+                                })
                     }
                 }
                 Spacer(modifier = Modifier.padding(5.dp))
