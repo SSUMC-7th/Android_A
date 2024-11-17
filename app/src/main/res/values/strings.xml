@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FLO</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="album_info">2021.03.25|정규|댄스 팝</string>
 </resources>

@@ -77,7 +77,7 @@ open class MusicViewModel @Inject constructor(
 
     // 이전 곡
     open fun previousSong() {
-        _songList.value?.let { songs ->
+        _songList.value?.let { _ ->
             val prevIndex = (_currentSongIndex.value ?: 0) - 1
             if (prevIndex >= 0) {
                 _currentSongIndex.value = prevIndex
@@ -178,7 +178,7 @@ open class MusicViewModel @Inject constructor(
         }
     }
 
-    fun loadAllAlbums() {
+    open fun loadAllAlbums() {
         viewModelScope.launch {
             val albumData = albumRepository.getAllAlbums()  // getAllAlbums 호출
             _album.postValue(albumData)
@@ -192,31 +192,36 @@ open class MusicViewModel @Inject constructor(
                     id = 1,
                     title = "IU 5th Album 'LILAC'",
                     singer = "아이유 (IU)",
-                    coverImg = R.drawable.img_album_exp2
+                    coverImg = R.drawable.img_album_exp2,
+                    isLiked = false
                 ),
                 Album(
                     id = 2,
                     title = "Butter",
                     singer = "방탄소년단 (BTS)",
-                    coverImg = R.drawable.img_album_exp
+                    coverImg = R.drawable.img_album_exp,
+                    isLiked = false
                 ),
                 Album(
                     id = 3,
                     title = "iScreaM Vol.10 : Next Level Remixes",
                     singer = "에스파 (AESPA)",
-                    coverImg = R.drawable.img_album_exp3
+                    coverImg = R.drawable.img_album_exp3,
+                    isLiked = false
                 ),
                 Album(
                     id = 4,
                     title = "MAP OF THE SOUL : PERSONA",
                     singer = "방탄소년단 (BTS)",
-                    coverImg = R.drawable.img_album_exp4
+                    coverImg = R.drawable.img_album_exp4,
+                    isLiked = false
                 ),
                 Album(
                     id = 5,
                     title = "GREAT!",
                     singer = "모모랜드",
-                    coverImg = R.drawable.img_album_exp5
+                    coverImg = R.drawable.img_album_exp5,
+                    isLiked = false
                 )
             )
             // Dummy albums 삽입
@@ -225,6 +230,10 @@ open class MusicViewModel @Inject constructor(
             // DB에서 전체 앨범 목록 가져와 LiveData에 반영
             _album.value = albumRepository.getAllAlbums()
         }
+    }
+
+    open fun getLikedAlbums(): LiveData<List<Album>> {
+        return _album.map { albums -> albums.filter { it.isLiked } }
     }
 
     private val _currentTime = MutableStateFlow(0f)
