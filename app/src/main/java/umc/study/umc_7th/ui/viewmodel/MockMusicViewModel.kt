@@ -112,4 +112,15 @@ class MockMusicViewModel : MusicViewModel(
             _album.value = albumRepository.getAlbumById(albumId)
         }
     }
+
+    override fun loadAllAlbums() {
+        viewModelScope.launch {
+            val albumData = albumRepository.getAllAlbums()  // getAllAlbums 호출
+            _album.postValue(albumData)
+        }
+    }
+
+    override fun getLikedAlbums(): LiveData<List<Album>> {
+        return _album.map { albums -> albums.filter { it.isLiked } }
+    }
 }

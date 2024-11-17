@@ -117,7 +117,7 @@ fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
                     style = MaterialTheme.typography.bodyMedium
                     )
                 Text(
-                    text = "2021.03.25 | 정규 | 댄스 팝",
+                    text = R.string.album_info.toString(),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row {

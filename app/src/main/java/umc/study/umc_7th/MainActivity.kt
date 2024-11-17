@@ -117,8 +117,8 @@ fun MyApp(viewModel: MusicViewModel) {
             composable(NavigationDestination.HOME.expression) { HomeScreen(navController, viewModel = viewModel) }
             composable(NavigationDestination.LOOK.expression) { LookScreen() }
             composable(NavigationDestination.SEARCH.expression) { }
-            composable(NavigationDestination.MY.expression) { LockerScreen() }
-            composable("Album") { AlbumScreen() }
+            composable(NavigationDestination.MY.expression) { LockerScreen(viewModel = viewModel) }
+            composable("Album") { AlbumScreen(viewModel = viewModel) }
         }
     }
 }
@@ -208,14 +208,13 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AlbumScreen() {
-    val mockViewModel = MockMusicViewModel()
-    AlbumFragment(viewModel = mockViewModel)
+fun AlbumScreen(viewModel: MusicViewModel) {
+    AlbumFragment(viewModel = viewModel)
 }
 
 @Composable
-fun LockerScreen() {
-    LockerFragment()
+fun LockerScreen(viewModel: MusicViewModel) {
+    LockerFragment(viewModel = viewModel)
 }
 
 @Composable
