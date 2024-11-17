@@ -11,15 +11,15 @@ sealed interface Identifiable: Serializable {
     val id: Long
 }
 
-sealed interface Playable: Identifiable, Serializable {
+sealed interface Playable: Serializable {
     val length: Int
 }
 
-sealed interface Viewable: Identifiable, Serializable {
+sealed interface Viewable: Serializable {
     val imageId: Long
 }
 
-sealed interface Authorized: Identifiable, Serializable {
+sealed interface Authorized: Serializable {
     val title: String
     val author: String
 }
@@ -30,9 +30,9 @@ data class Album(
     override val author: String,
     override val imageId: Long,
     val releasedDate: LocalDate,
-): Authorized, Viewable, Serializable
+): Identifiable, Authorized, Viewable, Serializable
 
-sealed interface Content: Playable, Viewable, Authorized, Serializable {
+sealed interface Content: Identifiable, Playable, Viewable, Authorized, Serializable {
     override val id: Long
     override val title: String
     override val author: String

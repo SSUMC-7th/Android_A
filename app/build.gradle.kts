@@ -2,10 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version "2.0.21"
+    id("com.google.dagger.hilt.android")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
-    kotlin("plugin.serialization") version "2.0.21"
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -14,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "umc.study.umc_7th"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -133,4 +134,7 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // Splash
+    implementation(libs.androidx.core.splashscreen)
 }
