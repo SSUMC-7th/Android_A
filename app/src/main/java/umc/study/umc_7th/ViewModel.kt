@@ -19,10 +19,12 @@ import umc.study.umc_7th.content.AppDataBase
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.content.ContentDao
 import umc.study.umc_7th.content.ContentRepository
+import umc.study.umc_7th.user.UserRepository
 
 open class SongViewModel(application: Application,
     private val repository: ContentRepository,
-    private val albumrepository: AlbumRepository) : AndroidViewModel(application) {
+    private val albumrepository: AlbumRepository,
+    ) : AndroidViewModel(application) {
 
     private val _unLike = MutableLiveData(false)
     open val unLike : LiveData<Boolean> = _unLike
@@ -251,6 +253,7 @@ class MyApplication : Application() {
     private val database by lazy { AppDataBase.getDatabase(this) }
     private val repository by lazy { ContentRepository(database.contentDao()) }
     private val albumRepository by lazy { AlbumRepository(database.albumDao())}
+
 }
 
 

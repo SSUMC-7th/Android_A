@@ -1,11 +1,15 @@
-package umc.study.umc_7th
+package umc.study.umc_7th.user
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,23 +34,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.R
 
 class LoginActivity : ComponentActivity(){
+    private val userViewModel: UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent{
-            loginActivity(onLoginClick = {email, password -> println("Email: $email, Password: $password")})
+            loginActivity(onLoginClick = {email, password ->
+                userViewModel.loginUser(email, password) { isLoggedIn ->
+                    if(isLoggedIn){
+                        Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
+
+                    }
+                }
+            })
         }
     }
 }
@@ -57,7 +71,7 @@ class LoginActivity : ComponentActivity(){
 fun loginActivity(onLoginClick :(String, String) -> Unit){
     var password by remember { mutableStateOf("") }
     var namePart by remember { mutableStateOf("") }
-    var domainPart by remember { mutableStateOf("gmail.com") }
+    var domainPart by remember { mutableStateOf("") }
 
     val domainOption = listOf("직접 입력","gmail.com", "naver.com", "nate.com", "daum.net")
 
@@ -78,21 +92,22 @@ fun loginActivity(onLoginClick :(String, String) -> Unit){
         {
             TextField(value = namePart,
                 onValueChange ={namePart = it},
-                label = {Text("아이디(이메일)")},
+                placeholder = {Text("아이디(이메일)")},
                 modifier = Modifier
                     .width(140.dp)
-                    .height(32.dp)
+                    .height(56.dp)
                     .align(Alignment.CenterStart),
                 colors = TextFieldDefaults.textFieldColors(containerColor = Color.White)
 
                 )
+
             Text("@", fontSize = 16.sp, modifier = Modifier.align(Alignment.Center));
-            TextField(value = namePart,
-                onValueChange ={namePart = it},
-                label = {Text("직접 입력")},
+            TextField(value = domainPart,
+                onValueChange ={domainPart = it},
+                placeholder = {Text("직접 입력")},
                 modifier = Modifier
                     .width(140.dp)
-                    .height(32.dp)
+                    .height(56.dp)
                     .align(Alignment.CenterEnd),
                 colors = TextFieldDefaults.textFieldColors(containerColor = Color.White)
             )
@@ -103,11 +118,10 @@ fun loginActivity(onLoginClick :(String, String) -> Unit){
             TextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("비밀번호") },
+                placeholder = { Text("비밀번호") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .width(50.dp)
-                    .height(32.dp)
+                    .height(56.dp)
                     .align(Alignment.CenterStart),
                 colors = TextFieldDefaults.textFieldColors(containerColor = Color.White)
 
@@ -115,7 +129,10 @@ fun loginActivity(onLoginClick :(String, String) -> Unit){
         }
         Spacer(modifier = Modifier.height(16.dp))
         Column {
-            TextButton(onClick = { /*TODO*/ },
+            TextButton(onClick = {
+                val email = "$$namePart@$domainPart"
+                onLoginClick(email, password)
+            },
                 modifier = Modifier
                     .background(Color.Blue)
                     .fillMaxWidth()) {
@@ -125,6 +142,7 @@ fun loginActivity(onLoginClick :(String, String) -> Unit){
                 modifier = Modifier.fillMaxWidth(),
 
             ){
+                val context = LocalContext.current
                 Row(
                     horizontalArrangement = Arrangement.Start
                 ){
@@ -138,6 +156,8 @@ fun loginActivity(onLoginClick :(String, String) -> Unit){
                     color= Color.Black,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterEnd)
+                        .clickable {val intent = Intent(context, SignUpActivity::class.java)
+                        context.startActivity(intent)}
                 )
 
             }
