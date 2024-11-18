@@ -224,7 +224,7 @@ open class SongViewModel(application: Application,
     }
     fun getAlbumContent(album : AlbumContent) {
         viewModelScope.launch {
-            albumrepository.insertAlbum(album = AlbumContent(albumTitle = album.albumTitle, author = album.author, isLike = false))
+            albumrepository.insertAlbum(album = AlbumContent(albumTitle = album.albumTitle, author = album.author, isLike = false, albumImage = album.albumImage))
             _albumContents.value = albumrepository.getAlbumByTitle(album.albumTitle)
         }
 

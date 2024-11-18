@@ -58,9 +58,12 @@ fun LockerFragment1(){
             }
             val context = LocalContext.current
             Row(
-                modifier = Modifier.align(Alignment.CenterEnd)
-                    .clickable { val intent = Intent(context, LoginActivity::class.java)
-                    context.startActivity(intent)}
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable {
+                        val intent = Intent(context, LoginActivity::class.java)
+                        context.startActivity(intent)
+                    }
             ){
                 Text(text= "로그인", color = Color.Blue)
             }
@@ -77,7 +80,7 @@ fun LockerTab(viewModel: SongViewModel,
     val pagerState= rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
     val likeSongs by viewModel.likedSongs.observeAsState(emptyList())
-
+    val likeAlbums by viewModel.likeAlbums.observeAsState(emptyList())
     LaunchedEffect(likeSongs) {
         viewModel.loadLikedSongs()
     }
@@ -128,7 +131,14 @@ fun LockerTab(viewModel: SongViewModel,
 
             )
             1 -> LockerMusicFile()
-            2 -> LockerAlbumLike()
+            2 -> LockerAlbum(
+                showBottomBar =showBottomBar,
+                hideBottomBar = hideBottomBar,
+                selectAllButtonClick = {},
+                playAllButtonClick = {},
+                albumList = likeAlbums,
+                viewModel= viewModel
+            )
         }
     }
     }

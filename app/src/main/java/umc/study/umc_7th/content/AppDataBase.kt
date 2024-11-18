@@ -8,7 +8,7 @@ import timer.App
 import umc.study.umc_7th.user.UserDao
 
 
-@Database(entities = [Content::class, AlbumContent::class], version = 4)
+@Database(entities = [Content::class, AlbumContent::class], version = 5)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun contentDao(): ContentDao

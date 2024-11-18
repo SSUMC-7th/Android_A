@@ -14,6 +14,7 @@ data class AlbumContent(
     val albumTitle: String,
     val author : String,
     val isLike : Boolean,
+    val albumImage : Int,
 
 )
 
