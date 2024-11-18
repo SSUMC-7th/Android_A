@@ -8,9 +8,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.AlbumContent
+import umc.study.umc_7th.Auth
 import umc.study.umc_7th.BuildConfig
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
+import umc.study.umc_7th.User
 import umc.study.umc_7th.VideoContent
 import java.time.LocalDate
 import javax.inject.Inject
@@ -29,28 +31,12 @@ private val retrofitInstance: ServerEndpoint by lazy {
 class Server @Inject constructor() {
     suspend fun getRandomMusics(size: Int): List<MusicContent> {
         val response = retrofitInstance.getRandomMusics(size)
-        return response.map {
-            MusicContent(
-                id = it.id,
-                title = it.title,
-                author = it.author,
-                imageId = it.imageId,
-                length = it.length,
-                albumId = it.albumId,
-            )
-        }
+        return response.map { it.toMusicContent() }
     }
 
     suspend fun getMusic(id: Long): MusicContent {
         val response = retrofitInstance.getMusics(id = id, albumId = null).first()
-        return MusicContent(
-            id = response.id,
-            title = response.title,
-            author = response.author,
-            imageId = response.imageId,
-            length = response.length,
-            albumId = response.albumId,
-        )
+        return response.toMusicContent()
     }
 
     suspend fun getRandomAlbums(size: Int): List<Album> {
@@ -78,68 +64,28 @@ class Server @Inject constructor() {
             type = albumResponse.type,
             genre = albumResponse.genre,
             releasedDate = LocalDate.parse(albumResponse.releaseDate),
-            contentList = musicResponseList.map {
-                MusicContent(
-                    id = it.id,
-                    title = it.title,
-                    author = authorResponse.name,
-                    imageId = it.imageId,
-                    length = it.length,
-                    albumId = id,
-                    label = it.label,
-                )
-            },
+            contentList = musicResponseList.map { it.toMusicContent() },
         )
     }
 
     suspend fun getRandomPodcasts(size: Int): List<PodcastContent> {
         val response = retrofitInstance.getRandomPodcasts(size)
-        return response.map {
-            PodcastContent(
-                id = it.id,
-                title = it.title,
-                author = it.author,
-                imageId = it.imageId,
-                length = it.length,
-                description = it.description,
-            )
-        }
+        return response.map { it.toPodcastContent() }
     }
 
     suspend fun getPodcast(id: Long): PodcastContent {
         val response = retrofitInstance.getPodcast(id)
-        return PodcastContent(
-            id = response.id,
-            title = response.title,
-            author = response.author,
-            imageId = response.imageId,
-            length = response.length,
-            description = response.description,
-        )
+        return response.toPodcastContent()
     }
 
     suspend fun getRandomVideos(size: Int): List<VideoContent> {
         val response = retrofitInstance.getRandomVideos(size)
-        return response.map {
-            VideoContent(
-                id = it.id,
-                title = it.title,
-                author = it.author,
-                imageId = it.imageId,
-                length = it.length,
-            )
-        }
+        return response.map { it.toVideoContent() }
     }
 
     suspend fun getVideo(id: Long): VideoContent {
         val response = retrofitInstance.getVideo(id)
-        return VideoContent(
-            id = response.id,
-            title = response.title,
-            author = response.author,
-            imageId = response.imageId,
-            length = response.length,
-        )
+        return response.toVideoContent()
     }
 
     suspend fun getImage(id: Long): ImageBitmap {
@@ -147,5 +93,25 @@ class Server @Inject constructor() {
         val bytes = response.bytes()
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
         return bitmap.asImageBitmap()
+    }
+
+    suspend fun signUp(email: String, password: String): Auth {
+        val response = retrofitInstance.signup(SignUpRequest(email, password))
+        return response.toAuth()
+    }
+
+    suspend fun login(email: String, password: String): Auth {
+        val response = retrofitInstance.login(LoginRequest(email, password))
+        return response.toAuth()
+    }
+
+    suspend fun refresh(refreshToken: String): Auth {
+        val response = retrofitInstance.refresh(refreshToken)
+        return response.toAuth()
+    }
+
+    suspend fun getMyProfile(token: String): User {
+        val response = retrofitInstance.getMyProfile("Bearer $token")
+        return response.toUser()
     }
 }

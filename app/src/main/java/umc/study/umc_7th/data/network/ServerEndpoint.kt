@@ -1,9 +1,12 @@
 package umc.study.umc_7th.data.network
 
 import okhttp3.ResponseBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Header
+import retrofit2.http.POST
 
 interface ServerEndpoint {
     @GET("/music/random")
@@ -35,4 +38,16 @@ interface ServerEndpoint {
 
     @GET("/image/{id}")
     suspend fun getImage(@Path("id") id: Long): ResponseBody
+
+    @POST("/auth/signup")
+    suspend fun signup(@Body request: SignUpRequest): AuthResponse
+
+    @POST("/auth/login")
+    suspend fun login(@Body request: LoginRequest): AuthResponse
+
+    @POST("/auth/refresh")
+    suspend fun refresh(@Header("Refresh-Token") refreshToken: String): AuthResponse
+
+    @GET("/auth/me")
+    suspend fun getMyProfile(@Header("Authorization") token: String): UserResponse
 }
