@@ -39,7 +39,7 @@ import androidx.navigation.NavController
 @Composable
 fun aroundFragment(navController: NavController){
     Scaffold {
-        Text(text = "around")
+        aroundScreen()
     }
 }
 

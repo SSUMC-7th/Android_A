@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import timer.App
+import umc.study.umc_7th.user.User
 import umc.study.umc_7th.user.UserDao
 
 
-@Database(entities = [Content::class, AlbumContent::class], version = 5)
+@Database(entities = [Content::class, AlbumContent::class, User::class], version = 5)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun contentDao(): ContentDao
