@@ -57,11 +57,16 @@ fun VideoContent.toResponse(): VideoContentResponse = VideoContentResponse(
     authorId = authorId,
     author = MockDatabase.getAuthorById(authorId)!!.name,
     imageId = imageId,
-    length = 100  /* TODO */,
+    length = 100,  /* TODO */
 )
 
 fun Author.toResponse(): AuthorResponse = AuthorResponse(
     id = id,
     name = name,
     imageId = imageId,
+)
+
+fun User.toResponse() = UserResponse(
+    id = id,
+    email = email
 )
