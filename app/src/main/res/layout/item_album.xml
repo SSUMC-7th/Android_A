@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/item_title_lilac"
+        android:id="@+id/item_album_title_tv"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@id/item_album_cover_img_cardView" />
 
     <TextView
-        android:id="@+id/item_singer_iu"
+        android:id="@+id/item_album_singer_tv"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"

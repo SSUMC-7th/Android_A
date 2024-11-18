@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import umc.study.umc_7th.databinding.FragmentBannerBinding
+import umc.study.umc_7th.databinding.FragmentDetailBinding
 
-class BannerFragment(val imgRes : Int) : Fragment() {
+class DetailFragment : Fragment() {
 
-    lateinit var binding : FragmentBannerBinding
+    lateinit var binding : FragmentDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,8 +20,7 @@ class BannerFragment(val imgRes : Int) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentBannerBinding.inflate(inflater, container, false)
-        binding.bannerImageIv.setImageResource(imgRes)
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 }

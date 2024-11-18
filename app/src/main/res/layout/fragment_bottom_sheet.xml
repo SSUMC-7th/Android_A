@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    tools:context=".BottomSheetFragment"
+    android:background="@color/select_color">
+
+    <TextView
+        android:id="@+id/bottom_sheet_tv1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:text="듣기"
+        android:background="@color/transparent"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bottom_sheet_tv2"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/bottom_sheet_iv1"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:src="@drawable/btn_miniplayer_play"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_tv1"
+        app:layout_constraintEnd_toStartOf="@+id/bottom_sheet_iv2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bottom_sheet_tv2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@color/transparent"
+        android:gravity="center"
+        android:text="재생목록"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/bottom_sheet_tv3"
+        app:layout_constraintStart_toEndOf="@+id/bottom_sheet_tv1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bottom_sheet_iv2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:src="@drawable/btn_miniplayer_play"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_tv2"
+        app:layout_constraintStart_toEndOf="@+id/bottom_sheet_iv1"
+        app:layout_constraintEnd_toStartOf="@+id/bottom_sheet_iv3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bottom_sheet_tv3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@color/transparent"
+        android:gravity="center"
+        android:text="내 리스트"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/bottom_sheet_tv4"
+        app:layout_constraintStart_toEndOf="@+id/bottom_sheet_tv2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bottom_sheet_iv3"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:src="@drawable/btn_miniplayer_play"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_tv2"
+        app:layout_constraintStart_toEndOf="@+id/bottom_sheet_iv2"
+        app:layout_constraintEnd_toStartOf="@id/bottom_sheet_iv4"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bottom_sheet_tv4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@color/transparent"
+        android:gravity="center"
+        android:text="삭제"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/bottom_sheet_tv3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bottom_sheet_iv4"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:src="@drawable/btn_miniplayer_play"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_tv2"
+        app:layout_constraintStart_toEndOf="@+id/bottom_sheet_iv3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

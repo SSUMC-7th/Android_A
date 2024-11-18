@@ -20,6 +20,7 @@ constraintlayoutCompose = "1.0.1"
 storage = "1.5.0"
 lifecycleRuntimeComposeAndroid = "2.8.6"
 common = "0.10.0"
+firebaseFirestoreKtx = "25.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +49,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
 common = { group = "com.google.ai.client.generativeai", name = "common", version.ref = "common" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
