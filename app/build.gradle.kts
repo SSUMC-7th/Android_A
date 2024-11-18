@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "umc.study.umc_7th"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "umc.study.umc_7th"
@@ -48,7 +48,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
@@ -86,6 +86,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
+    implementation ("me.relex:circleindicator:2.1.6")
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
     // Hilt Dependency Injection
     implementation("com.google.dagger:hilt-android:2.49")
     kapt("com.google.dagger:hilt-compiler:2.49")

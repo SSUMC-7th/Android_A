@@ -2,11 +2,17 @@ package umc.study.umc_7th
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.tooling.animation.ToolingState
 import umc.study.umc_7th.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,8 +24,22 @@ class MainActivity : AppCompatActivity() {
 
         val song = Song(binding.mainMiniplayerTitleTv.text.toString(), binding.mainMiniplayerSingerTv.text.toString())
 
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                if(data != null) {
+                    val message = data.getStringExtra("message")
+                    Log.d("message", message!!)
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
         binding.mainPlayerCl.setOnClickListener {
             val intent = Intent(this, SongActivity::class.java)
+            intent.putExtra("title", song.title)
+            intent.putExtra("singer", song.singer)
+            activityResultLauncher.launch(intent)
         }
 
         binding.mainPlayerCl.setOnClickListener {

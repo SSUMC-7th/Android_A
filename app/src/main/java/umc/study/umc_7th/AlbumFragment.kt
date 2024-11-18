@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import umc.study.umc_7th.HomeFragment
 import umc.study.umc_7th.MainActivity
 import umc.study.umc_7th.R
@@ -19,6 +20,12 @@ class AlbumFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAlbumBinding.inflate(inflater,container,false)
+        setFragmentResultListener("TitleInfo") { requestKey, bundle ->
+            binding.albumMusicTitleTv.text = bundle.getString("title")
+        }
+        setFragmentResultListener("SingerInfo") { requestKey, bundle ->
+            binding.albumSingerNameTv.text = bundle.getString("singer")
+        }
 
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
