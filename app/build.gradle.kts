@@ -99,6 +99,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation (libs.firebase.auth.ktx)
 
     // Hilt Dependency Injection
     implementation(libs.androidx.hilt.navigation.compose)

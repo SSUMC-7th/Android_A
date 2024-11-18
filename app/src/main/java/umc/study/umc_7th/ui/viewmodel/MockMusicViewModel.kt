@@ -123,4 +123,14 @@ class MockMusicViewModel : MusicViewModel(
     override fun getLikedAlbums(): LiveData<List<Album>> {
         return _album.map { albums -> albums.filter { it.isLiked } }
     }
+
+    override fun toggleLikeStatusAlbum(album: Album) {
+        viewModelScope.launch {
+            val updatedAlbum = album.copy(isLiked = !album.isLiked)
+            albumRepository.updateAlbum(updatedAlbum)
+
+            // Update local list after modification
+            _album.value = _album.value?.map { if (it.id == album.id) updatedAlbum else it }
+        }
+    }
 }
