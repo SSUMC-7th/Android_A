@@ -1,6 +1,5 @@
 package umc.study.umc_7th.ui.composables
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +45,6 @@ fun Login(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize()

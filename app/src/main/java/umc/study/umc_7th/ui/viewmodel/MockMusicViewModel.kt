@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.data.repository.MockAlbumRepository
 import umc.study.umc_7th.data.repository.MockSongRepository
