@@ -236,6 +236,17 @@ open class MusicViewModel @Inject constructor(
         return _album.map { albums -> albums.filter { it.isLiked } }
     }
 
+    // Toggle like status of a song
+    open fun toggleLikeStatusAlbum(album: Album) {
+        viewModelScope.launch {
+            val updatedAlbum = album.copy(isLiked = !album.isLiked)
+            albumRepository.updateAlbum(updatedAlbum)
+
+            // Update local list after modification
+            _album.value = _album.value?.map { if (it.id == album.id) updatedAlbum else it }
+        }
+    }
+
     private val _currentTime = MutableStateFlow(0f)
     val currentTime : StateFlow<Float> = _currentTime
 
