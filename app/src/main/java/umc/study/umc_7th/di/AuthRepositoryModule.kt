@@ -5,7 +5,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import umc.study.umc_7th.data.AuthRepository
-import umc.study.umc_7th.data.local.TokenPreference
 import umc.study.umc_7th.data.network.Server
 import javax.inject.Singleton
 
@@ -16,8 +15,7 @@ object AuthRepositoryModule {
     @Singleton
     fun provideAuthRepository(
         server: Server,
-        tokenPreference: TokenPreference,
     ): AuthRepository {
-        return AuthRepository(server, tokenPreference)
+        return AuthRepository(server)
     }
 }

@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,14 +49,13 @@ fun LoginForm(
     onPasswordChanged: (String) -> Unit,
     onLoginClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
-    onForgetIdClicked: () -> Unit,
+    onForgotIdClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
 ) {
     var showPassword by remember { mutableStateOf(false) }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -85,45 +86,39 @@ fun LoginForm(
                     )
                 )
                 Text(
-                    text = "@",
-                    style = TextStyle(
+                    text = "@", style = TextStyle(
                         fontSize = 16.sp,
                     )
                 )
-                TextField(
-                    value = domain,
-                    onValueChange = onDomainChanged,
-                    placeholder = {
-                        Text(
-                            text = "직접입력",
-                            color = Color.Gray,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    },
-                    singleLine = true,
-                    modifier = Modifier.weight(1f),
-                    trailingIcon = {
-                        IconButton(onClick = { /* TODO */ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.nugu_btn_down),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = Color.Gray
-                            )
-                        }
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
+                TextField(value = domain, onValueChange = onDomainChanged, placeholder = {
+                    Text(
+                        text = "직접입력",
+                        color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
+                }, singleLine = true, modifier = Modifier.weight(1f), trailingIcon = {
+                    IconButton(onClick = { /* TODO */ }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.nugu_btn_down),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Gray
+                        )
+                    }
+                }, colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                )
                 )
             }
 
             TextField(
-                value = password.let { if (showPassword) it else "*".repeat(it.length) },
+                value = password,
                 onValueChange = onPasswordChanged,
+                visualTransformation = if (showPassword) VisualTransformation.None
+                else PasswordVisualTransformation(),
                 placeholder = {
                     Text(
                         text = "비밀번호",
@@ -140,13 +135,9 @@ fun LoginForm(
                     ) {
                         Image(
                             painter = painterResource(
-                                id = if (showPassword)
-                                    R.drawable.btn_input_password_off
-                                else
-                                    R.drawable.btn_input_password
-                            ),
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp)
+                                id = if (showPassword) R.drawable.btn_input_password_off
+                                else R.drawable.btn_input_password
+                            ), contentDescription = null, modifier = Modifier.size(32.dp)
                         )
                     }
                 },
@@ -161,15 +152,13 @@ fun LoginForm(
                 Button(
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Blue,
-                        contentColor = Color.White
+                        containerColor = Color.Blue, contentColor = Color.White
                     ),
                     onClick = onLoginClicked,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = "로그인",
-                        style = TextStyle(
+                        text = "로그인", style = TextStyle(
                             fontSize = 16.sp,
                         )
                     )
@@ -185,8 +174,7 @@ fun LoginForm(
                         modifier = Modifier.height(IntrinsicSize.Min),
                     ) {
                         TextButton(
-                            onClick = onForgetIdClicked,
-                            contentPadding = PaddingValues(4.dp)
+                            onClick = onForgotIdClicked, contentPadding = PaddingValues(4.dp)
                         ) {
                             Text(
                                 text = "아이디 찾기",
@@ -198,8 +186,7 @@ fun LoginForm(
                         }
                         VerticalDivider(modifier = Modifier.fillMaxHeight(0.5f))
                         TextButton(
-                            onClick = onForgotPasswordClicked,
-                            contentPadding = PaddingValues(4.dp)
+                            onClick = onForgotPasswordClicked, contentPadding = PaddingValues(4.dp)
                         ) {
                             Text(
                                 text = "비밀번호 찾기",
@@ -212,8 +199,7 @@ fun LoginForm(
                     }
 
                     TextButton(
-                        onClick = onSignUpClicked,
-                        contentPadding = PaddingValues(4.dp)
+                        onClick = onSignUpClicked, contentPadding = PaddingValues(4.dp)
                     ) {
                         Text(
                             text = "회원가입",
@@ -242,7 +228,7 @@ fun PreviewLoginForm() {
         onPasswordChanged = {},
         onLoginClicked = {},
         onSignUpClicked = {},
-        onForgetIdClicked = {},
+        onForgotIdClicked = {},
         onForgotPasswordClicked = {},
     )
 }

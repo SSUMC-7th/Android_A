@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.scopes.FragmentScoped
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
@@ -35,9 +37,12 @@ import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.main.album.AlbumFragment
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
-    private val viewModel: MainViewModel by activityViewModels()
+    @Inject
+    lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(

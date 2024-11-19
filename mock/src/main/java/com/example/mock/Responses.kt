@@ -88,3 +88,10 @@ data class UserResponse(
     val id: Long,
     val email: String,
 )
+
+@Serializable
+data class LikeResponse(
+    val userId: Long,
+    val contentId: Long,
+    val date: String,
+)

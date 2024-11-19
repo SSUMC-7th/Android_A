@@ -13,7 +13,10 @@ interface ServerEndpoint {
     suspend fun getRandomMusics(@Query("size") size: Int): List<MusicContentResponse>
 
     @GET("/music")
-    suspend fun getMusics(@Query("id") id: Long?, @Query("albumId") albumId: Long?): List<MusicContentResponse>
+    suspend fun getMusics(
+        @Query("id") id: Long?,
+        @Query("albumId") albumId: Long?
+    ): List<MusicContentResponse>
 
     @GET("/album/random")
     suspend fun getRandomAlbums(@Query("size") size: Int): List<AlbumResponse>
@@ -50,4 +53,25 @@ interface ServerEndpoint {
 
     @GET("/auth/me")
     suspend fun getMyProfile(@Header("Authorization") token: String): UserResponse
+
+    @GET("/auth/like/all")
+    suspend fun getAllLikes(
+        @Header("Authorization") token: String,
+        @Query("userId") userId: Long
+    ): List<LikeResponse>
+
+    @GET("/auth/like")
+    suspend fun isLiked(
+        @Header("Authorization") token: String,
+        @Query("userId") userId: Long,
+        @Query("contentId") contentId: Long,
+    ): LikeResponse
+
+    @POST("/auth/like")
+    suspend fun setLike(
+        @Header("Authorization") token: String,
+        @Query("userId") userId: Long,
+        @Query("contentId") contentId: Long,
+        @Query("setTo") isLiked: Boolean,
+    ): LikeResponse
 }

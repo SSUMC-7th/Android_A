@@ -1,20 +1,17 @@
-package umc.study.umc_7th.data.local
+package umc.study.umc_7th.data.network
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
+import kotlinx.serialization.json.Json
+import umc.study.umc_7th.User
 
-@Singleton
-class TokenPreference @Inject constructor(
-    @ApplicationContext context: Context
-) {
+class AuthPreference(context: Context) {
     companion object {
         private const val PREF_NAME = "auth_tokens"
         private const val KEY_ACCESS_TOKEN = "access_token"
         private const val KEY_REFRESH_TOKEN = "refresh_token"
+        private const val KEY_USER = "user"
     }
 
     private val prefs: SharedPreferences = context.getSharedPreferences(
@@ -34,10 +31,9 @@ class TokenPreference @Inject constructor(
             putString(KEY_REFRESH_TOKEN, value)
         }
 
-    fun clearTokens() {
-        prefs.edit {
-            remove(KEY_ACCESS_TOKEN)
-            remove(KEY_REFRESH_TOKEN)
+    var user: User?
+        get() = prefs.getString(KEY_USER, null)?.let { Json.decodeFromString<User>(it) }
+        set(value) = prefs.edit {
+            putString(KEY_USER, value?.let { Json.encodeToString(User.serializer(), it) })
         }
-    }
 }

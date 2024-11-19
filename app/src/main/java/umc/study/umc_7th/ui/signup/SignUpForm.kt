@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -115,8 +117,10 @@ fun SignUpForm(
             }
 
             TextField(
-                value = password.let { if (showPassword) it else "*".repeat(it.length) },
+                value = password,
                 onValueChange = onPasswordChanged,
+                visualTransformation = if (showPassword) VisualTransformation.None
+                else PasswordVisualTransformation(),
                 placeholder = { placeholder("비밀번호") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -140,8 +144,10 @@ fun SignUpForm(
             )
 
             TextField(
-                value = confirmPassword.let { if (showConfirmPassword) it else "*".repeat(it.length) },
+                value = confirmPassword,
                 onValueChange = onConfirmPasswordChanged,
+                visualTransformation = if (showConfirmPassword) VisualTransformation.None
+                else PasswordVisualTransformation(),
                 placeholder = { placeholder("비밀번호 확인") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),

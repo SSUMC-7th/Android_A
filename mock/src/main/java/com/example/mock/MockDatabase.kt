@@ -1,174 +1,139 @@
 package com.example.mock
 
 import java.io.File
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 object MockDatabase {
-    private val musics = mutableListOf<MusicContent>()
-    private val albums = mutableListOf<Album>()
-    private val podcasts = mutableListOf<PodcastContent>()
-    private val videos = mutableListOf<VideoContent>()
-    private val authors = mutableListOf<Author>()
-    private val users = mutableListOf<User>()
+    private val musics = loadTable("musics") { parts ->
+        MusicContent(id = parts[0].toLong(),
+            title = parts[1],
+            authorId = parts[2].toLong(),
+            albumId = parts[3].toLong(),
+            index = parts[4].toInt(),
+            label = parts[5].takeIf { it.isNotEmpty() },
+            lyrics = parts[6].takeIf { it.isNotEmpty() })
+    }
+
+    private val albums = loadTable("albums") { parts ->
+        Album(
+            id = parts[0].toLong(),
+            title = parts[1],
+            authorId = parts[2].toLong(),
+            imageId = parts[3].toLong(),
+            releaseDate = LocalDate.parse(parts[4]),
+            type = parts[5],
+            genre = parts[6]
+        )
+    }
+
+    private val podcasts = loadTable("podcasts") { parts ->
+        PodcastContent(
+            id = parts[0].toLong(),
+            title = parts[1],
+            authorId = parts[2].toLong(),
+            imageId = parts[3].toLong(),
+            description = parts[4]
+        )
+    }
+
+    private val videos = loadTable("videos") { parts ->
+        VideoContent(
+            id = parts[0].toLong(),
+            title = parts[1],
+            authorId = parts[2].toLong(),
+            imageId = parts[3].toLong()
+        )
+    }
+
+    private val authors = loadTable("authors") { parts ->
+        Author(
+            id = parts[0].toLong(),
+            name = parts[1],
+            imageId = parts[2].takeIf { it.isNotEmpty() }?.toLong()
+        )
+    }
+
+    private val users = loadTable("users") { parts ->
+        User(
+            id = parts[0].toLong(),
+            email = parts[1],
+            password = parts[2],
+        )
+    }
+
+    private val likes = loadTable("likes") { parts ->
+        Like(
+            userId = parts[0].toLong(),
+            contentId = parts[1].toLong(),
+            date = LocalDateTime.parse(parts[2]),
+        )
+    }
 
     fun getMusicById(id: Long): MusicContent? = musics.find { it.id == id }
-    fun getMusicByAlbum(albumId: Long): List<MusicContent> = musics.filter { it.albumId == albumId }
     fun getAlbumById(id: Long): Album? = albums.find { it.id == id }
     fun getPodcastById(id: Long): PodcastContent? = podcasts.find { it.id == id }
     fun getVideoById(id: Long): VideoContent? = videos.find { it.id == id }
+
+    fun getAuthorById(id: Long): Author? = authors.find { it.id == id }
+
+    fun getUserById(id: Long): User? = users.find { it.id == id }
+    fun getUserByEmail(email: String): User? = users.find { it.email == email }
+
     fun getRandomMusicList(size: Int): List<MusicContent> = List(size) { musics.random() }
     fun getRandomAlbumList(size: Int): List<Album> = List(size) { albums.random() }
     fun getRandomPodcastList(size: Int): List<PodcastContent> = List(size) { podcasts.random() }
     fun getRandomVideoList(size: Int): List<VideoContent> = List(size) { videos.random() }
-    fun getAuthorById(id: Long): Author? = authors.find { it.id == id }
-    fun getUserById(id: Long): User? = users.find { it.id == id }
-    fun getUserByEmail(email: String): User? = users.find { it.email == email }
 
-    init {
-        loadAuthors()
-        loadAlbums()
-        loadMusics()
-        loadPodcasts()
-        loadVideos()
-        loadUsers()
-    }
+    fun getMusicsByAlbum(albumId: Long): List<MusicContent> =
+        musics.filter { it.albumId == albumId }
+
+    fun getAllLikes(userId: Long): List<Like> = likes.filter { it.userId == userId }
+    fun getLike(userId: Long, contentId: Long): Like? =
+        likes.find { it.userId == userId && it.contentId == contentId }
 
     @Synchronized
     fun createUser(email: String, password: String): User? {
         // 이메일 중복 체크
-        if (getUserByEmail(email) != null) {
-            return null
-        }
+        if (getUserByEmail(email) != null) return null
 
-        val newId = (users.maxOfOrNull { it.id } ?: 0) + 1
-        val createdAt = LocalDateTime.now().toString()
-        
         val newUser = User(
-            id = newId,
+            id = (users.maxOfOrNull { it.id } ?: 0) + 1,
             email = email,
             password = password,
         )
 
-        // CSV 파일에 추가
-        val csvLine = "${newUser.id},${newUser.email},${newUser.password}"
-        try {
-            val file = File("mock/src/main/java/com/example/mock/tables/users.csv")
-            file.appendText("\n$csvLine")
-            users.add(newUser)
-            return newUser
-        } catch (e: Exception) {
-            println("유저 추가 중 오류 발생: ${e.message}")
-            return null
+        users.add(newUser)
+        return newUser
+    }
+
+    @Synchronized
+    fun addLike(userId: Long, contentId: Long) {
+        val like = Like(userId, contentId, LocalDateTime.now())
+        likes.add(like)
+    }
+
+    @Synchronized
+    fun cancelLike(userId: Long, contentId: Long) {
+        likes.removeIf { it.userId == userId && it.contentId == contentId }
+    }
+}
+
+private fun <T> loadTable(
+    tableName: String, mapper: (List<String>) -> T
+): MutableList<T> {
+    val result = mutableListOf<T>()
+    val filePath = "${System.getProperty("user.dir")}/mock/src/main/java/com/example/mock/tables"
+    val reader = File(filePath, "${tableName}.csv")
+
+    reader.useLines { lines ->
+        lines.drop(1).forEach { line ->
+            val parts = line.split(",")
+            val data = mapper(parts)
+            result.add(data)
         }
     }
 
-    private fun loadAuthors() {
-        val reader =
-            MockDatabase::class.java.getResourceAsStream("/tables/authors.csv")?.bufferedReader()
-        reader?.useLines { lines ->
-            lines.drop(1).forEach { line ->
-                val parts = line.split(",", limit = 3)
-                authors.add(
-                    Author(
-                        id = parts[0].toLong(),
-                        name = parts[1],
-                        imageId = parts[2].takeIf { it.isNotEmpty() }?.toLong()
-                    )
-                )
-            }
-        }
-    }
-
-    private fun loadAlbums() {
-        val reader =
-            MockDatabase::class.java.getResourceAsStream("/tables/albums.csv")?.bufferedReader()
-        reader?.useLines { lines ->
-            lines.drop(1).forEach { line ->
-                val parts = line.split(",", limit = 6)
-                albums.add(
-                    Album(
-                        id = parts[0].toLong(),
-                        title = parts[1],
-                        authorId = parts[2].toLong(),
-                        imageId = parts[3].toLong(),
-                        releaseDate = parts[4],
-                        type = parts[5],
-                        genre = parts[6]
-                    )
-                )
-            }
-        }
-    }
-
-    private fun loadMusics() {
-        val reader =
-            MockDatabase::class.java.getResourceAsStream("/tables/musics.csv")?.bufferedReader()
-        reader?.useLines { lines ->
-            lines.drop(1).forEach { line ->
-                val parts = line.split(",", limit = 7)
-                musics.add(
-                    MusicContent(id = parts[0].toLong(),
-                        title = parts[1],
-                        authorId = parts[2].toLong(),
-                        albumId = parts[3].toLong(),
-                        index = parts[4].toInt(),
-                        label = parts[5].takeIf { it.isNotEmpty() },
-                        lyrics = parts[6].takeIf { it.isNotEmpty() })
-                )
-            }
-        }
-    }
-
-    private fun loadPodcasts() {
-        val reader =
-            MockDatabase::class.java.getResourceAsStream("/tables/podcasts.csv")?.bufferedReader()
-        reader?.useLines { lines ->
-            lines.drop(1).forEach { line ->
-                val parts = line.split(",", limit = 5)
-                podcasts.add(
-                    PodcastContent(
-                        id = parts[0].toLong(),
-                        title = parts[1],
-                        authorId = parts[2].toLong(),
-                        imageId = parts[3].toLong(),
-                        description = parts[4]
-                    )
-                )
-            }
-        }
-    }
-
-    private fun loadVideos() {
-        val reader =
-            MockDatabase::class.java.getResourceAsStream("/tables/videos.csv")?.bufferedReader()
-        reader?.useLines { lines ->
-            lines.drop(1).forEach { line ->
-                val parts = line.split(",", limit = 4)
-                videos.add(
-                    VideoContent(
-                        id = parts[0].toLong(),
-                        title = parts[1],
-                        authorId = parts[2].toLong(),
-                        imageId = parts[3].toLong()
-                    )
-                )
-            }
-        }
-    }
-
-    private fun loadUsers() {
-        val reader = MockDatabase::class.java.getResourceAsStream("/tables/users.csv")?.bufferedReader()
-        reader?.useLines { lines ->
-            lines.drop(1).forEach { line ->
-                val parts = line.split(",", limit = 3)
-                users.add(
-                    User(
-                        id = parts[0].toLong(),
-                        email = parts[1],
-                        password = parts[2],
-                    )
-                )
-            }
-        }
-    }
+    println("Table $tableName loaded.")
+    return result
 }

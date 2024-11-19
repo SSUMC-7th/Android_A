@@ -21,7 +21,7 @@ fun main() {
 
                 val musics =
                     if (id != null) MockDatabase.getMusicById(id)?.let { listOf(it) } ?: emptyList()
-                    else if (albumId != null) MockDatabase.getMusicByAlbum(albumId)
+                    else if (albumId != null) MockDatabase.getMusicsByAlbum(albumId)
                     else {
                         call.respondText("Invalid parameters", status = HttpStatusCode.BadRequest)
                         return@get
@@ -271,7 +271,6 @@ fun main() {
                 }
             }
 
-            // 인증이 필요한 엔드포인트 예시
             get("/auth/me") {
                 val authHeader = call.request.headers["Authorization"]
                 if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -292,6 +291,75 @@ fun main() {
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid token"))
                 }
+            }
+
+            get("/auth/like/all") {
+                val authHeader = call.request.headers["Authorization"]
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                    call.respond(
+                        HttpStatusCode.Unauthorized, mapOf("error" to "Missing or invalid token")
+                    )
+                    return@get
+                }
+
+                val userId = call.request.queryParameters["userId"]?.toLongOrNull()
+                if (userId == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Missing parameters"))
+                    return@get
+                }
+
+                val likes = MockDatabase.getAllLikes(userId)
+                call.respond(likes.map { it.toResponse() })
+            }
+
+            get("/auth/like") {
+                val authHeader = call.request.headers["Authorization"]
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                    call.respond(
+                        HttpStatusCode.Unauthorized, mapOf("error" to "Missing or invalid token")
+                    )
+                    return@get
+                }
+
+                val userId = call.request.queryParameters["userId"]?.toLongOrNull()
+                val contentId = call.request.queryParameters["contentId"]?.toLongOrNull()
+
+                if (userId == null || contentId == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Missing parameters"))
+                    return@get
+                }
+
+                val like = MockDatabase.getLike(userId, contentId)
+
+                if (like == null) {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "Like not found"))
+                    return@get
+                }
+
+                call.respond(like.toResponse())
+            }
+
+            post("/auth/like") {
+                val authHeader = call.request.headers["Authorization"]
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                    call.respond(
+                        HttpStatusCode.Unauthorized, mapOf("error" to "Missing or invalid token")
+                    )
+                    return@post
+                }
+
+                val userId = call.request.queryParameters["userId"]?.toLongOrNull()
+                val contentId = call.request.queryParameters["contentId"]?.toLongOrNull()
+                val isLiked = call.request.queryParameters["setTo"]?.toBooleanStrictOrNull()
+
+                if (userId == null || contentId == null || isLiked == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Missing parameters"))
+                    return@post
+                }
+
+                if (isLiked) MockDatabase.addLike(userId, contentId)
+                else MockDatabase.cancelLike(userId, contentId)
+                call.respond(HttpStatusCode.OK)
             }
         }
     }.start(wait = true)

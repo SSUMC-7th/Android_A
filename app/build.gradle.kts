@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "umc.study.umc_7th"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "umc.study.umc_7th"

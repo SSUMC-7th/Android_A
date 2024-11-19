@@ -1,34 +1,35 @@
 package umc.study.umc_7th.data.network
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.google.gson.GsonBuilder
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.AlbumContent
-import umc.study.umc_7th.Auth
 import umc.study.umc_7th.BuildConfig
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.User
 import umc.study.umc_7th.VideoContent
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 private val retrofitInstance: ServerEndpoint by lazy {
-    val retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.SERVER_URL)
-        .addConverterFactory(
-            GsonConverterFactory.create(GsonBuilder().setLenient().create())
-        )
-        .build()
+    val retrofit = Retrofit.Builder().baseUrl(BuildConfig.SERVER_URL).addConverterFactory(
+        GsonConverterFactory.create(GsonBuilder().setLenient().create())
+    ).build()
 
     retrofit.create(ServerEndpoint::class.java)
 }
 
-class Server @Inject constructor() {
+class Server @Inject constructor(
+    private val authPreference: AuthPreference,
+) {
     suspend fun getRandomMusics(size: Int): List<MusicContent> {
         val response = retrofitInstance.getRandomMusics(size)
         return response.map { it.toMusicContent() }
@@ -95,23 +96,90 @@ class Server @Inject constructor() {
         return bitmap.asImageBitmap()
     }
 
-    suspend fun signUp(email: String, password: String): Auth {
-        val response = retrofitInstance.signup(SignUpRequest(email, password))
-        return response.toAuth()
+    suspend fun signUp(email: String, password: String): User? {
+        try {
+            val response = retrofitInstance.signup(SignUpRequest(email, password))
+            authPreference.accessToken = response.accessToken
+            authPreference.refreshToken = response.refreshToken
+            val user = response.user.toUser()
+            authPreference.user = user
+            return user
+        } catch (e: HttpException) {
+            if (e.code() == 409) return null
+            else throw e
+        }
     }
 
-    suspend fun login(email: String, password: String): Auth {
-        val response = retrofitInstance.login(LoginRequest(email, password))
-        return response.toAuth()
+    suspend fun login(email: String, password: String): User? {
+        try {
+            val response = retrofitInstance.login(LoginRequest(email, password))
+            authPreference.accessToken = response.accessToken
+            authPreference.refreshToken = response.refreshToken
+            val user = response.user.toUser()
+            authPreference.user = user
+            return user
+        } catch (e: HttpException) {
+            if (e.code() == 401) return null
+            else throw e
+        }
     }
 
-    suspend fun refresh(refreshToken: String): Auth {
-        val response = retrofitInstance.refresh(refreshToken)
-        return response.toAuth()
+    fun logout() {
+        authPreference.accessToken = null
+        authPreference.refreshToken = null
+        authPreference.user = null
     }
 
-    suspend fun getMyProfile(token: String): User {
-        val response = retrofitInstance.getMyProfile("Bearer $token")
-        return response.toUser()
+    suspend fun getMyProfile() = doWithJwtHandling routine@{ _, user ->
+        return@routine user
+    }
+
+    suspend fun getAllLikeLogs() = doWithJwtHandling routine@{ token, user ->
+        val response = retrofitInstance.getAllLikes("Bearer $token", user.id)
+        return@routine response.map { it.contentId to LocalDateTime.parse(it.date) }
+    }
+
+    suspend fun getLikeLog(id: Long) = doWithJwtHandling routine@{ token, user ->
+        try {
+            val response = retrofitInstance.isLiked("Bearer $token", user.id, id)
+            return@routine response.contentId to LocalDateTime.parse(response.date)
+        } catch (e: HttpException) {
+            if (e.code() == 404) return@routine null
+            else throw e
+        }
+    }
+
+    suspend fun setLike(
+        id: Long,
+        setTo: Boolean,
+    ) = doWithJwtHandling routine@{ token, user ->
+        val response = retrofitInstance.setLike("Bearer $token", user.id, id, setTo)
+        return@routine response.contentId to LocalDateTime.parse(response.date)
+    }
+
+    private suspend fun <T> doWithJwtHandling(
+        routine: suspend (token: String, user: User) -> T,
+    ): T {
+        try {
+            val token = authPreference.accessToken
+            val user = authPreference.user
+            if (token == null || user == null) throw Exception("No login")
+            return routine(token, user)
+        } catch (e: HttpException) {
+            if (e.code() != 401) throw e
+            refresh()
+            val token = authPreference.accessToken
+            val user = authPreference.user
+            if (token == null || user == null) throw Exception("No login")
+            return routine(token, user)
+        }
+    }
+
+    private suspend fun refresh() {
+        val refreshToken = authPreference.refreshToken ?: throw Exception("No refresh token")
+        val auth = retrofitInstance.refresh(refreshToken)
+        authPreference.accessToken = auth.accessToken
+        authPreference.refreshToken = auth.refreshToken
+        authPreference.user = auth.user.toUser()
     }
 }

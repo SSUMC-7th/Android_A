@@ -6,17 +6,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import umc.study.umc_7th.data.local.TokenPreference
+import umc.study.umc_7th.data.network.AuthPreference
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object TokenPreferenceModule {
+object AuthPreferenceModule {
     @Provides
     @Singleton
-    fun provideTokenPreference(
-        @ApplicationContext context: Context
-    ): TokenPreference {
-        return TokenPreference(context)
+    fun provideAuthPreference(@ApplicationContext context: Context): AuthPreference {
+        return AuthPreference(context)
     }
 }
