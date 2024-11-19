@@ -1,3 +1,6 @@
+package umc.study.umc_7th
+
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,7 +59,7 @@ class AlbumFragment : Fragment() {
                 .commitAllowingStateLoss()
         }
 
-        val albumAdapter = AlbumRVAdapter(this)
+        val albumAdapter = AlbumVPAdapter(this)
         binding.albumContentVp.adapter = albumAdapter
 
         TabLayoutMediator(binding.albumContentTb, binding.albumContentVp) { tab, position ->
