@@ -50,6 +50,7 @@ import umc.study.umc_7th.ui.composables.PromotionImageBanner
 import umc.study.umc_7th.ui.composables.VideoCollectionView
 import umc.study.umc_7th.ui.screen.AlbumFragment
 import umc.study.umc_7th.ui.screen.LockerFragment
+import umc.study.umc_7th.ui.screen.LookFragment
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
 import umc.study.umc_7th.ui.viewmodel.MusicViewModel
@@ -114,10 +115,10 @@ fun MyApp(viewModel: MusicViewModel) {
             Modifier.padding(innerPadding)
         ) {
             composable(NavigationDestination.HOME.expression) { HomeScreen(navController, viewModel = viewModel) }
-            composable(NavigationDestination.LOOK.expression) {  }
+            composable(NavigationDestination.LOOK.expression) { LookScreen() }
             composable(NavigationDestination.SEARCH.expression) { }
-            composable(NavigationDestination.MY.expression) { LockerScreen() }
-            composable("Album") { AlbumScreen() }
+            composable(NavigationDestination.MY.expression) { LockerScreen(viewModel = viewModel) }
+            composable("Album") { AlbumScreen(viewModel = viewModel) }
         }
     }
 }
@@ -207,14 +208,18 @@ fun HomeScreen(navController: NavController, viewModel: MusicViewModel) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AlbumScreen() {
-    val mockViewModel = MockMusicViewModel()
-    AlbumFragment(viewModel = mockViewModel)
+fun AlbumScreen(viewModel: MusicViewModel) {
+    AlbumFragment(viewModel = viewModel)
 }
 
 @Composable
-fun LockerScreen() {
-    LockerFragment()
+fun LockerScreen(viewModel: MusicViewModel) {
+    LockerFragment(viewModel = viewModel)
+}
+
+@Composable
+fun LookScreen() {
+    LookFragment()
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

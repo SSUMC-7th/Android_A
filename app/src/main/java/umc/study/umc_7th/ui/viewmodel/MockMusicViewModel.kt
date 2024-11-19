@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.data.repository.MockAlbumRepository
 import umc.study.umc_7th.data.repository.MockSongRepository
@@ -110,6 +109,27 @@ class MockMusicViewModel : MusicViewModel(
     override fun loadAlbum(albumId: Int) {
         viewModelScope.launch {
             _album.value = albumRepository.getAlbumById(albumId)
+        }
+    }
+
+    override fun loadAllAlbums() {
+        viewModelScope.launch {
+            val albumData = albumRepository.getAllAlbums()  // getAllAlbums 호출
+            _album.postValue(albumData)
+        }
+    }
+
+    override fun getLikedAlbums(): LiveData<List<Album>> {
+        return _album.map { albums -> albums.filter { it.isLiked } }
+    }
+
+    override fun toggleLikeStatusAlbum(album: Album) {
+        viewModelScope.launch {
+            val updatedAlbum = album.copy(isLiked = !album.isLiked)
+            albumRepository.updateAlbum(updatedAlbum)
+
+            // Update local list after modification
+            _album.value = _album.value?.map { if (it.id == album.id) updatedAlbum else it }
         }
     }
 }

@@ -49,21 +49,23 @@ import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
 import umc.study.umc_7th.ui.viewmodel.MusicViewModel
 
 @Composable
-fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
+fun AlbumFragment(viewModel: MusicViewModel) {
 
     val context = LocalContext.current
     var isColorful_like by remember { mutableStateOf(false) }
 
-    val album by viewModel.album.observeAsState(initial = null)
+    val album by viewModel.album.observeAsState(initial = emptyList())
     val songList by viewModel.songList.observeAsState(initial = emptyList())
+
+    val album_info = context.getString(R.string.album_info)
 
     LaunchedEffect(Unit) {
         viewModel.loadAlbum(1)
         viewModel.loadSong(1)
     }
 
-    val albumTitle = album?.firstOrNull()?.title ?: "No Album Title"
-    val albumSinger = album?.firstOrNull()?.singer ?: "No Album Singer"
+    val albumTitle = album.firstOrNull()?.title ?: "No Album Title"
+    val albumSinger = album.firstOrNull()?.singer ?: "No Album Singer"
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -91,7 +93,10 @@ fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { isColorful_like = !isColorful_like }) {
+                IconButton(onClick = {
+                    isColorful_like = !isColorful_like
+                    viewModel.toggleLikeStatusAlbum(album.first())
+                }) {
                     Icon(
                         painter = painterResource(id = if (isColorful_like) R.drawable.ic_my_like_on else R.drawable.ic_my_like_off),
                         contentDescription = "like",
@@ -117,7 +122,7 @@ fun AlbumFragment(viewModel: MusicViewModel = MockMusicViewModel()) {
                     style = MaterialTheme.typography.bodyMedium
                     )
                 Text(
-                    text = "2021.03.25 | 정규 | 댄스 팝",
+                    text = album_info,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row {

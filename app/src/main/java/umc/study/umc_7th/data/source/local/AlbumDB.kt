@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Song::class, Album::class], version = 2, exportSchema = false)
+@Database(entities = [Song::class, Album::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun albumDao(): AlbumDao
     abstract fun songDao(): SongDao
@@ -56,6 +56,28 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                CREATE TABLE albumTable_temp (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                title TEXT NOT NULL,
+                singer TEXT NOT NULL,
+                coverImg INTEGER NOT NULL,
+                isLiked BOOLEAN NOT NULL DEFAULT false)
+                """)
+
+                db.execSQL("""
+                INSERT INTO albumTable_temp (id, title, singer, coverImg, isLiked)
+                SELECT id, title, singer, coverImg, isLiked FROM albumTable
+                """)
+
+                db.execSQL("DROP TABLE albumTable")
+
+                db.execSQL("ALTER TABLE albumTable_temp RENAME TO albumTable")
+            }
+        }
+
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -63,8 +85,8 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "music_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
                     .fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 instance
@@ -93,4 +115,5 @@ data class Album(
     var title: String = "",
     var singer: String = "",
     var coverImg: Int = 0,
+    var isLiked: Boolean = false
 )
