@@ -1,8 +1,10 @@
 package umc.study.umc_7th.locker
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 
 
 import androidx.compose.foundation.layout.*
@@ -25,17 +27,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 //import com.google.accompanist.pager.*
 
 import kotlinx.coroutines.launch
-import umc.study.umc_7th.MyApplication
-import umc.study.umc_7th.content.Content
-import umc.study.umc_7th.R
+import umc.study.umc_7th.user.LoginActivity
 import umc.study.umc_7th.SongViewModel
 
 
@@ -57,8 +56,14 @@ fun LockerFragment1(){
                 Text( text = "보관함", fontWeight = FontWeight.Bold, color = Color.Black,
                     fontSize = 24.sp)
             }
+            val context = LocalContext.current
             Row(
-                modifier = Modifier.align(Alignment.CenterEnd)
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable {
+                        val intent = Intent(context, LoginActivity::class.java)
+                        context.startActivity(intent)
+                    }
             ){
                 Text(text= "로그인", color = Color.Blue)
             }
@@ -75,7 +80,7 @@ fun LockerTab(viewModel: SongViewModel,
     val pagerState= rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
     val likeSongs by viewModel.likedSongs.observeAsState(emptyList())
-
+    val likeAlbums by viewModel.likeAlbums.observeAsState(emptyList())
     LaunchedEffect(likeSongs) {
         viewModel.loadLikedSongs()
     }
@@ -126,7 +131,14 @@ fun LockerTab(viewModel: SongViewModel,
 
             )
             1 -> LockerMusicFile()
-            2 -> LockerAlbumLike()
+            2 -> LockerAlbum(
+                showBottomBar =showBottomBar,
+                hideBottomBar = hideBottomBar,
+                selectAllButtonClick = {},
+                playAllButtonClick = {},
+                albumList = likeAlbums,
+                viewModel= viewModel
+            )
         }
     }
     }

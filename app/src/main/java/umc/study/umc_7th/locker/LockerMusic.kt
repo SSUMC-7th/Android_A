@@ -55,7 +55,7 @@ fun LockerMusic(
 
     ){
 //    var songLike by viewModel.likedSongs.observeAsState()
-    var contentList by remember{ mutableStateOf(contentList.toMutableList())}
+    val contentList by remember{ mutableStateOf(contentList.toMutableList())}
     val allSelect by viewModel.selectAll.observeAsState(initial = false)
     val itemStates = remember { mutableStateMapOf<Content, Boolean>().apply { contentList.forEach { put(it, false) } } }
 

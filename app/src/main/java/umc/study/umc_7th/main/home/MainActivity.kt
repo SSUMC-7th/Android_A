@@ -187,7 +187,7 @@ fun homeFragment(navController: NavController,
             baseLocationCategory = BaseLocationCategory.GLOABAL ,
             viewTitleClick = { },
             contentClick ={ album ->
-                viewModel.getAlbumContent(AlbumContent(albumTitle = album.albumTitle, author = album.author, isLike = false))
+                viewModel.getAlbumContent(AlbumContent(albumTitle = album.albumTitle, author = album.author, isLike = false, albumImage = album.albumImage))
                 navController.navigate("albumFragment/${album.albumTitle}/${album.albumImage}/${album.author}" +
                         "/${album.date}/${album.trackList.joinToString(",")}/${album.titleTrackList.joinToString(",")}/${album.isLike}")},
             categoryClick = {},

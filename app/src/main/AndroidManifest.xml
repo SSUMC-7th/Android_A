@@ -34,6 +34,7 @@
         <activity
             android:name=".album.AlbumItemActiviy"
             />
+        <activity android:name=".user.LoginActivity"/>
         <activity
             android:name=".main.song.SongActivity"
             android:exported="true"
