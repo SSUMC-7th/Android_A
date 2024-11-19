@@ -12,7 +12,9 @@ import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
+import umc.study.umc_7th.User
 import umc.study.umc_7th.VideoContent
+import umc.study.umc_7th.data.AuthRepository
 import umc.study.umc_7th.data.ContentRepository
 import umc.study.umc_7th.service.ServiceHandler
 import javax.inject.Inject
@@ -20,14 +22,18 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val contentRepository: ContentRepository,
+    private val authRepository: AuthRepository,
     private val serviceHandler: ServiceHandler,
-): ViewModel() {
+) : ViewModel() {
     private val _bannerContents = mutableStateListOf<List<MusicContent>>()
     private val _albums = mutableStateListOf<Album>()
     private val _podcasts = mutableStateListOf<PodcastContent>()
     private val _videos = mutableStateListOf<VideoContent>()
 
+    private val _user = mutableStateOf<User?>(null)
+
     private val _savedMusics = mutableStateOf<List<MusicContent>>(emptyList())
+    private val _savedAlbums = mutableStateOf<List<AlbumContent>>(emptyList())
     private val _likedContents = mutableStateOf<List<Content>>(emptyList())
 
     val isServiceConnected get() = serviceHandler.isServiceConnected
@@ -37,19 +43,33 @@ class MainViewModel @Inject constructor(
     val podcasts get() = _podcasts.toList()
     val videos get() = _videos.toList()
 
+    val user get() = _user.value
+
     val savedMusics get() = _savedMusics.value
+    val savedAlbums get() = _savedAlbums.value
     val likedContents get() = _likedContents.value
 
     val isPlaying get() = serviceHandler.isPlaying
     val playingPoint get() = serviceHandler.playingPoint
     val currentContent get() = serviceHandler.currentContent
 
-    init {
+    fun initialize() {
+        _bannerContents.clear()
+        _albums.clear()
+        _podcasts.clear()
+        _videos.clear()
+
+        _user.value = null
+        _savedMusics.value = emptyList()
+        _likedContents.value = emptyList()
+
         viewModelScope.launch {
+            Log.d("debug", "started")
             listOf<suspend () -> Unit>(
+                { _user.value = authRepository.getMyProfile() },
                 {
                     repeat(5) {
-                        val rand = (0..9).random()
+                        val rand = (5..15).random()
                         _bannerContents.add(contentRepository.getRandomMusics(rand))
                     }
                 },
@@ -61,26 +81,30 @@ class MainViewModel @Inject constructor(
                         .collect { musics -> _savedMusics.value = musics }
                 },
                 {
-                    contentRepository.getAllLikedContentsFlow().collect { likes ->
-                        val newLikedContent = mutableListOf<Content>()
-                        likes.sortedByDescending { it.second }.forEach {
-                            // TODO: 음악 콘텐츠 의외의 유형에도 작동하도록 할 것
-                            try {
-                                contentRepository.getMusic(it.first)
-                                    .let { music -> newLikedContent.add(music) }
-                            }
-                            catch (_: Exception) {}
-                        }
-                        _likedContents.value = newLikedContent.toList()
-                    }
+                    contentRepository.getAllSavedAlbumsFlow()
+                        .collect { albums -> _savedAlbums.value = albums }
                 },
-            ).forEach {
+                {
+                    val newLikedContents = mutableListOf<Content>()
+                    contentRepository.getAllLikeLog().sortedByDescending { it.second }
+                        .map { (id, _) ->
+                            try {
+                                val content = contentRepository.getMusic(id)
+                                newLikedContents.add(content)
+                            } catch (_: Exception) {
+                                // TODO: 다른 유형의 콘텐츠에도 적용 가능하도록 수정
+                            }
+                        }
+                    _likedContents.value = newLikedContents.toList()
+                },
+            ).forEachIndexed { index, callback ->
                 launch {
-                    try{
-                        it()
-                    }
-                    catch(e: Exception) {
+                    try {
+                        callback()
+                        Log.d("debug", "$index ended")
+                    } catch (e: Exception) {
                         e.printStackTrace()
+                        Log.d("debug", "$index failed")
                     }
                 }
             }
@@ -92,8 +116,7 @@ class MainViewModel @Inject constructor(
             try {
                 val album = contentRepository.getAlbum(id)
                 onSuccess(album)
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
             }
@@ -103,10 +126,8 @@ class MainViewModel @Inject constructor(
     fun setLike(id: Long, like: Boolean, onFailed: () -> Unit) {
         viewModelScope.launch {
             try {
-                if (like) contentRepository.like(id)
-                else contentRepository.unlike(id)
-            }
-            catch (e: Exception) {
+                contentRepository.setLike(id, like)
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
             }
@@ -117,8 +138,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 contentRepository.deleteMusic(music)
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
             }
@@ -134,5 +154,20 @@ class MainViewModel @Inject constructor(
     fun setPlay(play: Boolean) {
         if (play) serviceHandler.resume()
         else serviceHandler.pause()
+    }
+
+    fun logout(
+        onSuccess: () -> Unit,
+        onFailed: () -> Unit,
+    ) {
+        viewModelScope.launch {
+            try {
+                authRepository.logout()
+                onSuccess()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onFailed()
+            }
+        }
     }
 }

@@ -2,7 +2,6 @@ package umc.study.umc_7th.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,10 +14,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.databinding.ActivityMainBinding
 import umc.study.umc_7th.ui.song.SongActivity
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
-    private val viewModel: MainViewModel by viewModels()
+    @Inject
+    lateinit var viewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,14 +28,14 @@ class MainActivity : FragmentActivity() {
             if (viewModel.isServiceConnected) {
                 binding.composeViewMain.setContent { Screen() }
                 return@setKeepOnScreenCondition false
-            }
-            else return@setKeepOnScreenCondition true
+            } else return@setKeepOnScreenCondition true
         }
 
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.initialize()
         navigate(NavigationDestination.HOME)
     }
 
@@ -55,7 +56,7 @@ class MainActivity : FragmentActivity() {
                 navigate(it)
                 currentDestination = it
             },
-            onContentClicked = lambda@ { content ->
+            onContentClicked = lambda@{ content ->
                 Intent(
                     this@MainActivity,
                     when (content.javaClass) {
@@ -74,9 +75,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun navigate(destination: NavigationDestination) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(binding.fragmentContainerViewMain.id, destination.fragment)
-            .commit()
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentContainerViewMain.id, destination.getFragment()).commit()
     }
 }

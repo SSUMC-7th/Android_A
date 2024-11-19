@@ -45,31 +45,31 @@ import umc.study.umc_7th.ui.main.locker.LockerFragment
 import umc.study.umc_7th.previewMusicContentList
 
 enum class NavigationDestination(
-    val fragment: Fragment,
+    val getFragment: () -> Fragment,
     val expression: String,
     val unselectedIconId: Int,
     val selectedIconId: Int,
 ) {
     HOME(
-        fragment = HomeFragment(),
+        getFragment = { HomeFragment() },
         expression = "홈",
         unselectedIconId = R.drawable.ic_bottom_home_no_select,
         selectedIconId = R.drawable.ic_bottom_home_select,
     ),
     BROWSE(
-        fragment = HomeFragment(),
+        getFragment = { throw Exception() },
         expression = "둘러보기",
         unselectedIconId = R.drawable.ic_bottom_look_no_select,
         selectedIconId = R.drawable.ic_bottom_look_select,
     ),
     SEARCH(
-        fragment = HomeFragment(),
+        getFragment = { throw Exception() },
         expression = "검색",
         unselectedIconId = R.drawable.ic_bottom_search_no_select,
         selectedIconId = R.drawable.ic_bottom_search_select,
     ),
     MY(
-        fragment = LockerFragment(),
+        getFragment = { LockerFragment() },
         expression = "보관함",
         unselectedIconId = R.drawable.ic_bottom_locker_no_select,
         selectedIconId = R.drawable.ic_bottom_locker_select,

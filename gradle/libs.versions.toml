@@ -1,47 +1,48 @@
 [versions]
-agp = "8.5.2"
+agp = "8.7.2"
 cardview = "1.0.0"
 coilCompose = "3.0.0-rc02"
 converterGson = "2.9.0"
 coreSplashscreen = "1.0.1"
-fragmentKtx = "1.8.4"
+fragmentKtx = "1.8.5"
 glide = "4.14.2"
 gson = "2.10.1"
 hiltAndroid = "2.49"
+javaJwt = "4.4.0"
 kotlin = "2.0.21"
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-kotlinxCoroutinesAndroid = "1.7.3"
-kotlinxCoroutinesCore = "1.7.3"
+kotlinxCoroutinesAndroid = "1.9.0"
+kotlinxCoroutinesCore = "1.9.0"
 kotlinxSerializationJson = "1.7.1"
 ktorSerialization = "1.6.4"
 ktorServerCore = "1.6.4"
 ktorServerNetty = "1.6.4"
 lifecycleExtensions = "2.2.0"
-lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
-composeBom = "2024.09.03"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.9.3"
+composeBom = "2024.11.00"
 appcompat = "1.7.0"
 logbackClassic = "1.2.6"
 loggingInterceptor = "5.0.0-alpha.2"
 material = "1.12.0"
-constraintlayout = "2.1.4"
-lifecycleLivedataKtx = "2.8.6"
-lifecycleViewmodelKtx = "2.8.6"
-navigationFragmentKtx = "2.8.2"
-navigationFragmentKtxVersion = "2.8.2"
-navigationSafeArgsGradlePlugin = "2.8.2"
-navigationSafeArgsGradlePluginVersion = "2.8.2"
-navigationUiKtx = "2.8.2"
-activity = "1.9.2"
-constraintlayoutCompose = "1.0.1"
-navigationUiKtxVersion = "2.8.2"
+constraintlayout = "2.2.0"
+lifecycleLivedataKtx = "2.8.7"
+lifecycleViewmodelKtx = "2.8.7"
+navigationFragmentKtx = "2.8.4"
+navigationFragmentKtxVersion = "2.8.4"
+navigationSafeArgsGradlePlugin = "2.8.4"
+navigationSafeArgsGradlePluginVersion = "2.8.4"
+navigationUiKtx = "2.8.4"
+activity = "1.9.3"
+constraintlayoutCompose = "1.1.0"
+navigationUiKtxVersion = "2.8.4"
 okhttp = "5.0.0-alpha.2"
 retrofit = "2.9.0"
 roomRuntime = "2.6.1"
-workRuntimeKtx = "2.9.1"
+workRuntimeKtx = "2.10.0"
 jetbrainsKotlinJvm = "2.0.21"
 
 [libraries]
@@ -67,6 +68,7 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+java-jwt = { module = "com.auth0:java-jwt", version.ref = "javaJwt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -85,6 +87,8 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
+ktor-auth = { module = "io.ktor:ktor-auth" }
+ktor-auth-jwt = { module = "io.ktor:ktor-auth-jwt" }
 ktor-serialization = { module = "io.ktor:ktor-serialization", version.ref = "ktorSerialization" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorServerCore" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorServerNetty" }

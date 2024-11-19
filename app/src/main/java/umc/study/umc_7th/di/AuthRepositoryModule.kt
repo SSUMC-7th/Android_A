@@ -4,18 +4,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import umc.study.umc_7th.data.network.AuthPreference
+import umc.study.umc_7th.data.AuthRepository
 import umc.study.umc_7th.data.network.Server
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ServerModule {
+object AuthRepositoryModule {
     @Provides
     @Singleton
-    fun provideServer(
-        authPreference: AuthPreference
-    ): Server {
-        return Server(authPreference)
+    fun provideAuthRepository(
+        server: Server,
+    ): AuthRepository {
+        return AuthRepository(server)
     }
 }

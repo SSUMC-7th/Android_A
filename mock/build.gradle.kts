@@ -10,4 +10,5 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(libs.kotlinx.serialization.json)
     implementation(kotlin("stdlib-jdk8"))
+    implementation(libs.java.jwt)
 }

@@ -21,9 +21,6 @@ interface SavedMusicDao {
     @Query("SELECT * FROM saved_music WHERE id IN (:id)")
     suspend fun get(id: List<Long>): List<SavedMusicEntity>
 
-    @Query("DELETE FROM saved_music")
-    suspend fun clear()
-
     @Delete
     suspend fun delete(music: SavedMusicEntity)
 

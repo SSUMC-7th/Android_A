@@ -1,38 +1,37 @@
 package umc.study.umc_7th
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
 
-sealed interface Identifiable: Serializable {
+sealed interface Identifiable {
     val id: Long
 }
 
-sealed interface Playable: Serializable {
+sealed interface Playable {
     val length: Int
 }
 
-sealed interface Viewable: Serializable {
+sealed interface Viewable {
     val imageId: Long
 }
 
-sealed interface Authorized: Serializable {
+sealed interface Authorized {
     val title: String
     val author: String
 }
 
+@Serializable
 data class Album(
     override val id: Long,
     override val title: String,
     override val author: String,
     override val imageId: Long,
-    val releasedDate: LocalDate,
-): Identifiable, Authorized, Viewable, Serializable
+    @Serializable(with = LocalDateSerializer::class) val releasedDate: LocalDate,
+): Identifiable, Authorized, Viewable
 
-sealed interface Content: Identifiable, Playable, Viewable, Authorized, Serializable {
+sealed interface Content: Identifiable, Playable, Viewable, Authorized {
     override val id: Long
     override val title: String
     override val author: String
@@ -40,6 +39,7 @@ sealed interface Content: Identifiable, Playable, Viewable, Authorized, Serializ
     override val length: Int
 }
 
+@Serializable
 data class AlbumContent(
     override val id: Long,
     override val title: String,
@@ -47,9 +47,9 @@ data class AlbumContent(
     override val imageId: Long,
     val type: String,
     val genre: String,
-    val releasedDate: LocalDate,
+    @Serializable(with = LocalDateSerializer::class) val releasedDate: LocalDate,
     val contentList: List<MusicContent>,
-): Content, Serializable {
+): Content {
     override val length: Int = contentList.sumOf { it.length }
 
     fun toAlbum() = Album(
@@ -61,6 +61,7 @@ data class AlbumContent(
     )
 }
 
+@Serializable
 data class MusicContent(
     override val id: Long,
     override val title: String,
@@ -69,8 +70,9 @@ data class MusicContent(
     override val length: Int,
     val albumId: Long,
     val label: String? = null,
-): Content, Serializable
+): Content
 
+@Serializable
 data class PodcastContent(
     override val id: Long,
     override val title: String,
@@ -78,18 +80,19 @@ data class PodcastContent(
     override val imageId: Long,
     override val length: Int,
     val description: String?,
-): Content, Serializable
+): Content
 
+@Serializable
 data class VideoContent(
     override val id: Long,
     override val title: String,
     override val author: String,
     override val imageId: Long,
     override val length: Int,
-): Content, Serializable
+): Content
 
 
-val previewAlbumContent @RequiresApi(Build.VERSION_CODES.O) @Composable get() = AlbumContent(
+val previewAlbumContent @Composable get() = AlbumContent(
     id = 100,
     title = "IU 5th Album \"LILAC\"",
     author = "아이유(IU)",

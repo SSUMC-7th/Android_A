@@ -1,6 +1,8 @@
 package com.example.mock
 
 import kotlinx.serialization.Serializable
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Serializable
 sealed interface HasImage {
@@ -23,7 +25,7 @@ data class MusicContent(
     val index: Int,
     val label: String?,
     val lyrics: String?,
-): Content
+) : Content
 
 @Serializable
 data class Album(
@@ -31,10 +33,10 @@ data class Album(
     val title: String,
     val authorId: Long,
     override val imageId: Long,
-    val releaseDate: String,
+    @Serializable(with = LocalDateSerializer::class) val releaseDate: LocalDate,
     val type: String,
     val genre: String,
-): HasImage
+) : HasImage
 
 @Serializable
 data class PodcastContent(
@@ -43,7 +45,7 @@ data class PodcastContent(
     override val authorId: Long,
     override val imageId: Long,
     val description: String,
-): Content, HasImage
+) : Content, HasImage
 
 @Serializable
 data class VideoContent(
@@ -51,12 +53,11 @@ data class VideoContent(
     override val title: String,
     override val authorId: Long,
     override val imageId: Long,
-): Content, HasImage
+) : Content, HasImage
 
 @Serializable
 data class User(
     val id: Long,
-    val name: String,
     val email: String,
     val password: String,
 )
@@ -66,4 +67,11 @@ data class Author(
     val id: Long,
     val name: String,
     override val imageId: Long?,
-): HasImage
+) : HasImage
+
+@Serializable
+data class Like(
+    val userId: Long,
+    val contentId: Long,
+    @Serializable(with = LocalDateTimeSerializer::class) val date: LocalDateTime,
+)

@@ -58,16 +58,40 @@ data class VideoContentResponse(
 )
 
 @Serializable
-data class UserResponse(
+data class AuthorResponse(
     val id: Long,
     val name: String,
+    val imageId: Long? = null,
+)
+
+@Serializable
+data class SignUpRequest(
     val email: String,
     val password: String,
 )
 
 @Serializable
-data class AuthorResponse(
+data class LoginRequest(
+    val email: String,
+    val password: String,
+)
+
+@Serializable
+data class AuthResponse(
+    val accessToken: String,
+    val refreshToken: String,
+    val user: UserResponse
+)
+
+@Serializable
+data class UserResponse(
     val id: Long,
-    val name: String,
-    val imageId: Long? = null,
+    val email: String,
+)
+
+@Serializable
+data class LikeResponse(
+    val userId: Long,
+    val contentId: Long,
+    val date: String,
 )

@@ -28,7 +28,7 @@ fun Album.toContentResponse(): AlbumContentResponse = AlbumContentResponse(
     title = title,
     authorId = authorId,
     imageId = imageId,
-    releaseDate = releaseDate,
+    releaseDate = releaseDate.toString(),
     type = type,
     genre = genre,
 )
@@ -38,7 +38,7 @@ fun Album.toResponse(): AlbumResponse = AlbumResponse(
     title = title,
     author = MockDatabase.getAuthorById(authorId)!!.name,
     imageId = imageId,
-    releaseDate = releaseDate,
+    releaseDate = releaseDate.toString(),
 )
 
 fun PodcastContent.toResponse(): PodcastContentResponse = PodcastContentResponse(
@@ -57,11 +57,22 @@ fun VideoContent.toResponse(): VideoContentResponse = VideoContentResponse(
     authorId = authorId,
     author = MockDatabase.getAuthorById(authorId)!!.name,
     imageId = imageId,
-    length = 100  /* TODO */,
+    length = 100,  /* TODO */
 )
 
 fun Author.toResponse(): AuthorResponse = AuthorResponse(
     id = id,
     name = name,
     imageId = imageId,
+)
+
+fun User.toResponse() = UserResponse(
+    id = id,
+    email = email
+)
+
+fun Like.toResponse() = LikeResponse(
+    userId = userId,
+    contentId = contentId,
+    date = date.toString()
 )

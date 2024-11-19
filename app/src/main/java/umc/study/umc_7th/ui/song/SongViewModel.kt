@@ -34,8 +34,7 @@ class SongViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 currentContent.value?.let { content ->
-                    if (like) contentRepository.like(content.id)
-                    else contentRepository.unlike(content.id)
+                    contentRepository.setLike(content.id, like)
                     _isLiked.value = like
                 }
             }

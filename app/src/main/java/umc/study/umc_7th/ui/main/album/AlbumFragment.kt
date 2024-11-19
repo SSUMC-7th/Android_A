@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.MusicContent
@@ -32,9 +33,12 @@ import umc.study.umc_7th.ui.main.BottomNavigationBar
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlbumFragment : Fragment() {
-    private val viewModel: MainViewModel by activityViewModels()
+    @Inject
+    lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentAlbumBinding
     private val album = MutableStateFlow<AlbumContent?>(null)
 
