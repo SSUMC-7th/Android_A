@@ -27,10 +27,6 @@ class ContentRepository(
     suspend fun setLike(id: Long, setTo: Boolean) = server.setLike(id, setTo)
     suspend fun getLikeLog(id: Long) = server.getLikeLog(id)
 
-    // suspend fun isLiked(id: Long) = database.isLiked(id)
-    // suspend fun like(vararg ids: Long) = database.like(*ids)
-    // suspend fun unlike(vararg ids: Long) = database.unlike(*ids)
-
     suspend fun saveMusic(music: MusicContent) = database.addSavedMusic(music)
     suspend fun getSavedMusic(id: Long) = database.getSavedMusic(id)
     suspend fun deleteMusic(music: MusicContent) = database.deleteSavedMusic(music)

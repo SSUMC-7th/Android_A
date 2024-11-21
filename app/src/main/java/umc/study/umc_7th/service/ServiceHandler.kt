@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import kotlinx.coroutines.flow.asStateFlow
 import umc.study.umc_7th.Content
 import umc.study.umc_7th.MusicContent
 
@@ -23,25 +24,34 @@ class ServiceHandler(private val context: Context) {
         override fun onServiceDisconnected(name: ComponentName) {
             isServiceConnected = false
         }
+
+        override fun onBindingDied(name: ComponentName?) {
+            isServiceConnected = false
+        }
     }
 
     fun bindService() {
-        Intent(context, ContentPlayerService::class.java).also { intent ->
-            context.apply {
-                startForegroundService(intent)
-                bindService(intent, connection, Context.BIND_AUTO_CREATE)
-            }
+        context.apply {
+            val intent = Intent(this, ContentPlayerService::class.java)
+            startForegroundService(intent)
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
     }
 
     fun unbindService() {
-        context.unbindService(connection)
+        isServiceConnected = false
+        context.apply {
+            val intent = Intent(this, ContentPlayerService::class.java)
+            unbindService(connection)
+            stopService(intent)
+        }
     }
 
-    val isPlaying get() = contentPlayerService.isPlaying
-    val playingPoint get() = contentPlayerService.playingPoint
-    val currentContent get()  = contentPlayerService.currentContent
-    val playlist get() = contentPlayerService.playlist
+    val isPlaying get() = contentPlayerService.isPlaying.asStateFlow()
+    val playingPoint get() = contentPlayerService.playingPoint.asStateFlow()
+    val currentContent get() = contentPlayerService.currentContent.asStateFlow()
+    val playlist get() = contentPlayerService.playlist.asStateFlow()
+    val playingIndex get() = contentPlayerService.playingIndex.asStateFlow()
 
     fun play(content: Content) = contentPlayerService.play(content)
     fun setPlaylist(playlist: List<MusicContent>) = contentPlayerService.setPlaylist(playlist)

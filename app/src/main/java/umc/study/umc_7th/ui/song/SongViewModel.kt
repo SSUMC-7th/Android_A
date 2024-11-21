@@ -1,9 +1,11 @@
 package umc.study.umc_7th.ui.song
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.data.ContentRepository
@@ -14,9 +16,8 @@ import javax.inject.Inject
 class SongViewModel @Inject constructor(
     private val contentRepository: ContentRepository,
     private val serviceHandler: ServiceHandler,
-): ViewModel() {
-    private val _isLiked = mutableStateOf(false)
-    val isLiked get() = _isLiked.value
+) : ViewModel() {
+    val isLiked = MutableStateFlow(false)
 
     val isPlaying get() = serviceHandler.isPlaying
     val playingPoint get() = serviceHandler.playingPoint
@@ -24,8 +25,14 @@ class SongViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            currentContent.collect { content ->
-                _isLiked.value = content != null && contentRepository.isLiked(content.id)
+            launch {
+                currentContent.collect { content ->
+                    isLiked.value = content != null && try {
+                        contentRepository.isLiked(content.id)
+                    } catch (e: Exception) {
+                        false
+                    }
+                }
             }
         }
     }
@@ -35,10 +42,10 @@ class SongViewModel @Inject constructor(
             try {
                 currentContent.value?.let { content ->
                     contentRepository.setLike(content.id, like)
-                    _isLiked.value = like
+                    isLiked.value = like
+                    Log.d("SongViewModel", "setLike: $like")
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
             }
@@ -52,8 +59,7 @@ class SongViewModel @Inject constructor(
                     if (content is MusicContent)
                         contentRepository.saveMusic(content)
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
             }

@@ -1,6 +1,8 @@
 package com.example.mock
 
 import kotlinx.serialization.Serializable
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Serializable
 data class MusicContentResponse(
@@ -22,7 +24,7 @@ data class AlbumResponse(
     val title: String,
     val author: String,
     val imageId: Long,
-    val releaseDate: String,
+    @Serializable(with = LocalDateSerializer::class) val releaseDate: LocalDate,
 )
 
 @Serializable
@@ -31,7 +33,7 @@ data class AlbumContentResponse(
     val title: String,
     val authorId: Long,
     val imageId: Long,
-    val releaseDate: String,
+    @Serializable(with = LocalDateSerializer::class) val releaseDate: LocalDate,
     val type: String,
     val genre: String,
 )
@@ -93,5 +95,5 @@ data class UserResponse(
 data class LikeResponse(
     val userId: Long,
     val contentId: Long,
-    val date: String,
+    @Serializable(with = LocalDateTimeSerializer::class) val date: LocalDateTime,
 )

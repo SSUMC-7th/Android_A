@@ -1,6 +1,7 @@
 package umc.study.umc_7th.ui.main.locker
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,37 +39,41 @@ fun TabLayout(
 
     Column {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.horizontalScroll(rememberScrollState())
         ) {
-            tabs.forEachIndexed { index, (label, _) ->
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .drawBehind {
-                            if (index == pageState.currentPage) drawLine(
-                                color = Color.Blue,
-                                start = Offset(x = 0f, y = size.height),
-                                end = Offset(x = size.width, y = size.height),
-                                strokeWidth = 5f,
-                            )
-                        }
-                        .heightIn(min = 48.dp)
-                        .clickable {
-                            scope.launch {
-                                pageState.animateScrollToPage(index)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(32.dp),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                tabs.forEachIndexed { index, (label, _) ->
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .drawBehind {
+                                if (index == pageState.currentPage) drawLine(
+                                    color = Color.Blue,
+                                    start = Offset(x = 0f, y = size.height),
+                                    end = Offset(x = size.width, y = size.height),
+                                    strokeWidth = 5f,
+                                )
                             }
-                        }
-                ) {
-                    Text(
-                        text = label,
-                        style = TextStyle(
-                            color = if (index == pageState.currentPage)
-                                Color.Blue
-                            else
-                                Color.Black.copy(alpha = 0.5f),
+                            .heightIn(min = 48.dp)
+                            .clickable {
+                                scope.launch {
+                                    pageState.animateScrollToPage(index)
+                                }
+                            }
+                    ) {
+                        Text(
+                            text = label,
+                            style = TextStyle(
+                                color = if (index == pageState.currentPage)
+                                    Color.Blue
+                                else
+                                    Color.Black.copy(alpha = 0.5f),
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

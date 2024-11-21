@@ -47,9 +47,9 @@ fun SavedAlbumsPage(
     albums: List<AlbumContent>,
     onPlayAllButtonClicked: () -> Unit,
     onPlayButtonClicked: (AlbumContent) -> Unit,
-    onCancelLikeClicked: (AlbumContent) -> Unit,
+    onDeleteClicked: (AlbumContent) -> Unit,
     onDetailsClicked: (AlbumContent) -> Unit,
-    onCancelLikesClicked: (List<AlbumContent>) -> Unit,
+    onDeleteAlbums: (List<AlbumContent>) -> Unit,
 ) {
     val selected = remember(albums) { List(albums.size) { false }.toMutableStateList() }
     var isEditExpanded by remember { mutableStateOf(false) }
@@ -60,7 +60,7 @@ fun SavedAlbumsPage(
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            text = "좋아요를 누른 콘텐츠가 없습니다.",
+            text = "저장한 앨범이 없습니다.",
             style = TextStyle(
                 color = Color.Black.copy(alpha = 0.5f),
             )
@@ -135,9 +135,9 @@ fun SavedAlbumsPage(
                     expanded = isEditExpanded,
                 ) {
                     DropdownMenuItem(
-                        text = { Text(text = "좋아요 취소") },
+                        text = { Text(text = "삭제") },
                         onClick = {
-                            onCancelLikesClicked(
+                            onDeleteAlbums(
                                 albums.filterIndexed { index, _ -> selected[index] }
                             )
                             isEditExpanded = false
@@ -161,7 +161,7 @@ fun SavedAlbumsPage(
                         if (it) expandedIndex = index
                         else if (expandedIndex == index) expandedIndex = null
                     },
-                    onCancelLikeClicked = { onCancelLikeClicked(album) },
+                    onCancelLikeClicked = { onDeleteClicked(album) },
                     onDetailsClicked = { onDetailsClicked(album) },
                     onClicked = { selected[index] = !checked },
                 )
@@ -284,8 +284,8 @@ fun PreviewSavedAlbumsPage() {
         albums = List(5) { previewAlbumContent },
         onPlayAllButtonClicked = {},
         onPlayButtonClicked = {},
-        onCancelLikeClicked = {},
+        onDeleteClicked = {},
         onDetailsClicked = {},
-        onCancelLikesClicked = {},
+        onDeleteAlbums = {},
     )
 }

@@ -11,16 +11,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.scopes.FragmentScoped
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
@@ -37,12 +38,10 @@ import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.main.album.AlbumFragment
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import java.time.LocalDate
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-    @Inject
-    lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
@@ -67,11 +66,16 @@ class HomeFragment : Fragment() {
 
     @Composable
     private fun Screen() {
+        val bannerContents by viewModel.bannerContents.collectAsStateWithLifecycle()
+        val albums by viewModel.albums.collectAsStateWithLifecycle()
+        val podcasts by viewModel.podcasts.collectAsStateWithLifecycle()
+        val videos by viewModel.videos.collectAsStateWithLifecycle()
+
         HomeScreen(
-            bannerContents = viewModel.bannerContents,
-            albums = viewModel.albums,
-            podcasts = viewModel.podcasts,
-            videos = viewModel.videos,
+            bannerContents = bannerContents,
+            albums = albums,
+            podcasts = podcasts,
+            videos = videos,
             onAlbumContentClicked = { album ->
                 val albumFragment = AlbumFragment().also {
                     it.arguments = Bundle().apply { putLong("album_id", album.id) }

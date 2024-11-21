@@ -1,7 +1,5 @@
 package umc.study.umc_7th.ui.main
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,6 +41,7 @@ import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.main.home.HomeFragment
 import umc.study.umc_7th.ui.main.locker.LockerFragment
 import umc.study.umc_7th.previewMusicContentList
+import umc.study.umc_7th.ui.main.browsing.BrowsingFragment
 
 enum class NavigationDestination(
     val getFragment: () -> Fragment,
@@ -56,8 +55,8 @@ enum class NavigationDestination(
         unselectedIconId = R.drawable.ic_bottom_home_no_select,
         selectedIconId = R.drawable.ic_bottom_home_select,
     ),
-    BROWSE(
-        getFragment = { throw Exception() },
+    BROWSING(
+        getFragment = { BrowsingFragment() },
         expression = "둘러보기",
         unselectedIconId = R.drawable.ic_bottom_look_no_select,
         selectedIconId = R.drawable.ic_bottom_look_select,

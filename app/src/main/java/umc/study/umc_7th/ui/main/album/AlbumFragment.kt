@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,12 +34,10 @@ import umc.study.umc_7th.ui.main.BottomNavigationBar
 import umc.study.umc_7th.ui.main.MainViewModel
 import umc.study.umc_7th.ui.main.NavigationDestination
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlbumFragment : Fragment() {
-    @Inject
-    lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentAlbumBinding
     private val album = MutableStateFlow<AlbumContent?>(null)
 
@@ -72,15 +71,37 @@ class AlbumFragment : Fragment() {
     @Composable
     private fun Screen() {
         val album by this@AlbumFragment.album.collectAsStateWithLifecycle()
+        var isLiked by remember { mutableStateOf(false) }
+
+        LaunchedEffect(key1 = album) {
+            album?.let { album ->
+                viewModel.isAlbumSaved(
+                    album = album,
+                    onSuccess = { isLiked = it },
+                    onFailed = { /* TODO */ }
+                )
+            }
+        }
 
         AlbumScreen(
             album = album,
+            isLiked = isLiked,
             onPlayContentClicked = { viewModel.play(it) },
             onBackButtonClicked = {
                 activity?.supportFragmentManager?.beginTransaction()
                     ?.remove(this@AlbumFragment)
                     ?.commit()
                 activity?.supportFragmentManager?.popBackStack()
+            },
+            onLikeButtonClicked = {
+                album?.let { album ->
+                    viewModel.saveAlbum(
+                        album = album,
+                        save = it,
+                        onSuccess = { isLiked = it },
+                        onFailed = { /* TODO */ }
+                    )
+                }
             }
         )
     }
@@ -89,8 +110,10 @@ class AlbumFragment : Fragment() {
 @Composable
 private fun AlbumScreen(
     album: AlbumContent?,
+    isLiked: Boolean,
     onPlayContentClicked: (MusicContent) -> Unit,
     onBackButtonClicked: () -> Unit,
+    onLikeButtonClicked: (Boolean) -> Unit,
 ) {
     var isMixed by remember { mutableStateOf(false) }
 
@@ -99,9 +122,9 @@ private fun AlbumScreen(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         TopButtonBar(
-            isLiked = false,
+            isLiked = isLiked,
             onBackButtonClicked = onBackButtonClicked,
-            onLikeButtonClicked = { /* TODO */ },
+            onLikeButtonClicked = onLikeButtonClicked,
             onDetailsButtonClicked = { /* TODO */ }
         )
         if (album != null) AlbumFrame(
@@ -163,8 +186,10 @@ fun PreviewAlbumScreen() {
             Box(modifier = Modifier.padding(innerPadding)) {
                 AlbumScreen(
                     album = previewAlbumContent,
+                    isLiked = true,
                     onBackButtonClicked = {},
                     onPlayContentClicked = {},
+                    onLikeButtonClicked = {},
                 )
             }
         }

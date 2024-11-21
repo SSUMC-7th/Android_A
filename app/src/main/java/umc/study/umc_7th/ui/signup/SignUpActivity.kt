@@ -74,10 +74,10 @@ class SignUpActivity : ComponentActivity() {
             onDomainChanged = { domain = it },
             onPasswordChanged = { password = it },
             onConfirmPasswordChanged = { confirmPassword = it },
-            onSignUpButtonClicked = {
+            onSignUpButtonClicked = lambda@ {
                 if (password != confirmPassword) {
                     scope.launch { showMessage("비밀번호가 일치하지 않습니다") }
-                    return@SignUpScreen
+                    return@lambda
                 }
 
                 viewModel.signUp(

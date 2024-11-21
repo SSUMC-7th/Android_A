@@ -30,6 +30,7 @@ import umc.study.umc_7th.Content
 import umc.study.umc_7th.databinding.ActivitySongBinding
 import umc.study.umc_7th.previewMusicContentList
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SongActivity: ComponentActivity() {
@@ -57,6 +58,7 @@ class SongActivity: ComponentActivity() {
 
     @Composable
     private fun Screen() {
+        val isLiked by viewModel.isLiked.collectAsStateWithLifecycle()
         val content by viewModel.currentContent.collectAsStateWithLifecycle()
         val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
         val playingPoint by viewModel.playingPoint.collectAsStateWithLifecycle()
@@ -67,12 +69,12 @@ class SongActivity: ComponentActivity() {
             content = content,
             playingPoint = playingPoint ?: 0,
             isPlaying = isPlaying,
-            isLiked = viewModel.isLiked,
+            isLiked = isLiked,
             onMinimizeButtonClicked = { finish() },
             onPlayButtonClicked = { viewModel.setPlay(it) },
             onPlayingPointChanged = { viewModel.seek(it) },
             onLikeButtonClicked = {
-                viewModel.setLike(it, onFailed = { /* TODO */ })
+                viewModel.setLike(like = it, onFailed = { /* TODO */ })
                 scope.launch {
                     snackBarHost.currentSnackbarData?.dismiss()
                     snackBarHost.showSnackbar(

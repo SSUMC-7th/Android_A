@@ -22,11 +22,19 @@ class SignUpViewModel @Inject constructor(
         onFailure: suspend () -> Unit
     ) {
         viewModelScope.launch {
-            if (validateEmail(email)) onInvalidEmail()
-            if (validatePassword(password)) onInvalidPassword()
-            
+            if (!validateEmail(email)) {
+                onInvalidEmail()
+                return@launch
+            }
+
+            if (!validatePassword(password)) {
+                onInvalidPassword()
+                return@launch
+            }
+
             try {
                 val user = authRepository.signUp(email, password)
+
                 if (user == null) onAlreadySigned()
                 else onSuccess(user)
             } catch (e: Exception) {
