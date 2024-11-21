@@ -10,6 +10,11 @@ object NetworkManager {
 
     private const val BASE_URL = "http://3.35.121.185/"
 
+    private var accessToken: String? = null
+    fun setAccessToken(token: String) {
+        accessToken = token
+    }
+
     private val okHttpClient: OkHttpClient by lazy {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY

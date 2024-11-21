@@ -131,7 +131,9 @@ fun SignUp(viewModel: SignUpViewModel) {
                         override fun onError(errorMessage: String) {
                             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                         }
-                    })
+                    },
+                        context
+                    )
                 } else {
                     Toast.makeText(context, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                 }

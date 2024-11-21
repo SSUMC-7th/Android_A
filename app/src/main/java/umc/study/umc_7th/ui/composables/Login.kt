@@ -108,8 +108,9 @@ fun Login(
                     override fun onError(errorMessage: String) {
                         Toast.makeText(context, "로그인 실패: $errorMessage", Toast.LENGTH_SHORT).show()
                     }
-                })
-                      },
+                },
+                    context
+                ) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,6 +55,7 @@ import umc.study.umc_7th.ui.screen.LookFragment
 import umc.study.umc_7th.ui.theme.Umc_7thTheme
 import umc.study.umc_7th.ui.viewmodel.MockMusicViewModel
 import umc.study.umc_7th.ui.viewmodel.MusicViewModel
+import umc.study.umc_7th.utils.SharedPreferencesHelper
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -75,6 +77,12 @@ class MainActivity : ComponentActivity() {
         musicViewModel.insertDummySongs()
         sharedPreferences = getSharedPreferences("song_pref", Context.MODE_PRIVATE)
         val songId = sharedPreferences.getInt("id", 0)
+        val (email, token) = SharedPreferencesHelper.getUserInfo(this)
+        if (email != null && token != null) {
+            Log.d("UserInfo", "Email: $email, Token: $token")
+        } else {
+            Log.d("UserInfo", "No user info found")
+        }
 
         enableEdgeToEdge()
         setContent {
