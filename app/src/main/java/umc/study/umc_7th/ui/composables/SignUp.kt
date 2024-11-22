@@ -38,6 +38,7 @@ fun SignUp(viewModel: SignUpViewModel) {
 
     val context = LocalContext.current
 
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordCheck by remember { mutableStateOf("") }
@@ -60,6 +61,12 @@ fun SignUp(viewModel: SignUpViewModel) {
             .padding(top = 80.dp)
             .padding(horizontal = 16.dp),
     ) {
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("닉네임") }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = email,
             onValueChange = { email = it },
@@ -117,7 +124,7 @@ fun SignUp(viewModel: SignUpViewModel) {
         Button(
             onClick = {
                 if (password == passwordCheck) {
-                    viewModel.registerUser(email, password, object : NetworkViewInterface {
+                    viewModel.registerUser(name, email, password, object : NetworkViewInterface {
                         override fun onLoading() {
                             // 로딩 중 처리
                         }

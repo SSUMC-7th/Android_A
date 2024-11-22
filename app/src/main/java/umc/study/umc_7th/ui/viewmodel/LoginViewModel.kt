@@ -7,34 +7,32 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import umc.study.umc_7th.data.model.UserRequest
-import umc.study.umc_7th.data.model.UserResponse
+import umc.study.umc_7th.data.model.UserLoginRequest
+import umc.study.umc_7th.data.model.UserLoginResponse
 import umc.study.umc_7th.data.source.remote.Service
 import umc.study.umc_7th.ui.composables.NetworkViewInterface
 import umc.study.umc_7th.utils.SharedPreferencesHelper.saveUserInfo
+import umc.study.umc_7th.utils.SharedPreferencesHelper.saveUserToken
 
 class LoginViewModel : ViewModel() {
 
     fun loginUser(email: String, password: String, callback: NetworkViewInterface, context: Context) {
         viewModelScope.launch {
             callback.onLoading()
-            val call = Service.apiService.loginUser(UserRequest(email, password))
-            call.enqueue(object : Callback<UserResponse> {
-                override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            val call = Service.apiService.loginUser(UserLoginRequest(email, password))
+            call.enqueue(object : Callback<UserLoginResponse> {
+                override fun onResponse(call: Call<UserLoginResponse>, response: Response<UserLoginResponse>) {
                     if (response.isSuccessful) {
-                        response.body()?.let {
-                            if (it.isSuccess) {
-                                val accessToken = it.result?.accessToken
-                                val memberId = it.result?.memberId
-                                if (accessToken != null && memberId != null) {
-                                    // 로그인 성공 시 토큰 및 유저 ID를 SharedPreferences에 저장
-                                    saveUserInfo(context, email, accessToken)
-                                    callback.onSuccess(it)
-                                } else {
-                                    callback.onError("Unexpected response: Missing memberId or accessToken")
-                                }
+                        response.body()?.result?.let { result ->
+                            if (response.body()?.isSuccess == true) {
+                                val accessToken = result.accessToken
+                                val memberId = result.memberId
+                                // 로그인 성공 시 토큰 및 유저 ID를 SharedPreferences에 저장
+                                saveUserInfo(context, email, memberId)
+                                saveUserToken(context, accessToken)
+                                callback.onSuccess(response.body()!!)
                             } else {
-                                callback.onError(it.message)
+                                callback.onError("Unexpected response: Missing memberId or accessToken")
                             }
                         } ?: run {
                             callback.onError("Empty response body")
@@ -44,11 +42,10 @@ class LoginViewModel : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                override fun onFailure(call: Call<UserLoginResponse>, t: Throwable) {
                     callback.onError("Exception: ${t.message}")
                 }
             })
         }
     }
-
 }

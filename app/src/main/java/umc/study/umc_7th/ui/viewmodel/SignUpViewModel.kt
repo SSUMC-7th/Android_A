@@ -7,31 +7,30 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import umc.study.umc_7th.data.model.UserRequest
-import umc.study.umc_7th.data.model.UserResponse
+import umc.study.umc_7th.data.model.UserJoinRequest
+import umc.study.umc_7th.data.model.UserJoinResponse
 import umc.study.umc_7th.data.source.remote.Service
 import umc.study.umc_7th.ui.composables.NetworkViewInterface
 import umc.study.umc_7th.utils.SharedPreferencesHelper.saveUserInfo
 
 class SignUpViewModel : ViewModel() {
 
-    fun registerUser(email: String, password: String, callback: NetworkViewInterface, context: Context) {
+    fun registerUser(name: String, email: String, password: String, callback: NetworkViewInterface, context: Context) {
         viewModelScope.launch {
             callback.onLoading()
-            val user = UserRequest(email, password)
+            val user = UserJoinRequest(name, email, password)
             val call = Service.apiService.registerUser(user)
-            call.enqueue(object : Callback<UserResponse> {
-                override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            call.enqueue(object : Callback<UserJoinResponse> {
+                override fun onResponse(call: Call<UserJoinResponse>, response: Response<UserJoinResponse>) {
                     if (response.isSuccessful) {
-                        response.body()?.let {
-                            if (it.isSuccess) {
-                                val accessToken = it.result?.accessToken ?: return callback.onError("Missing accessToken")
-                                val memberId = it.result?.memberId ?: return callback.onError("Missing memberId")
+                        response.body()?.result?.let { result ->
+                            if (response.body()?.isSuccess == true) {
+                                val memberId = result.memberId
                                 // 회원가입 성공 시 context를 사용해 SharedPreferences에 저장
-                                saveUserInfo(context, email, accessToken)
-                                callback.onSuccess(it)
+                                saveUserInfo(context, email, memberId)
+                                callback.onSuccess(response.body()!!)
                             } else {
-                                callback.onError(it.message)
+                                callback.onError(response.body()?.message ?: "Unknown error")
                             }
                         } ?: run {
                             callback.onError("Empty response body")
@@ -41,7 +40,7 @@ class SignUpViewModel : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                override fun onFailure(call: Call<UserJoinResponse>, t: Throwable) {
                     callback.onError("Exception: ${t.message}")
                 }
             })

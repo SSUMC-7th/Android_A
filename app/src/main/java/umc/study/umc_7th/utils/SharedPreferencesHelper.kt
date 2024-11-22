@@ -6,19 +6,27 @@ object SharedPreferencesHelper {
 
     private const val PREF_NAME = "user_prefs"
 
-    fun saveUserInfo(context: Context, email: String, token: String) {
+    fun saveUserInfo(context: Context, email: String, memberId: Int) {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("email", email)
+        editor.putInt("memberId", memberId)
+        editor.apply()
+    }
+
+    fun saveUserToken(context: Context, token: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
         editor.putString("token", token)
         editor.apply()
     }
 
-    fun getUserInfo(context: Context): Pair<String?, String?> {
+    fun getUserInfo(context: Context): Triple<String?, Int?, String?> {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val email = sharedPreferences.getString("email", null)
+        val memberId = sharedPreferences.getInt("memberId", -1).takeIf { it != -1 }
         val token = sharedPreferences.getString("token", null)
-        return Pair(email, token)
+        return Triple(email, memberId, token)
     }
 
     fun clearUserInfo(context: Context) {

@@ -77,9 +77,9 @@ class MainActivity : ComponentActivity() {
         musicViewModel.insertDummySongs()
         sharedPreferences = getSharedPreferences("song_pref", Context.MODE_PRIVATE)
         val songId = sharedPreferences.getInt("id", 0)
-        val (email, token) = SharedPreferencesHelper.getUserInfo(this)
-        if (email != null && token != null) {
-            Log.d("UserInfo", "Email: $email, Token: $token")
+        val (email, memberId, token) = SharedPreferencesHelper.getUserInfo(this)
+        if (email != null && memberId != null && token != null) {
+            Log.d("UserInfo", "Email: $email, memberId: $memberId, Token: $token")
         } else {
             Log.d("UserInfo", "No user info found")
         }
