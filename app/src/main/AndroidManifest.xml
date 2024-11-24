@@ -31,10 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".album.AlbumItemActiviy"
-            />
+        <activity android:name=".album.AlbumItemActiviy"/>
         <activity android:name=".user.LoginActivity"/>
+        <activity android:name=".user.SignUpActivity"/>"
         <activity
             android:name=".main.song.SongActivity"
             android:exported="true"

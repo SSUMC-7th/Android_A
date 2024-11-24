@@ -1,6 +1,7 @@
 package umc.study.umc_7th.user
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import umc.study.umc_7th.main.home.MainActivity
 
 class SignUpActivity : ComponentActivity(){
     private val userViewModel : UserViewModel by viewModels()
@@ -43,18 +45,19 @@ class SignUpActivity : ComponentActivity(){
         setContent{
             SignUpActivity(onSignUpClick = {email, password, repassword ->
                 if(password != repassword){
+                    val name = "ean"
+                    userViewModel.signUp(name, email, password,
+                        onSuccess={
+                            Toast.makeText(this, "성공", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                        },
+                        onError = {error ->
+                            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                        })
                     Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                 }else {
-                    userViewModel.registerUser(email, password) { isRegistered ->
-                        if (isRegistered) {
-                            Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
-                            finish()
-                        }else{
-                            Toast.makeText(this, "이미 존재하는 이메일 입니다.", Toast.LENGTH_SHORT).show()
-                            finish()
-
-                        }
-                    }
+                    Toast.makeText(this, "다시 시도", Toast.LENGTH_SHORT).show()
                 }
         })
     }
@@ -134,7 +137,7 @@ fun SignUpActivity(onSignUpClick :(String, String,String) -> Unit){
 
             )
         }
-        Spacer(modifier = Modifier.height(350.dp))
+        Spacer(modifier = Modifier.height(300.dp))
         TextButton(onClick = {onSignUpClick(namePart, password, repassword)},
             modifier = Modifier
                 .fillMaxWidth()

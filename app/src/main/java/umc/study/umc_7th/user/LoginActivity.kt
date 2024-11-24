@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import umc.study.umc_7th.R
+import umc.study.umc_7th.main.home.MainActivity
 
 class LoginActivity : ComponentActivity(){
     private val userViewModel: UserViewModel by viewModels()
@@ -52,15 +53,17 @@ class LoginActivity : ComponentActivity(){
         enableEdgeToEdge()
         setContent{
             loginActivity(onLoginClick = {email, password ->
-                userViewModel.loginUser(email, password) { isLoggedIn ->
-                    if(isLoggedIn){
+                userViewModel.login(email = email, password= password,
+                    onSuccess = {
                         Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
-
-                    }
-                }
-            })
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    },
+                    onError={ error ->
+                        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                    })
+            }
+            )
         }
     }
 }
@@ -128,14 +131,15 @@ fun loginActivity(onLoginClick :(String, String) -> Unit){
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
+        val email = "$namePart@$domainPart"
         Column {
             TextButton(onClick = {
-                val email = "$$namePart@$domainPart"
                 onLoginClick(email, password)
-            },
-                modifier = Modifier
+
+            }, modifier = Modifier
                     .background(Color.Blue)
-                    .fillMaxWidth()) {
+                    .fillMaxWidth())
+            {
                 Text(text = "로그인", color =Color.White)
             }
             Box(
@@ -199,8 +203,8 @@ fun loginActivity(onLoginClick :(String, String) -> Unit){
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun previewLoginActivity(){
-    loginActivity(onLoginClick = {email, password -> println("Email: $email, Password: $password")})
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun previewLoginActivity(){
+//    loginActivity(onLoginClick = {email, password -> println("Email: $email, Password: $password")})
+//}
