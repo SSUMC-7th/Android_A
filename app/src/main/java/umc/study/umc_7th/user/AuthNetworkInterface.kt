@@ -18,7 +18,7 @@ interface OnboardingService{
 }
 
 object AuthNetworkModule{
-    private const val BASE_URL = "http://3.35.121.185"
+    private const val BASE_URL = "http://3.35.121.185/"
 
     private var retrofit: Retrofit? = null
 
