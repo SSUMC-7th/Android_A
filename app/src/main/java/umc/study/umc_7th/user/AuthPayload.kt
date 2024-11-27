@@ -14,9 +14,9 @@ data class TimeStamp(
 )
 
 data class SignUpRequest(
-    var name : String,
-    var email : String,
-    var password : String
+    val name : String,
+    val email : String,
+    val password : String
 )
 
 data class LoginRequest(

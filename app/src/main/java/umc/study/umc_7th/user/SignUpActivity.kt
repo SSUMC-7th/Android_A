@@ -55,7 +55,6 @@ class SignUpActivity : ComponentActivity(){
                         onError = {error ->
                             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
                         })
-                    Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "다시 시도", Toast.LENGTH_SHORT).show()
                 }
