@@ -2,11 +2,15 @@ package umc.study.umc_7th
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import umc.study.umc_7th.databinding.ActivitySignUpBinding
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity(), SignUpView {
 
     lateinit var binding: ActivitySignUpBinding
 
@@ -16,18 +20,16 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.signUpSignUpBtn.setOnClickListener {
-            val signUpCompletion = signUp()
-            if(signUpCompletion) {
-                finish()
-            }
+            signUp()
         }
     }
 
     private fun getUser() : User {
         val email : String = binding.signUpIdEt.text.toString() + "@" + binding.signUpDirectInputEt.text.toString()
         val pwd : String = binding.signUpPasswordEt.text.toString()
+        var name : String = binding.signUpNameEt.text.toString()
 
-        return User(email, pwd)
+        return User(email, pwd, name)
     }
 
     private fun signUp() : Boolean {
@@ -41,13 +43,25 @@ class SignUpActivity : AppCompatActivity() {
             return false
         }
 
-        val userDB = SongDatabase.getInstance(this)!!
-        userDB.userDao().insert(getUser())
+        if(binding.signUpNameEt.text.toString().isEmpty()) {
+            Toast.makeText(this, "이름 형식이 잘못되었습니다.", Toast.LENGTH_SHORT).show()
+            return false
+        }
 
-        val user = userDB.userDao().getUsers()
-        Log.d("sign-up", user.toString())
+        val authService = AuthService()
+        authService.setSignUpView(this) // 객체를 통한 멤버 함수 호출
 
-        Toast.makeText(this, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+
+        authService.signUp(getUser())
         return true
+    }
+
+    override fun onSignUpSuccess() {
+        finish()
+    }
+
+    override fun onSignUpFailure(message : String) {
+        binding.signUpEmailErrorTv.visibility = View.VISIBLE
+        binding.signUpEmailErrorTv.text = message
     }
 }

@@ -1,9 +1,13 @@
 package umc.study.umc_7th
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import umc.study.umc_7th.databinding.FragmentLookBinding
 
@@ -44,31 +48,6 @@ class LookFragment : Fragment(), LookView {
         binding = FragmentLookBinding.inflate(inflater, container, false)
         songDB = SongDatabase.getInstance(requireContext())!!
 
-        // 스크롤 뷰 초기화
-//        scrollView = binding.lookSv
-//
-//        // 버튼 초기화
-//        chartBtn = binding.lookChartBtn
-//        videoBtn =  binding.lookVideoBtn
-//        genreBtn =  binding.lookGenreBtn
-//        situationBtn =  binding.lookSituationBtn
-//        audioBtn =  binding.lookAudioBtn
-//        atmosphereBtn =  binding.lookAtmostphereBtn
-//
-//        buttonList = listOf(chartBtn, videoBtn, genreBtn, situationBtn, audioBtn, atmosphereBtn)
-//
-//        // 텍스트 초기화
-//        chartTv = binding.lookChartTv
-//        videoTv = binding.lookVideoTv
-//        genreTv = binding.lookGenreTv
-//        situationTv = binding.lookSituationTv
-//        audioTv = binding.lookAudioTv
-//        atmosphereTv = binding.lookAtmostphereTv
-//
-//        textList = listOf(chartTv, videoTv, genreTv, situationTv, audioTv, atmosphereTv)
-//
-//        setButtonClickListeners()
-
         return binding.root
     }
 
@@ -89,27 +68,6 @@ class LookFragment : Fragment(), LookView {
 
         songService.getSongs()
 
-    }
-
-    private fun setButtonClickListeners() {
-        for (i in buttonList.indices) {
-            val button = buttonList[i]
-
-            button.setOnClickListener {
-                initButton(i)
-            }
-        }
-    }
-
-    private fun initButton(idx : Int) {
-        for(presentBtn : Button in buttonList) {
-            if(presentBtn == buttonList[idx]) {
-                presentBtn.setBackgroundResource(R.drawable.selected_button)
-            } else {
-                presentBtn.setBackgroundResource(R.drawable.not_selected_button)
-            }
-        }
-        scrollView.smoothScrollTo(0, textList[idx].top)
     }
 
     override fun onGetSongLoading() {
