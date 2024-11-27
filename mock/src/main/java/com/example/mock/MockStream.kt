@@ -1,10 +1,11 @@
 package com.example.mock
 
-import io.ktor.application.ApplicationCall
+import io.ktor.server.application.ApplicationCall
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.header
-import io.ktor.response.respondBytesWriter
+import io.ktor.server.response.header
+import io.ktor.server.response.respondBytesWriter
+import io.ktor.utils.io.writeFully
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
