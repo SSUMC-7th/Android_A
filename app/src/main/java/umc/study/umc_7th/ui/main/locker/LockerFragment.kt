@@ -65,7 +65,7 @@ class LockerFragment : Fragment() {
             likedContents = likedContents,
             savedMusics = savedMusics,
             savedAlbums = savedAlbums,
-            onPlayContent = { viewModel.play(it) },
+            onPlayContent = { viewModel.setCurrentContent(it) },
             onDeleteSavedMusics = { musics ->
                 musics.forEach {
                     viewModel.deleteMusic(
@@ -120,53 +120,51 @@ fun LockerScreen(
     onCancelLikes: (List<Content>) -> Unit,
     onLogout: () -> Unit,
 ) {
-    val tabs = remember(likedContents, savedMusics) {
-        listOf(
-            TabItem(
-                label = "좋아요",
-                page = {
-                    LikedContentsPage (
-                        contents = likedContents,
-                        onPlayAllButtonClicked = { /* TODO */ },
-                        onPlayButtonClicked = onPlayContent,
-                        onCancelLikeClicked = { onCancelLikes(listOf(it)) },
-                        onDetailsClicked = { /* TODO */ },
-                        onCancelLikesClicked = onCancelLikes,
-                    )
-                }
-            ),
-            TabItem(
-                label = "저장한 곡",
-                page = {
-                    SavedMusicsPage(
-                        musics = savedMusics,
-                        onPlayAllButtonClicked = { /* TODO */ },
-                        onPlayButtonClicked = onPlayContent,
-                        onDeleteClicked = { onDeleteSavedMusics(listOf(it)) },
-                        onDetailsClicked = { /* TODO */ },
-                        onDeleteMusics = onDeleteSavedMusics,
-                    )
-                }
-            ),
-            TabItem(
-                label = "음악파일",
-                page = { StorageFilePage() }
-            ),
-            TabItem(
-                label = "저장앨범",
-                page = {
-                    SavedAlbumsPage(
-                        albums = savedAlbums,
-                        onPlayAllButtonClicked = { /* TODO */ },
-                        onPlayButtonClicked = onPlayAlbum,
-                        onDeleteClicked = { onDeleteSavedAlbum(listOf(it)) },
-                        onDetailsClicked = { /* TODO */ },
-                        onDeleteAlbums = onDeleteSavedAlbum,
-                    )
-                }
-            ),
-        )
-    }
+    val tabs = listOf(
+        TabItem(
+            label = "좋아요",
+            page = {
+                LikedContentsPage (
+                    contents = likedContents,
+                    onPlayAllButtonClicked = { /* TODO */ },
+                    onPlayButtonClicked = onPlayContent,
+                    onCancelLikeClicked = { onCancelLikes(listOf(it)) },
+                    onDetailsClicked = { /* TODO */ },
+                    onCancelLikesClicked = onCancelLikes,
+                )
+            }
+        ),
+        TabItem(
+            label = "저장한 곡",
+            page = {
+                SavedMusicsPage(
+                    musics = savedMusics,
+                    onPlayAllButtonClicked = { /* TODO */ },
+                    onPlayButtonClicked = onPlayContent,
+                    onDeleteClicked = { onDeleteSavedMusics(listOf(it)) },
+                    onDetailsClicked = { /* TODO */ },
+                    onDeleteMusics = onDeleteSavedMusics,
+                )
+            }
+        ),
+        TabItem(
+            label = "음악파일",
+            page = { StorageFilePage() }
+        ),
+        TabItem(
+            label = "저장앨범",
+            page = {
+                SavedAlbumsPage(
+                    albums = savedAlbums,
+                    onPlayAllButtonClicked = { /* TODO */ },
+                    onPlayButtonClicked = onPlayAlbum,
+                    onDeleteClicked = { onDeleteSavedAlbum(listOf(it)) },
+                    onDetailsClicked = { /* TODO */ },
+                    onDeleteAlbums = onDeleteSavedAlbum,
+                )
+            }
+        ),
+    )
 
     Column {
         TitleBar(

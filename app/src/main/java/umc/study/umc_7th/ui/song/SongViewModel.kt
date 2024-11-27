@@ -1,7 +1,6 @@
 package umc.study.umc_7th.ui.song
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,15 +24,8 @@ class SongViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            launch {
-                currentContent.collect { content ->
-                    isLiked.value = content != null && try {
-                        contentRepository.isLiked(content.id)
-                    } catch (e: Exception) {
-                        false
-                    }
-                }
-            }
+            launch { currentContent.collect { loadLike(true) } }
+            launch { contentRepository.getAllLikeLogsFlow().collect { loadLike(false) } }
         }
     }
 
@@ -56,8 +48,7 @@ class SongViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 currentContent.value?.let { content ->
-                    if (content is MusicContent)
-                        contentRepository.saveMusic(content)
+                    if (content is MusicContent) contentRepository.saveMusic(content)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -73,5 +64,15 @@ class SongViewModel @Inject constructor(
     fun setPlay(play: Boolean) {
         if (play) serviceHandler.resume()
         else serviceHandler.pause()
+    }
+
+    private suspend fun loadLike(refresh: Boolean) {
+        isLiked.value = currentContent.value?.let { content ->
+            try {
+                contentRepository.isLiked(content.id, refresh = refresh)
+            } catch (e: Exception) {
+                false
+            }
+        } ?: false
     }
 }

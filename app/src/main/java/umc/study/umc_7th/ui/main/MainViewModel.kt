@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.Content
@@ -29,8 +28,9 @@ class MainViewModel @Inject constructor(
     val videos = MutableStateFlow<List<VideoContent>>(emptyList())
 
     val likedContents = MutableStateFlow<List<Content>>(emptyList())
-    val savedMusics = MutableStateFlow<List<MusicContent>>(emptyList())
-    val savedAlbums = MutableStateFlow<List<AlbumContent>>(emptyList())
+
+    val savedMusics get() = contentRepository.getAllSavedMusicsFlow()
+    val savedAlbums get() = contentRepository.getAllSavedAlbumsFlow()
 
     val isServiceConnected get() = serviceHandler.isServiceConnected
     val isPlaying get() = serviceHandler.isPlaying
@@ -40,12 +40,8 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             launch {
-                contentRepository.getAllSavedMusicsFlow()
-                    .collect { musics -> savedMusics.value = musics }
-            }
-            launch {
-                contentRepository.getAllSavedAlbumsFlow()
-                    .collect { albums -> savedAlbums.value = albums }
+                contentRepository.getAllLikeLogsFlow()
+                    .collect { _ -> loadLikedContents(refresh = false) }
             }
         }
     }
@@ -53,7 +49,7 @@ class MainViewModel @Inject constructor(
     fun initialize() {
         serviceHandler.bindService()
         loadRecommendedContents()
-        loadLikedContents()
+        loadLikedContents(refresh = true)
     }
 
     fun getAlbum(id: Long, onSuccess: (AlbumContent) -> Unit, onFailed: () -> Unit) {
@@ -72,7 +68,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 contentRepository.setLike(id, like)
-                loadLikedContents()
+                loadLikedContents(refresh = false)
             } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
@@ -91,7 +87,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun play(content: Content) = serviceHandler.play(content)
+    fun setCurrentContent(content: Content) = serviceHandler.play(content)
     fun setPlaylist(playlist: List<MusicContent>) = serviceHandler.setPlaylist(playlist)
     fun playNext() = serviceHandler.next()
     fun playPrevious() = serviceHandler.previous()
@@ -180,18 +176,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun loadLikedContents() {
+    private fun loadLikedContents(refresh: Boolean) {
         viewModelScope.launch {
             val newLikedContents = mutableListOf<Content>()
             try {
-                contentRepository.getAllLikeLog().sortedByDescending { it.second }.map { (id, _) ->
-                    try {
-                        val content = contentRepository.getMusic(id)
-                        newLikedContents.add(content)
-                    } catch (_: Exception) {
-                        // TODO: 다른 유형의 콘텐츠에도 적용 가능하도록 수정
+                contentRepository.getAllLikeLogs(refresh = refresh).toList()
+                    .sortedByDescending { it.second }
+                    .forEach { (id, _) ->
+                        try {
+                            val content = contentRepository.getMusic(id)
+                            newLikedContents.add(content)
+                        } catch (_: Exception) {
+                            // TODO: 다른 유형의 콘텐츠에도 적용 가능하도록 수정
+                        }
                     }
-                }
                 likedContents.value = newLikedContents.toList()
             } catch (e: Exception) {
                 e.printStackTrace()

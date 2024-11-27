@@ -1,9 +1,12 @@
 package umc.study.umc_7th.data.network
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,19 +26,31 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 private val retrofitInstance: ServerEndpoint by lazy {
-    val retrofit = Retrofit.Builder().baseUrl(BuildConfig.SERVER_URL).addConverterFactory(
-        GsonConverterFactory.create(
-            GsonBuilder().setLenient()
-                .registerTypeAdapter(
-                    LocalDateTime::class.java,
-                    LocalDateTimeGsonAdapter(LocalDateTimeSerializer)
-                )
-                .registerTypeAdapter(
-                    LocalDate::class.java,
-                    LocalDateGsonAdapter(LocalDateSerializer)
-                ).create()
-        )
-    ).build()
+    val loggingInterceptor = HttpLoggingInterceptor { message ->
+        val threadName = Thread.currentThread().id
+        Log.d("HttpLogger", "[$threadName] $message")
+    }.apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    val retrofit =
+        Retrofit.Builder().baseUrl(BuildConfig.SERVER_URL).client(client).addConverterFactory(
+            GsonConverterFactory.create(
+                GsonBuilder().setLenient()
+                    .registerTypeAdapter(
+                        LocalDateTime::class.java,
+                        LocalDateTimeGsonAdapter(LocalDateTimeSerializer)
+                    )
+                    .registerTypeAdapter(
+                        LocalDate::class.java,
+                        LocalDateGsonAdapter(LocalDateSerializer)
+                    ).create()
+            )
+        ).build()
 
     retrofit.create(ServerEndpoint::class.java)
 }

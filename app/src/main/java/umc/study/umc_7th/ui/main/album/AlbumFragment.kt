@@ -86,7 +86,7 @@ class AlbumFragment : Fragment() {
         AlbumScreen(
             album = album,
             isLiked = isLiked,
-            onPlayContentClicked = { viewModel.play(it) },
+            onPlayContentClicked = { viewModel.setCurrentContent(it) },
             onBackButtonClicked = {
                 activity?.supportFragmentManager?.beginTransaction()
                     ?.remove(this@AlbumFragment)
