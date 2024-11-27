@@ -44,7 +44,7 @@ class SignUpActivity : ComponentActivity(){
         enableEdgeToEdge()
         setContent{
             SignUpActivity(onSignUpClick = {email, password, repassword ->
-                if(password != repassword){
+                if(password == repassword){
                     val name = "ean"
                     userViewModel.signUp(name, email, password,
                         onSuccess={

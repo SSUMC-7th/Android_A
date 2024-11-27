@@ -1,6 +1,7 @@
 package umc.study.umc_7th.user
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import okhttp3.internal.http.hasBody
 import retrofit2.Call
@@ -23,13 +24,15 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         val request = SignUpRequest(name, email, password)
         onboardingService.signUp(request).enqueue(object : Callback<JoinResponse> {
             override fun onResponse(call: Call<JoinResponse>, response: Response<JoinResponse>) {
+                val state = response.code()
+
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
                     onSuccess("회원가입 성공")
                 } else {
                     onError("회원가입 실패")
+                    Log.e("API", "ERROR: $state")
                 }
             }
-
             override fun onFailure(call: Call<JoinResponse>, t: Throwable) {
                 onError("서버 오류: ${t.message}")
             }

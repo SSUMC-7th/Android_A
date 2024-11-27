@@ -43,7 +43,9 @@ object AuthNetworkModule{
     fun getClient(): Retrofit{
         return retrofit ?: Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(provideOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build().also{ retrofit = it}
+
     }
 }
