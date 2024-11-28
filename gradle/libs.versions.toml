@@ -4,6 +4,7 @@ cardview = "1.0.0"
 coilCompose = "3.0.0-rc02"
 converterGson = "2.9.0"
 coreSplashscreen = "1.0.1"
+dotenvKotlin = "6.4.1"
 fragmentKtx = "1.8.5"
 glide = "4.14.2"
 gson = "2.10.1"
@@ -16,16 +17,22 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxCoroutinesAndroid = "1.9.0"
 kotlinxCoroutinesCore = "1.9.0"
-kotlinxSerializationJson = "1.7.1"
-ktorSerialization = "1.6.4"
-ktorServerCore = "1.6.4"
-ktorServerNetty = "1.6.4"
+kotlinxSerializationJson = "1.7.3"
+ktorClientCio = "3.0.1"
+ktorClientContentNegotiation = "3.0.1"
+ktorClientCore = "3.0.1"
+ktorClientJson = "3.0.1"
+ktorSerialization = "3.0.1"
+ktorSerializationKotlinxJson = "3.0.1"
+ktorServerContentNegotiation = "3.0.1"
+ktorServerCore = "3.0.1"
+ktorServerNetty = "3.0.1"
 lifecycleExtensions = "2.2.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
 appcompat = "1.7.0"
-logbackClassic = "1.2.6"
+logbackClassic = "1.4.11"
 loggingInterceptor = "5.0.0-alpha.2"
 material = "1.12.0"
 constraintlayout = "2.2.0"
@@ -64,6 +71,7 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCo
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterGson" }
+dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenvKotlin" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
@@ -89,7 +97,13 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
 ktor-auth = { module = "io.ktor:ktor-auth" }
 ktor-auth-jwt = { module = "io.ktor:ktor-auth-jwt" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientCio" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCore" }
+ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktorClientJson" }
 ktor-serialization = { module = "io.ktor:ktor-serialization", version.ref = "ktorSerialization" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorSerializationKotlinxJson" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorServerContentNegotiation" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorServerCore" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorServerNetty" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }

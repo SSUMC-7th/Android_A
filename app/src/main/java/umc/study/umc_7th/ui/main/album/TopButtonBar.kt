@@ -1,5 +1,6 @@
 package umc.study.umc_7th.ui.main.album
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,7 +47,7 @@ fun TopButtonBar(
                 onClick = { onLikeButtonClicked(!isLiked) },
                 modifier = Modifier.size(32.dp),
             ) {
-                Icon(
+                Image(
                     painter = painterResource(
                         id = if (isLiked) R.drawable.ic_my_like_on
                         else R.drawable.ic_my_like_off

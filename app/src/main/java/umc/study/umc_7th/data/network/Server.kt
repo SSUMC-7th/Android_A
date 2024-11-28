@@ -5,12 +5,18 @@ import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import umc.study.umc_7th.Album
 import umc.study.umc_7th.AlbumContent
 import umc.study.umc_7th.BuildConfig
+import umc.study.umc_7th.LocalDateGsonAdapter
+import umc.study.umc_7th.LocalDateSerializer
+import umc.study.umc_7th.LocalDateTimeGsonAdapter
+import umc.study.umc_7th.LocalDateTimeSerializer
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.PodcastContent
 import umc.study.umc_7th.User
@@ -20,9 +26,31 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 private val retrofitInstance: ServerEndpoint by lazy {
-    val retrofit = Retrofit.Builder().baseUrl(BuildConfig.SERVER_URL).addConverterFactory(
-        GsonConverterFactory.create(GsonBuilder().setLenient().create())
-    ).build()
+    val loggingInterceptor = HttpLoggingInterceptor { message ->
+        val threadName = Thread.currentThread().id
+        Log.d("HttpLogger", "[$threadName] $message")
+    }.apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    val retrofit =
+        Retrofit.Builder().baseUrl(BuildConfig.SERVER_URL).client(client).addConverterFactory(
+            GsonConverterFactory.create(
+                GsonBuilder().setLenient()
+                    .registerTypeAdapter(
+                        LocalDateTime::class.java,
+                        LocalDateTimeGsonAdapter(LocalDateTimeSerializer)
+                    )
+                    .registerTypeAdapter(
+                        LocalDate::class.java,
+                        LocalDateGsonAdapter(LocalDateSerializer)
+                    ).create()
+            )
+        ).build()
 
     retrofit.create(ServerEndpoint::class.java)
 }
@@ -48,7 +76,7 @@ class Server @Inject constructor(
                 title = it.title,
                 author = it.author,
                 imageId = it.imageId,
-                releasedDate = LocalDate.parse(it.releaseDate),
+                releasedDate = it.releaseDate,
             )
         }
     }
@@ -64,7 +92,7 @@ class Server @Inject constructor(
             imageId = albumResponse.imageId,
             type = albumResponse.type,
             genre = albumResponse.genre,
-            releasedDate = LocalDate.parse(albumResponse.releaseDate),
+            releasedDate = albumResponse.releaseDate,
             contentList = musicResponseList.map { it.toMusicContent() },
         )
     }
@@ -136,13 +164,13 @@ class Server @Inject constructor(
 
     suspend fun getAllLikeLogs() = doWithJwtHandling routine@{ token, user ->
         val response = retrofitInstance.getAllLikes("Bearer $token", user.id)
-        return@routine response.map { it.contentId to LocalDateTime.parse(it.date) }
+        return@routine response.map { it.contentId to it.date }
     }
 
     suspend fun getLikeLog(id: Long) = doWithJwtHandling routine@{ token, user ->
         try {
             val response = retrofitInstance.isLiked("Bearer $token", user.id, id)
-            return@routine response.contentId to LocalDateTime.parse(response.date)
+            return@routine response.contentId to response.date
         } catch (e: HttpException) {
             if (e.code() == 404) return@routine null
             else throw e
@@ -153,8 +181,8 @@ class Server @Inject constructor(
         id: Long,
         setTo: Boolean,
     ) = doWithJwtHandling routine@{ token, user ->
-        val response = retrofitInstance.setLike("Bearer $token", user.id, id, setTo)
-        return@routine response.contentId to LocalDateTime.parse(response.date)
+        retrofitInstance.setLike("Bearer $token", user.id, id, setTo)
+        return@routine
     }
 
     private suspend fun <T> doWithJwtHandling(

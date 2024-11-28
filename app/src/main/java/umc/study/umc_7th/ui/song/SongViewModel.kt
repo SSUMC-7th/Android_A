@@ -1,9 +1,10 @@
 package umc.study.umc_7th.ui.song
 
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import umc.study.umc_7th.MusicContent
 import umc.study.umc_7th.data.ContentRepository
@@ -14,9 +15,8 @@ import javax.inject.Inject
 class SongViewModel @Inject constructor(
     private val contentRepository: ContentRepository,
     private val serviceHandler: ServiceHandler,
-): ViewModel() {
-    private val _isLiked = mutableStateOf(false)
-    val isLiked get() = _isLiked.value
+) : ViewModel() {
+    val isLiked = MutableStateFlow(false)
 
     val isPlaying get() = serviceHandler.isPlaying
     val playingPoint get() = serviceHandler.playingPoint
@@ -24,9 +24,8 @@ class SongViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            currentContent.collect { content ->
-                _isLiked.value = content != null && contentRepository.isLiked(content.id)
-            }
+            launch { currentContent.collect { loadLike(true) } }
+            launch { contentRepository.getAllLikeLogsFlow().collect { loadLike(false) } }
         }
     }
 
@@ -35,10 +34,10 @@ class SongViewModel @Inject constructor(
             try {
                 currentContent.value?.let { content ->
                     contentRepository.setLike(content.id, like)
-                    _isLiked.value = like
+                    isLiked.value = like
+                    Log.d("SongViewModel", "setLike: $like")
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
             }
@@ -49,11 +48,9 @@ class SongViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 currentContent.value?.let { content ->
-                    if (content is MusicContent)
-                        contentRepository.saveMusic(content)
+                    if (content is MusicContent) contentRepository.saveMusic(content)
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onFailed()
             }
@@ -67,5 +64,15 @@ class SongViewModel @Inject constructor(
     fun setPlay(play: Boolean) {
         if (play) serviceHandler.resume()
         else serviceHandler.pause()
+    }
+
+    private suspend fun loadLike(refresh: Boolean) {
+        isLiked.value = currentContent.value?.let { content ->
+            try {
+                contentRepository.isLiked(content.id, refresh = refresh)
+            } catch (e: Exception) {
+                false
+            }
+        } ?: false
     }
 }

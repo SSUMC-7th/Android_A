@@ -7,15 +7,5 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class FloApplication: Application() {
-    @Inject lateinit var serviceHandler: ServiceHandler
-
-    override fun onCreate() {
-        super.onCreate()
-        serviceHandler.bindService()
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        serviceHandler.unbindService()
-    }
+    // empty
 }

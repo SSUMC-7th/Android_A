@@ -73,5 +73,5 @@ interface ServerEndpoint {
         @Query("userId") userId: Long,
         @Query("contentId") contentId: Long,
         @Query("setTo") isLiked: Boolean,
-    ): LikeResponse
+    )
 }
