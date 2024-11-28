@@ -1,5 +1,6 @@
 package umc.study.umc_7th.ui.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,10 +39,12 @@ import umc.study.umc_7th.ui.viewmodel.LoginViewModel
 @Composable
 fun Login(
     viewModel: LoginViewModel,
-    onLoginResult: (Boolean, String?) -> Unit,
     onSignUpClicked: () -> Unit,
+    onLoginSuccess: () -> Unit
 ) {
 
+    val context = LocalContext.current
+  
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
@@ -92,9 +95,22 @@ fun Login(
         }
         Button(
             onClick = {
-                viewModel.loginWithEmail(email, password) { success, message ->
-                onLoginResult(success, message)
-            } },
+                viewModel.loginUser(email, password, object : NetworkViewInterface {
+                    override fun onLoading() {
+                        // 로딩 중 처리
+                    }
+
+                    override fun onSuccess(result: Any) {
+                        Toast.makeText(context, "로그인 성공!", Toast.LENGTH_SHORT).show()
+                        onLoginSuccess()
+                    }
+
+                    override fun onError(errorMessage: String) {
+                        Toast.makeText(context, "로그인 실패: $errorMessage", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                    context
+                ) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
@@ -177,8 +193,7 @@ fun Login(
 fun LoginPreview() {
     Login(
         viewModel = LoginViewModel(),
-        onLoginResult = { success, message ->
-        },
-        onSignUpClicked = {}
+        onSignUpClicked = {},
+        onLoginSuccess = {}
     )
 }

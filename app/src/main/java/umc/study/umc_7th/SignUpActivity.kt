@@ -20,45 +20,20 @@ class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SignUpScreen(
-                viewModel,
-                onNavigateToLogin = {
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            )
+            SignUpScreen(viewModel)
         }
     }
 }
 
 @Composable
-fun SignUpScreen(
-    viewModel: SignUpViewModel,
-    onNavigateToLogin: () -> Unit
-) {
-    val context = LocalContext.current
+fun SignUpScreen(viewModel: SignUpViewModel) {
 
-    SignUp(
-        onSignUpClicked = { email, password, passwordCheck ->
-            viewModel.signUpWithEmail(email, password, passwordCheck) { success, result ->
-                if (success) {
-                    // Handle success (e.g., navigate to another screen)
-                    Log.d("SignUp", "JWT Token: $result")
-                    Toast.makeText(context, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
-                    onNavigateToLogin()
-                } else {
-                    // Handle error (e.g., show a Toast)
-                    Log.d("SignUp", "Error: $result")
-                }
-            }
-        }
-    )
+    SignUp(viewModel = viewModel)
 }
 
 @Preview
 @Composable
 fun PreviewSignUpScreen() {
     val viewModel = SignUpViewModel()
-    SignUpScreen(viewModel, onNavigateToLogin = {})
+    SignUpScreen(viewModel)
 }
