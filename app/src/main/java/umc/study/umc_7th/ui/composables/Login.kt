@@ -170,7 +170,7 @@ fun Login(
                     tint = Color.Unspecified
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { viewModel.kakao_login(context) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.kakako_44),
                     contentDescription = "kakao",
