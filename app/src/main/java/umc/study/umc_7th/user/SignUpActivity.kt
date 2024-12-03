@@ -136,8 +136,9 @@ fun SignUpActivity(onSignUpClick :(String, String,String) -> Unit){
 
             )
         }
+        val email = "$namePart@$domainPart"
         Spacer(modifier = Modifier.height(300.dp))
-        TextButton(onClick = {onSignUpClick(namePart, password, repassword)},
+        TextButton(onClick = {onSignUpClick(email, password, repassword)},
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.Blue)
