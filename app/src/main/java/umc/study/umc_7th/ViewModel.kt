@@ -19,7 +19,7 @@ import umc.study.umc_7th.content.AppDataBase
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.content.ContentDao
 import umc.study.umc_7th.content.ContentRepository
-import umc.study.umc_7th.user.UserRepository
+
 
 open class SongViewModel(application: Application,
     private val repository: ContentRepository,
