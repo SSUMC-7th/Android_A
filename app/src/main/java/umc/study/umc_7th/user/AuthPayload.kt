@@ -1,5 +1,6 @@
 package umc.study.umc_7th.user
 
+
 data class JoinResponse(
     val isSuccess : Boolean,
     val code : String,

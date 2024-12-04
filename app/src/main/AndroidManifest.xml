@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">\
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -8,7 +8,7 @@
 
 
     <application
-        android:name = ".MyApplication"
+        android:name =".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -34,7 +34,7 @@
         </activity>
         <activity android:name=".album.AlbumItemActiviy"/>
         <activity android:name=".user.LoginActivity"/>
-        <activity android:name=".user.SignUpActivity"/>"
+        <activity android:name=".user.SignUpActivity"/>
         <activity
             android:name=".main.song.SongActivity"
             android:exported="true"

@@ -9,11 +9,13 @@ plugins {
 buildscript {
     repositories {
         google()
+        mavenCentral()
+        maven { url = uri("https://devrepo.kakao.com/nexus/content/groups/public/")}
     }
     dependencies {
         val nav_version = "2.7.7"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
-        //
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.3")
+
     }
 }
+

@@ -19,7 +19,7 @@ import umc.study.umc_7th.content.AppDataBase
 import umc.study.umc_7th.content.Content
 import umc.study.umc_7th.content.ContentDao
 import umc.study.umc_7th.content.ContentRepository
-import umc.study.umc_7th.user.UserRepository
+
 
 open class SongViewModel(application: Application,
     private val repository: ContentRepository,
@@ -253,6 +253,18 @@ class MyApplication : Application() {
     private val database by lazy { AppDataBase.getDatabase(this) }
     private val repository by lazy { ContentRepository(database.contentDao()) }
     private val albumRepository by lazy { AlbumRepository(database.albumDao())}
+
+    override fun onCreate() {
+        super.onCreate()
+        initializeDatabaseAndViewModel()
+
+    }
+    private fun initializeDatabaseAndViewModel(){
+        songViewModel
+        database
+        repository
+        albumRepository
+    }
 
 }
 
