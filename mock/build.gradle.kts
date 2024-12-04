@@ -1,7 +1,13 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     kotlin("plugin.serialization") version "2.0.21"
     kotlin("jvm")
 }
+
+val localProperties = Properties()
+localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
 dependencies {
     implementation(libs.ktor.server.core)
