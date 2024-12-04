@@ -254,6 +254,18 @@ class MyApplication : Application() {
     private val repository by lazy { ContentRepository(database.contentDao()) }
     private val albumRepository by lazy { AlbumRepository(database.albumDao())}
 
+    override fun onCreate() {
+        super.onCreate()
+        initializeDatabaseAndViewModel()
+
+    }
+    private fun initializeDatabaseAndViewModel(){
+        songViewModel
+        database
+        repository
+        albumRepository
+    }
+
 }
 
 
