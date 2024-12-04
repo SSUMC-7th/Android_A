@@ -10,6 +10,7 @@ import com.google.firebase.firestore.auth.User
 abstract class SongDatabase: RoomDatabase() {
     abstract fun songDao(): SongDao
     abstract fun albumDao(): AlbumDao
+    abstract fun UserDao(): UserDao
 
     companion object {
         private var instance: SongDatabase? = null

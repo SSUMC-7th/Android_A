@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
-import umc.study.umc_7th.Album
 import umc.study.umc_7th.AlbumRVAdapter
 import umc.study.umc_7th.HomeFragment
 import umc.study.umc_7th.Like
