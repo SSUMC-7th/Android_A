@@ -4,11 +4,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import umc.study.umc_7th.BuildConfig
 import java.util.concurrent.TimeUnit
 
 object NetworkManager {
 
-    private const val BASE_URL = "http://3.35.121.185/"
+    private const val BASE_URL = BuildConfig.base_URL
 
     private var accessToken: String? = null
     fun setAccessToken(token: String) {

@@ -1,5 +1,8 @@
 package umc.study.umc_7th.ui.screen
 
+import android.content.ContentValues.TAG
+import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +41,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kakao.sdk.user.UserApiClient
+import umc.study.umc_7th.LoginActivity
 import umc.study.umc_7th.R
 import umc.study.umc_7th.ui.composables.MiniPlayer
 import umc.study.umc_7th.ui.theme.Purple40
@@ -80,7 +85,17 @@ fun LockerFragment(viewModel: MusicViewModel) {
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            UserApiClient.instance.logout { error ->
+                            if (error != null) {
+                                Log.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                            }
+                            else {
+                                Log.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
+                                val intent = Intent(context, LoginActivity::class.java)
+                                context.startActivity(intent)
+                            }
+                        } },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Purple40
@@ -88,7 +103,7 @@ fun LockerFragment(viewModel: MusicViewModel) {
                     )
                     {
                         Text(
-                            text = "로그인",
+                            text = "로그아웃",
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

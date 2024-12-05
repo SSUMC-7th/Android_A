@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -8,6 +10,17 @@ plugins {
     id("kotlin-kapt")
     id("com.google.gms.google-services")
 }
+
+val localProperties = Properties()
+val localPropertiesFile = project.rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+val kakaoApiKey = localProperties.getProperty("kakao_NATIVE_APP_KEY")?:""
+val nativeAppKey = localProperties.getProperty("kakao_NATIVE_APP_KEY_MANIFEST")?:""
+val baseURL = localProperties.getProperty("BASE_URL")?:""
 
 android {
     namespace = "umc.study.umc_7th"
@@ -24,6 +37,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "base_URL", "\"${baseURL}\"")
+        buildConfigField("String", "kakao_NATIVE_APP_KEY", "\"${kakaoApiKey}\"")
+        manifestPlaceholders["NATIVE_APP_KEY"] = nativeAppKey
     }
 
     buildTypes {
@@ -44,6 +61,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -88,6 +106,15 @@ dependencies {
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.circleindicator)
 
+    // Kakao
+    implementation ("com.kakao.sdk:v2-all:2.20.6")
+    implementation ("com.kakao.sdk:v2-user:2.20.6")
+    implementation ("com.kakao.sdk:v2-share:2.20.6")
+    implementation ("com.kakao.sdk:v2-talk:2.20.6")
+    implementation ("com.kakao.sdk:v2-friend:2.20.6")
+    implementation ("com.kakao.sdk:v2-navi:2.20.6")
+    implementation ("com.kakao.sdk:v2-cert:2.20.6")
+    
     // Retrofit 2
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
