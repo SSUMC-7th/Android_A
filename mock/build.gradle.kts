@@ -1,6 +1,20 @@
+import org.gradle.internal.classpath.Instrumented.systemProperty
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     kotlin("plugin.serialization") version "2.0.21"
     kotlin("jvm")
+}
+
+val localProperties = Properties()
+localProperties.load(FileInputStream(rootProject.file("local.properties")))
+
+listOf(
+    "KAKAO_OAUTH_REST_API_KEY",
+    "SERVER_URL"
+).forEach { key ->
+    systemProperty(key, localProperties.getProperty(key))
 }
 
 dependencies {
@@ -19,8 +33,6 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     implementation(libs.java.jwt)
-
-    implementation(libs.dotenv.kotlin)
 
     implementation(libs.logback.classic)
 }

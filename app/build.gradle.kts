@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -9,11 +12,15 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+val localProperties = Properties()
+localProperties.load(FileInputStream(rootProject.file("local.properties")))
+
 android {
     namespace = "umc.study.umc_7th"
     compileSdk = 35
 
     defaultConfig {
+        manifestPlaceholders += mapOf()
         applicationId = "umc.study.umc_7th"
         minSdk = 26
         targetSdk = 34
@@ -25,7 +32,10 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "SERVER_URL", "\"http://10.0.2.2:8080\"")
+        buildConfigField("String", "SERVER_URL", "\"${localProperties.getProperty("SERVER_URL")}\"")
+        buildConfigField("String", "KAKAO_OAUTH_KEY", "\"${localProperties.getProperty("KAKAO_OAUTH_NATIVE_APP_KEY")}\"")
+
+        manifestPlaceholders["NATIVE_APP_KEY"] = localProperties.getProperty("KAKAO_OAUTH_NATIVE_APP_KEY")
     }
 
     buildTypes {
@@ -137,4 +147,7 @@ dependencies {
 
     // Splash
     implementation(libs.androidx.core.splashscreen)
+
+    // 카카오 로그인 API 모듈
+    implementation(libs.v2.user)
 }
