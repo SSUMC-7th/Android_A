@@ -45,4 +45,21 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+    fun loginWithKakao(
+        onSuccess: suspend (User) -> Unit,
+        onFailed: suspend () -> Unit,
+    ) {
+        viewModelScope.launch {
+            try {
+                authRepository.loginWithKakao()
+                val user = authRepository.getMyProfile()
+                onSuccess(user)
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+                onFailed()
+            }
+        }
+    }
 }

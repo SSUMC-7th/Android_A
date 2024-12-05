@@ -1,3 +1,4 @@
+import org.gradle.internal.classpath.Instrumented.systemProperty
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -8,6 +9,13 @@ plugins {
 
 val localProperties = Properties()
 localProperties.load(FileInputStream(rootProject.file("local.properties")))
+
+listOf(
+    "KAKAO_OAUTH_REST_API_KEY",
+    "SERVER_URL"
+).forEach { key ->
+    systemProperty(key, localProperties.getProperty(key))
+}
 
 dependencies {
     implementation(libs.ktor.server.core)
@@ -25,8 +33,6 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     implementation(libs.java.jwt)
-
-    implementation(libs.dotenv.kotlin)
 
     implementation(libs.logback.classic)
 }

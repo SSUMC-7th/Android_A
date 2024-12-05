@@ -78,11 +78,7 @@ class LoginActivity : ComponentActivity() {
                 viewModel.login(
                     email = "$id@$domain",
                     password = password,
-                    onSuccess = {
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    },
+                    onSuccess = { onLoginSuccess() },
                     onRejected = {
                         snackBarHost.currentSnackbarData?.dismiss()
                         snackBarHost.showSnackbar(
@@ -97,7 +93,19 @@ class LoginActivity : ComponentActivity() {
                 val intent = Intent(this, SignUpActivity::class.java)
                 startActivity(intent)
             },
+            onOAuthLoginClicked = {
+                if (it == OAuthProvider.KAKAO) viewModel.loginWithKakao(
+                    onSuccess = { onLoginSuccess() },
+                    onFailed = { /* TODO */ },
+                )
+            }
         )
+    }
+
+    private fun onLoginSuccess() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
 
@@ -111,6 +119,7 @@ fun LoginScreen(
     onPasswordChanged: (String) -> Unit,
     onLoginClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
+    onOAuthLoginClicked: (OAuthProvider) -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceAround,
@@ -133,7 +142,7 @@ fun LoginScreen(
                 onForgotPasswordClicked = { /* TODO */ },
             )
             OtherLoginOptionViewer(
-                onOAuthLoginClicked = { /* TODO */ },
+                onOAuthLoginClicked = onOAuthLoginClicked,
                 onSktIdLoginClicked = { /* TODO */ },
                 onPhoneNumberLoginClicked = { /* TODO */ },
             )
@@ -156,6 +165,7 @@ fun PreviewLoginScreen() {
                     onPasswordChanged = {},
                     onLoginClicked = {},
                     onSignUpClicked = {},
+                    onOAuthLoginClicked = {},
                 )
             }
         }

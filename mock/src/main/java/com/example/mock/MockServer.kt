@@ -1,12 +1,12 @@
 package com.example.mock
 
-import io.github.cdimascio.dotenv.dotenv
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.HttpClient
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondFile
@@ -18,8 +18,14 @@ import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 
 fun main() {
-    val dotenv = dotenv()
-    val authServerBaseUrl = dotenv["AUTH_SERVER_BASE_URL"]!!
+    val serverUrl = System.getenv("SERVER_URL")
+    val kakaoOAuthKey = System.getenv("KAKAO_OAUTH_REST_API_KEY")
+
+    val client = HttpClient {
+        install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+            json(Json { ignoreUnknownKeys = true })
+        }
+    }
 
     embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) {
@@ -35,17 +41,15 @@ fun main() {
                     val id = call.request.queryParameters["id"]?.toLongOrNull()
                     val albumId = call.request.queryParameters["albumId"]?.toLongOrNull()
 
-                    val musics =
-                        if (id != null) MockDatabase.getMusicById(id)?.let { listOf(it) }
-                            ?: emptyList()
-                        else if (albumId != null) MockDatabase.getMusicsByAlbum(albumId)
-                        else {
-                            call.respondText(
-                                "Invalid parameters",
-                                status = HttpStatusCode.BadRequest
-                            )
-                            return@get
-                        }
+                    val musics = if (id != null) MockDatabase.getMusicById(id)?.let { listOf(it) }
+                        ?: emptyList()
+                    else if (albumId != null) MockDatabase.getMusicsByAlbum(albumId)
+                    else {
+                        call.respondText(
+                            "Invalid parameters", status = HttpStatusCode.BadRequest
+                        )
+                        return@get
+                    }
 
                     call.respond(musics.map { it.toResponse() })
                 }
@@ -236,13 +240,13 @@ fun main() {
                     }
 
                     val user = MockDatabase.createUser(
-                        email = request.email, password = request.password
+                        email = request.email,
+                        password = request.password,
                     )
 
                     if (user == null) {
                         call.respond(
-                            HttpStatusCode.Conflict,
-                            mapOf("error" to "Email already exists")
+                            HttpStatusCode.Conflict, mapOf("error" to "Email already exists")
                         )
                         return@post
                     }
@@ -342,8 +346,7 @@ fun main() {
                         val userId = call.request.queryParameters["userId"]?.toLongOrNull()
                         if (userId == null) {
                             call.respond(
-                                HttpStatusCode.BadRequest,
-                                mapOf("error" to "Missing parameters")
+                                HttpStatusCode.BadRequest, mapOf("error" to "Missing parameters")
                             )
                             return@get
                         }
@@ -367,8 +370,7 @@ fun main() {
 
                         if (userId == null || contentId == null) {
                             call.respond(
-                                HttpStatusCode.BadRequest,
-                                mapOf("error" to "Missing parameters")
+                                HttpStatusCode.BadRequest, mapOf("error" to "Missing parameters")
                             )
                             return@get
                         }
@@ -377,8 +379,7 @@ fun main() {
 
                         if (like == null) {
                             call.respond(
-                                HttpStatusCode.NotFound,
-                                mapOf("error" to "Like not found")
+                                HttpStatusCode.NotFound, mapOf("error" to "Like not found")
                             )
                             return@get
                         }
@@ -402,8 +403,7 @@ fun main() {
 
                         if (userId == null || contentId == null || isLiked == null) {
                             call.respond(
-                                HttpStatusCode.BadRequest,
-                                mapOf("error" to "Missing parameters")
+                                HttpStatusCode.BadRequest, mapOf("error" to "Missing parameters")
                             )
                             return@post
                         }
