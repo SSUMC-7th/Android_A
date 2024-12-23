@@ -3,6 +3,7 @@ package umc.study.umc_7th.user
 import android.graphics.Paint.Join
 import android.util.Log
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,7 +19,7 @@ interface OnboardingService{
 }
 
 object AuthNetworkModule{
-    private const val BASE_URL = "http://3.35.121.185/"
+    private const val BASE_URL = ""
 
     private var retrofit: Retrofit? = null
 
@@ -29,15 +30,22 @@ object AuthNetworkModule{
     }
 
     private fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor{ chain ->
-            val original= chain.request()
-            val requestBuilder = original.newBuilder()
-            accessToken?.let{
-                requestBuilder.header("Authorization", "Bearer $it")
+        val loggingInterceptor = HttpLoggingInterceptor().apply{
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder()
+            .addInterceptor{ chain ->
+                val original= chain.request()
+                val requestBuilder = original.newBuilder()
+                accessToken?.let{
+                    requestBuilder.header("Authorization", "Bearer $it")
+                }
+                val request = requestBuilder.build()
+                chain.proceed(request)
             }
-            val request = requestBuilder.build()
-            chain.proceed(request)
-        }.build()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
     }
 
     fun getClient(): Retrofit{
