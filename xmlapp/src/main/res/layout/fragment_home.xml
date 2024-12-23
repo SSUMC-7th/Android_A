@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
+    tools:context=".HomeFragment"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -140,6 +141,7 @@
                         app:layout_constraintStart_toStartOf="parent">
 
                         <ImageView
+
                             android:layout_width="120dp"
                             android:layout_height="120dp"
 
