@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/home_pannel_background_iv"
+            android:layout_width="match_parent"
+            android:layout_height="430dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_default_4_x_1"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/home_pannel_btn_nugu_iv"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/btn_main_mike"
+            android:layout_marginTop = "20dp"
+            android:layout_marginEnd = "15dp"
+            app:layout_constraintEnd_toStartOf="@id/home_pannel_btn_ticket_iv"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/home_pannel_btn_ticket_iv"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/btn_main_ticket"
+            android:layout_marginTop = "20dp"
+            android:layout_marginEnd = "15dp"
+            app:layout_constraintEnd_toStartOf="@id/home_pannel_btn_setting_iv"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/home_pannel_btn_setting_iv"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/btn_main_setting"
+            android:layout_marginTop = "20dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/home_pannel_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="매혹적인 음색의 여성 보컬\n팝"
+            android:textColor="@color/white"
+            android:textSize="28dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/home_pannel_btn_nugu_iv"/>
+        <ImageView
+            android:id="@+id/home_pannel_btn_play_iv"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/btn_panel_play_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/home_pannel_title_tv" />
+
+        <ImageView
+            android:id="@+id/home_pannel_albumImage1_iv"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/img_album_lovewinsall"
+            android:layout_marginBottom = "20dp"
+            android:layout_marginStart="20dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/home_pannel_songtitle_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Butter"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:layout_marginStart="15dp"
+            app:layout_constraintStart_toEndOf="@id/home_pannel_albumImage1_iv"
+            app:layout_constraintTop_toTopOf="@id/home_pannel_albumImage1_iv"
+            />
+
+        <TextView
+            android:id="@+id/home_pannel_author_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bts"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            android:layout_marginStart="15dp"
+            app:layout_constraintStart_toEndOf="@id/home_pannel_albumImage1_iv"
+            app:layout_constraintTop_toBottomOf="@id/home_pannel_songtitle_tv"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

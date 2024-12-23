@@ -14,7 +14,9 @@ plugins {
 android {
     namespace = "umc.study.umc_7th"
     compileSdk = 34
-
+    viewBinding{
+        enable = true
+    }
     defaultConfig {
         applicationId = "umc.study.umc_7th"
         minSdk = 24
