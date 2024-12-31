@@ -97,7 +97,7 @@
         android:layout_height="50dp"
         android:src="@drawable/widget_black_play"
         app:layout_constraintEnd_toEndOf="@id/album_img_cv"
-        app:layout_constraintBottom_toBottomOf="@id/album_img_cv"
+        app:layout_constraintBottom_toBottomOf="@id/album_img_cv"/>
 
 
     <com.google.android.material.tabs.TabLayout
@@ -105,12 +105,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorColor="#3f3fff"
+        app:tabSelectedTextColor="#3f3fff"
+        app:tabRippleColor="#00ff0000"
         app:layout_constraintTop_toBottomOf="@id/album_img_cv"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/album_vp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/album_tl"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

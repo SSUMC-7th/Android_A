@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="5dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginTop="15dp"
     android:layout_marginEnd="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.cardview.widget.CardView
@@ -24,9 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="2dp"
         android:text="Next Level"
-        android:textSize="13sp"
+        android:textSize="15sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_song_img"/>
@@ -34,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="Next Level"
-        android:textSize="10sp"
+        android:text="aespa"
+        android:textSize="12sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/item_song_title_tv"
         app:layout_constraintStart_toEndOf="@id/item_song_img"/>
