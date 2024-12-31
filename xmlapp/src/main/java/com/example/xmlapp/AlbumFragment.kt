@@ -15,7 +15,7 @@ class AlbumFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAlbumBinding.inflate(inflater, container, false)
 
 
