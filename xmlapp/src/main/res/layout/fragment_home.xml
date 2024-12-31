@@ -160,6 +160,21 @@
 <!--            </LinearLayout>-->
 
 <!--        </HorizontalScrollView>-->
+        <TextView
+            android:id="@+id/home_today_music_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오늘 발매 음악"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@id/home_pannel_background_iv"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/home_today_music_rv"
             android:layout_width="match_parent"
@@ -168,10 +183,86 @@
             tools:listitem="@layout/item_album"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/home_pannel_background_iv"/>
+            app:layout_constraintTop_toBottomOf="@id/home_today_music_tv"/>
 
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/home_banner_vp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/home_today_podcast_hs"
+            app:layout_constraintTop_toBottomOf="@id/home_today_music_rv"/>
 
+        <HorizontalScrollView
+            android:id="@+id/home_today_podcast_hs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/home_banner_vp"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="20dp">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="150dp"
+                        android:layout_height="150dp">
+                        <ImageView
+                            android:id="@+id/home_today_potcast_iv"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:elevation="0dp"
+                            android:src="@drawable/img_potcast_exp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"/>
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/btn_arrow_black"
+                            android:layout_marginEnd="10dp"
+                            app:layout_constraintBottom_toBottomOf="@id/home_today_potcast_iv"
+                            app:layout_constraintEnd_toEndOf="@id/home_today_potcast_iv"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="김시선의 귀책사유"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="3dp"/>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="김시선"
+                        android:textColor="#a8a8a8"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <ImageView
+            android:layout_width="410dp"
+            android:layout_height="410dp"
+            android:src="@drawable/discovery_banner_aos"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/home_today_podcast_hs" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@ import com.example.xmlapp.databinding.ItemAlbumBinding
 
 class AlbumRVAdapter (private val albumList: ArrayList<Album>) : RecyclerView.Adapter<AlbumRVAdapter.ViewHolder>() {
     interface MyItemClickListener{
-        fun onItemClick()
+        fun onItemClick(album: Album)
     }
 
     private lateinit var mItemClickListener: MyItemClickListener
@@ -22,7 +22,7 @@ class AlbumRVAdapter (private val albumList: ArrayList<Album>) : RecyclerView.Ad
 
     override fun onBindViewHolder(holder:AlbumRVAdapter.ViewHolder, position : Int){
         holder.bind(albumList[position])
-        holder.itemView.setOnClickListener{ mItemClickListener.onItemClick()}
+        holder.itemView.setOnClickListener{ mItemClickListener.onItemClick(albumList[position])}
     }
     override fun getItemCount(): Int = albumList.size
 

@@ -13,6 +13,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:src="@drawable/btn_arrow_black"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -70,19 +71,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/album_albumtitle_tv"
-        app:layout_constraintBottom_toTopOf="@id/album_img_iv"/>
+        app:layout_constraintBottom_toTopOf="@id/album_img_cv"/>
 
-    <ImageView
-        android:id="@+id/album_img_iv"
-        android:layout_width="230dp"
-        android:layout_height="230dp"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/album_img_cv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-
-        android:src="@drawable/img_album_supernova"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/album_albumauthor_tv"
-        />
+        app:layout_constraintTop_toBottomOf="@id/album_albumauthor_tv">
 
+        <ImageView
+            android:id="@+id/album_img_iv"
+            android:layout_width="223dp"
+            android:layout_height="223dp"
+            android:src="@drawable/img_album_supernova" />
+    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/widget_black_play"
+        app:layout_constraintEnd_toEndOf="@id/album_img_cv"
+        app:layout_constraintBottom_toBottomOf="@id/album_img_cv"
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/album_tl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/album_img_cv"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/album_tl"
+        app:layout_constraintBottom_toBottomOf="parent"
 </androidx.constraintlayout.widget.ConstraintLayout>

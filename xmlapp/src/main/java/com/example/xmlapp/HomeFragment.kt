@@ -33,17 +33,32 @@ class HomeFragment: Fragment() {
             add(Album("Boy with Luv", "방탄소년단", R.drawable.img_album_exp4))
             add(Album("BBoom BBoom", "모모랜드", R.drawable.img_album_exp5))
         }
-
+        //recyclerview
+        //#1
         val albumRVAdapter = AlbumRVAdapter(albumData)
         binding.homeTodayMusicRv.adapter = albumRVAdapter
 
+        //#2
         albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener{
-            override fun onItemClick() {
+            override fun onItemClick(album:Album) {
                 (context as MainActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_frm, AlbumFragment())
+                    .replace(R.id.main_frm, AlbumFragment()).apply{
+                        arguments = Bundle().apply{
+//                            val gson = Gson()
+//                            val albumJson = gson.toJson(album)
+//                            putString("album", albumJson)
+                        }
+                    }
                     .commitAllowingStateLoss()
             }
         })
+
+
+        //viewpager2
+        val bannerVPAdapter = BannerVPAdapter(this)
+        binding.homeBannerVp.adapter = bannerVPAdapter
+        bannerVPAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
+        bannerVPAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
 
         return binding.root
     }
