@@ -27,11 +27,7 @@ class HomeFragment: Fragment() {
 //                .commitAllowingStateLoss()
 //        }
         albumData.apply{
-            add(Album("Butter", "방탄소년단", R.drawable.img_album_exp6))
-            add(Album("Lilac", "아이유", R.drawable.img_album_exp2))
-            add(Album("Next Level", "에스파", R.drawable.img_album_supernova))
-            add(Album("Boy with Luv", "방탄소년단", R.drawable.img_album_exp4))
-            add(Album("BBoom BBoom", "모모랜드", R.drawable.img_album_exp5))
+
         }
         //recyclerview
         //#1
